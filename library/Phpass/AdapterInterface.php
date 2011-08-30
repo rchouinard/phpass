@@ -28,17 +28,18 @@ interface Phpass_AdapterInterface
 {
 
     /**
-     * @param string $input
-     * @return string
-     */
-    public function genSalt($input);
-
-    /**
      * @param string $password
      * @param string $salt
      * @return string
      */
     public function crypt($password, $salt = null);
+
+    /**
+     * @param string $input
+     * @return string
+     */
+    public function genSalt($input);
+
 
     /**
      * @return boolean

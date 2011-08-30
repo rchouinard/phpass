@@ -31,29 +31,6 @@ class Phpass_Adapter_ExtDes extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 1) != '_' || strlen($hash) != 20) {
-            $isValid = false;
-        }
-
-        return $isValid;
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isSupported()
-     */
-    public function isSupported()
-    {
-        return (bool) CRYPT_EXT_DES;
-    }
-
-    /**
-     * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
     public function genSalt($input = null)
@@ -76,6 +53,29 @@ class Phpass_Adapter_ExtDes extends Phpass_Adapter
         $output .= $this->_encode64($input, 3);
 
         return $output;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isSupported()
+     */
+    public function isSupported()
+    {
+        return (bool) CRYPT_EXT_DES;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isValid()
+     */
+    public function isValid($hash)
+    {
+        $isValid = true;
+        if (substr($hash, 0, 1) != '_' || strlen($hash) != 20) {
+            $isValid = false;
+        }
+
+        return $isValid;
     }
 
 }

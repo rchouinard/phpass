@@ -31,46 +31,6 @@ class Phpass_Adapter_Portable extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 3) != '$P$' || strlen($hash) != 34) {
-            $isValid = false;
-        }
-
-        return $isValid;
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isSupported()
-     */
-    public function isSupported()
-    {
-        return true;
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::genSalt()
-     */
-    public function genSalt($input = null)
-    {
-        if (!$input) {
-            $input = $this->_getRandomBytes(6);
-        }
-
-        $output = '$P$';
-        $output .= $this->_itoa64[min($this->_iterationCountLog2 + 5, 30)];
-        $output .= $this->_encode64($input, 6);
-
-        return $output;
-    }
-
-    /**
-     * (non-PHPdoc)
      * @see Phpass_Adapter::crypt()
      */
     public function crypt($password, $setting = null)
@@ -117,6 +77,46 @@ class Phpass_Adapter_Portable extends Phpass_Adapter
         $output .= $this->_encode64($hash, 16);
 
         return $output;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::genSalt()
+     */
+    public function genSalt($input = null)
+    {
+        if (!$input) {
+            $input = $this->_getRandomBytes(6);
+        }
+
+        $output = '$P$';
+        $output .= $this->_itoa64[min($this->_iterationCountLog2 + 5, 30)];
+        $output .= $this->_encode64($input, 6);
+
+        return $output;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isSupported()
+     */
+    public function isSupported()
+    {
+        return true;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isValid()
+     */
+    public function isValid($hash)
+    {
+        $isValid = true;
+        if (substr($hash, 0, 3) != '$P$' || strlen($hash) != 34) {
+            $isValid = false;
+        }
+
+        return $isValid;
     }
 
 }

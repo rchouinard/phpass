@@ -41,29 +41,6 @@ class Phpass_Adapter_Blowfish extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 4) != '$2a$' || strlen($hash) != 60) {
-            $isValid = false;
-        }
-
-        return $isValid;
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isSupported()
-     */
-    public function isSupported()
-    {
-        return (bool) CRYPT_BLOWFISH;
-    }
-
-    /**
-     * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
     public function genSalt($input = null)
@@ -108,11 +85,25 @@ class Phpass_Adapter_Blowfish extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::crypt()
+     * @see Phpass_AdapterInterface::isSupported()
      */
-    public function crypt($password, $salt)
+    public function isSupported()
     {
-        return crypt($password, $salt);
+        return (bool) CRYPT_BLOWFISH;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isValid()
+     */
+    public function isValid($hash)
+    {
+        $isValid = true;
+        if (substr($hash, 0, 4) != '$2a$' || strlen($hash) != 60) {
+            $isValid = false;
+        }
+
+        return $isValid;
     }
 
 }
