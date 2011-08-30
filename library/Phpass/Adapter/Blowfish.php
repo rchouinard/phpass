@@ -49,9 +49,14 @@ class Phpass_Adapter_Blowfish extends Phpass_Adapter
             $input = $this->_getRandomBytes(16);
         }
 
+        // Blowfish requires this number to be between 4 and 31.
+        $countLog2 = ($this->_iterationCountLog2 < 4)
+            ? 4
+            : min($this->_iterationCountLog2, 31);
+
         $output = '$2a$';
-        $output .= chr(ord('0') + $this->_iterationCountLog2 / 10);
-        $output .= chr(ord('0') + $this->_iterationCountLog2 % 10);
+        $output .= chr(ord('0') + $countLog2 / 10);
+        $output .= chr(ord('0') + $countLog2 % 10);
         $output .= '$';
 
         $i = 0;

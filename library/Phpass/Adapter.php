@@ -138,15 +138,7 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
             switch ($key) {
 
                 case 'iterationcountlog2':
-                    $iterationCountLog2 = (int) $value;
-                    if ($iterationCountLog2 < 4 || $iterationCountLog2 > 31) {
-                        throw new InvalidArgumentException(
-                            "Value of 'iterationCountLog2' is invalid. " .
-                            "Expected integer in range 4-31. Value of " .
-                            "'${value}' given."
-                        );
-                    }
-                    $this->_iterationCountLog2 = $iterationCountLog2;
+                    $this->_iterationCountLog2 = (int) $value;
                     break;
 
                 default:
