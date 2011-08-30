@@ -46,6 +46,10 @@ class Phpass_Adapter_Portable extends Phpass_Adapter
         return $output;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see Phpass_Adapter::crypt()
+     */
     public function crypt($password, $setting)
     {
         $output = '*0';
