@@ -45,6 +45,71 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
     protected $_randomState;
 
     /**
+     * @param string $adapter
+     * @param array $options
+     * @return Phpass_Adapter
+     */
+    static public function factory($adapter, Array $options = array ())
+    {
+        if (!is_string($adapter)) {
+            throw new InvalidArgumentException(
+                'Required argument $adapter is expected to be a string ' .
+                'containing the name of an adapter, or a salt value.'
+            );
+        }
+
+        // Generic class names
+        if (strtolower($adapter) == 'blowfish') {
+            $adapter = 'Phpass_Adapter_Blowfish';
+        } else if (strtolower($adapter) == 'extdes') {
+            $adapter = 'Phpass_Adapter_ExtDes';
+        } else if (strtolower($adapter) == 'portable') {
+            $adapter = 'Phpass_Adapter_Portable';
+        }
+
+        // Load adapter by salt type.
+        else if (substr($adapter, 0, 4) == '$2a$') {
+            $adapter = 'Phpass_Adapter_Blowfish';
+        } else if (substr($adapter, 0, 1) == '_') {
+            $adapter = 'Phpass_Adapter_ExtDes';
+        } else if (substr($adapter, 0, 3) == '$P$' || substr($adapter, 0, 3) == '$H$') {
+            $adapter = 'Phpass_Adapter_Portable';
+        }
+
+        $adapter = ucfirst($adapter);
+
+        // Assume $adapter is a class name mappable to a file.
+        if (!class_exists($adapter, false)) {
+            $file = str_replace('_', DIRECTORY_SEPARATOR, $adapter);
+            if (file_exists($file)) {
+                @include $file;
+            }
+        }
+
+        if (class_exists($adapter, false)) {
+            $class = $adapter;
+            $instance = new $class;
+            if ($instance instanceof Phpass_Adapter) {
+                $instance = new $class($options);
+                return $instance;
+            }
+            unset ($instance);
+        }
+
+        if (substr($adapter, 0, 15) != 'Phpass_Adapter_') {
+            $adapter = 'Phpass_Adapter_' . $adapter;
+            $instance = self::factory($adapter, $options);
+            if ($instance instanceof Phpass_Adapter) {
+                return $instance;
+            }
+        }
+
+        throw new Exception(
+            "Failed loading adapter '${adapter}'"
+        );
+    }
+
+    /**
      * @param array $options
      * @return void
      */
