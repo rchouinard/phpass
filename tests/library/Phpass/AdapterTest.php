@@ -87,14 +87,11 @@ class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
      */
     public function factoryMethodShouldLoadAdapter($adapter, $className)
     {
-        //try {
-            $this->assertType(
-                $className, // Expected
-                Phpass_Adapter::factory($adapter), // Actual
-                "Factory method should load ${className}"
-            );
-        //} catch (Exception $e) {
-        //}
+        $this->assertType(
+            $className, // Expected
+            Phpass_Adapter::factory($adapter), // Actual
+            "Factory method should load ${className}"
+        );
     }
 
 }
