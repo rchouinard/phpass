@@ -28,25 +28,27 @@ interface Phpass_AdapterInterface
 {
 
     /**
-     * Generate a string suitable for use as a salt.
-     *
      * @param string $input
      * @return string
      */
     public function genSalt($input);
 
     /**
-     * Create a hash for the given password using the supplied salt.
-     *
      * @param string $password
      * @param string $salt
      * @return string
      */
-    public function crypt($password, $salt);
+    public function crypt($password, $salt = null);
 
     /**
      * @return boolean
      */
     public function isSupported();
+
+    /**
+     * @param string $hash
+     * @return boolean
+     */
+    public function isValid($hash);
 
 }

@@ -152,8 +152,11 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
      * (non-PHPdoc)
      * @see Phpass_AdapterInterface::crypt()
      */
-    public function crypt($password, $salt)
+    public function crypt($password, $salt = null)
     {
+        if (!$salt) {
+            $salt = $this->genSalt();
+        }
         return crypt($password, $salt);
     }
 

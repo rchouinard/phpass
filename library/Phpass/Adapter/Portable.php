@@ -31,6 +31,20 @@ class Phpass_Adapter_Portable extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isValid()
+     */
+    public function isValid($hash)
+    {
+        $isValid = true;
+        if (substr($hash, 0, 3) != '$P$' || strlen($hash) != 34) {
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+
+    /**
+     * (non-PHPdoc)
      * @see Phpass_AdapterInterface::isSupported()
      */
     public function isSupported()
@@ -59,8 +73,12 @@ class Phpass_Adapter_Portable extends Phpass_Adapter
      * (non-PHPdoc)
      * @see Phpass_Adapter::crypt()
      */
-    public function crypt($password, $setting)
+    public function crypt($password, $setting = null)
     {
+        if (!$setting) {
+            $setting = $this->genSalt();
+        }
+
         $output = '*0';
         if (substr($setting, 0, 2) == $output) {
             $output = '*1';

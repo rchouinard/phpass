@@ -31,6 +31,20 @@ class Phpass_Adapter_ExtDes extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isValid()
+     */
+    public function isValid($hash)
+    {
+        $isValid = true;
+        if (substr($hash, 0, 1) != '_' || strlen($hash) != 20) {
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+
+    /**
+     * (non-PHPdoc)
      * @see Phpass_AdapterInterface::isSupported()
      */
     public function isSupported()
