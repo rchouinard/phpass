@@ -58,7 +58,7 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
             );
         }
 
-        // Generic class names
+        // Generic adapter names
         if (strtolower($adapter) == 'blowfish') {
             $adapter = 'Phpass_Adapter_Blowfish';
         } else if (strtolower($adapter) == 'extdes') {
