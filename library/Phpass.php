@@ -71,8 +71,9 @@ class Phpass
      * @see $_iterationCountLog2
      * @see $_portableHashes
      *
-     * @param integer $iterationCountLog2 Number used to calculate iteration
-     *     count for password stretching.
+     * @param integer|array $iterationCountLog2 Number used to calculate
+     *     iteration count for password stretching. If value is an array, it is
+     *     passed straight to {@link setOptions()}.
      * @param boolean $portableHashes Flag indicating whether the weaker
      *     portable hash algorithm should be used by default.
      * @return void
@@ -80,20 +81,57 @@ class Phpass
     public function __construct($iterationCountLog2 = 8, $portableHashes = false)
     {
         $this->_itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-        if ($iterationCountLog2 < 4 || $iterationCountLog2 > 31) {
-            $iterationCountLog2 = 8;
-        }
-        $this->_iterationCountLog2 = $iterationCountLog2;
-
-        $this->_portableHashes = $portableHashes;
-
+        
         $this->_randomState = microtime();
         if (function_exists('getmypid')) {
             $this->_randomState .= getmypid();
         }
+        
+        if (is_array($iterationCountLog2)) {
+            $options = array_merge(
+                array (
+                    'iterationCountLog2' => 8, 
+                    'portableHashes' => false
+                ), 
+                $iterationCountLog2
+            );
+        } else {
+            $options = array (
+                'iterationCountLog2' => $iterationCountLog2,
+                'portableHashes' => $portableHashes
+            );
+        }
+        
+        $this->setOptions($options);
     }
 
+    /**
+     * Configure the instance.
+     * 
+     * @param array $options Array containing key => value pairs.
+     * @return Phpass
+     */
+    public function setOptions(Array $options)
+    {
+        $options = array_change_key_case($options, CASE_LOWER);
+        
+        if (isset ($options['iterationcountlog2'])) {
+            $iterationCountLog2 = $options['iterationcountlog2'];
+            if ($iterationCountLog2 < 4 || $iterationCountLog2 > 31) {
+                // Should probably throw an exception, but for now we'll leave
+                // the old behavior intact.
+                $iterationCountLog2 = 8;
+            }
+            $this->_iterationCountLog2 = $iterationCountLog2;
+        }
+        
+        if (isset ($options['portablehashes'])) {
+            $this->_portableHashes = (bool) $options['portablehashes'];
+        }
+        
+        return $this;
+    }
+    
     /**
      * Fetch a random pool of data.
      *
