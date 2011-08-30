@@ -31,6 +31,15 @@ class Phpass_Adapter_ExtDes extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isSupported()
+     */
+    public function isSupported()
+    {
+        return (bool) CRYPT_EXT_DES;
+    }
+
+    /**
+     * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
     public function genSalt($input = null)

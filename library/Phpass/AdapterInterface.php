@@ -44,4 +44,9 @@ interface Phpass_AdapterInterface
      */
     public function crypt($password, $salt);
 
+    /**
+     * @return boolean
+     */
+    public function isSupported();
+
 }

@@ -41,6 +41,15 @@ class Phpass_Adapter_Blowfish extends Phpass_Adapter
 
     /**
      * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::isSupported()
+     */
+    public function isSupported()
+    {
+        return (bool) CRYPT_BLOWFISH;
+    }
+
+    /**
+     * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
     public function genSalt($input = null)
