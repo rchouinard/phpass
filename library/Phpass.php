@@ -81,18 +81,18 @@ class Phpass
     public function __construct($iterationCountLog2 = 8, $portableHashes = false)
     {
         $this->_itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        
+
         $this->_randomState = microtime();
         if (function_exists('getmypid')) {
             $this->_randomState .= getmypid();
         }
-        
+
         if (is_array($iterationCountLog2)) {
             $options = array_merge(
                 array (
-                    'iterationCountLog2' => 8, 
+                    'iterationCountLog2' => 8,
                     'portableHashes' => false
-                ), 
+                ),
                 $iterationCountLog2
             );
         } else {
@@ -101,20 +101,20 @@ class Phpass
                 'portableHashes' => $portableHashes
             );
         }
-        
+
         $this->setOptions($options);
     }
 
     /**
      * Configure the instance.
-     * 
+     *
      * @param array $options Array containing key => value pairs.
      * @return Phpass
      */
     public function setOptions(Array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
-        
+
         if (isset ($options['iterationcountlog2'])) {
             $iterationCountLog2 = $options['iterationcountlog2'];
             if ($iterationCountLog2 < 4 || $iterationCountLog2 > 31) {
@@ -124,14 +124,14 @@ class Phpass
             }
             $this->_iterationCountLog2 = $iterationCountLog2;
         }
-        
+
         if (isset ($options['portablehashes'])) {
             $this->_portableHashes = (bool) $options['portablehashes'];
         }
-        
+
         return $this;
     }
-    
+
     /**
      * Fetch a random pool of data.
      *
