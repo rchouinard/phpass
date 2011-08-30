@@ -40,6 +40,11 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
     protected $_iterationCountLog2;
 
     /**
+     * @var string
+     */
+    protected $_randomState;
+
+    /**
      * @param array $options
      * @return void
      */
@@ -47,6 +52,11 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
     {
         $this->_itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $this->_iterationCountLog2 = 8;
+
+        $this->_randomState = microtime();
+        if (function_exists('getmypid')) {
+            $this->_randomState .= getmypid();
+        }
 
         $this->setOptions($options);
     }
@@ -82,6 +92,15 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
     }
 
     /**
+     * (non-PHPdoc)
+     * @see Phpass_AdapterInterface::crypt()
+     */
+    public function crypt($password, $salt)
+    {
+        return crypt($password, $salt);
+    }
+
+    /**
      * @param string $input
      * @param integer $count
      */
@@ -113,12 +132,27 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::crypt()
+     * @param integer $count
+     * @return string
      */
-    public function crypt($password, $salt)
+    protected function _getRandomBytes($count)
     {
-        return crypt($password, $salt);
+        $output = '';
+        if (is_readable('/dev/urandom') && ($fh = @fopen('/dev/urandom', 'rb'))) {
+            $output = fread($fh, $count);
+            fclose($fh);
+        }
+
+        if (strlen($output) < $count) {
+            $output = '';
+            for ($i = 0; $i < $count; $i += 16) {
+                $this->_randomState = md5(microtime() . $this->_randomState);
+                $output .= md5($this->_randomState, true);
+            }
+            $output = substr($output, 0, $count);
+        }
+
+        return $output;
     }
 
 }

@@ -43,8 +43,12 @@ class Phpass_Adapter_Blowfish extends Phpass_Adapter
      * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
-    public function genSalt($input)
+    public function genSalt($input = null)
     {
+        if (!$input) {
+            $input = $this->_getRandomBytes(16);
+        }
+
         $output = '$2a$';
         $output .= chr(ord('0') + $this->_iterationCountLog2 / 10);
         $output .= chr(ord('0') + $this->_iterationCountLog2 % 10);

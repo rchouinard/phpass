@@ -33,8 +33,12 @@ class Phpass_Adapter_Portable extends Phpass_Adapter
      * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
-    public function genSalt($input)
+    public function genSalt($input = null)
     {
+        if (!$input) {
+            $input = $this->_getRandomBytes(6);
+        }
+
         $output = '$P$';
         $output .= $this->_itoa64[min($this->_iterationCountLog2 + 5, 30)];
         $output .= $this->_encode64($input, 6);

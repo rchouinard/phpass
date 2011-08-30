@@ -33,8 +33,12 @@ class Phpass_Adapter_ExtDes extends Phpass_Adapter
      * (non-PHPdoc)
      * @see Phpass_AdapterInterface::genSalt()
      */
-    public function genSalt($input)
+    public function genSalt($input = null)
     {
+        if (!$input) {
+            $input = $this->_getRandomBytes(3);
+        }
+
         $countLog2 = min($this->_iterationCountLog2 + 8, 24);
         // This should be odd to not reveal weak DES keys, and the
         // maximum valid value is (2**24 - 1) which is odd anyway.
