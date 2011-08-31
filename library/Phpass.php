@@ -2,9 +2,6 @@
 /**
  * Portable PHP password hashing framework.
  *
- * This is a reimplementation of the popular PHPass library using PHP5
- * conventions.
- *
  * @package PHPass
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
@@ -36,29 +33,43 @@ class Phpass
     protected $_adapter;
 
     /**
+     * @var boolean
+     */
+    protected $_allowFallback;
+
+    /**
      * @param array|integer $options
      * @param boolean $portableHashes
      * @return void
      */
     public function __construct($options = array (), $portableHashes = false)
     {
+        $this->_allowFallback = false;
+
         // Handle arguments for backwards compatibility.
         $iterationCountLog2 = 8;
         if (is_int($options)) {
             $iterationCountLog2 = (int) $options;
-            $options = array ();
-        }
-
-        // Fall back to compatible behavior if portableHashes is true.
-        if (empty($options) && $portableHashes) {
-            $options = array (
-                'adapter' => array (
-                    'adapter' => 'Phpass_Adapter_Portable',
-                    'options' => array (
-                        'iterationCountLog2' => $iterationCountLog2
+            if ($portableHashes) {
+                $options = array (
+                    'adapter' => array (
+                        'adapter' => 'Phpass_Adapter_Portable',
+                        'options' => array (
+                            'iterationCountLog2' => $iterationCountLog2
+                        )
                     )
-                )
-            );
+                );
+            } else {
+                $options = array (
+                    'adapter' => array (
+                        'adapter' => 'Phpass_Adapter_Blowfish',
+                        'options' => array (
+                            'iterationCountLog2' => $iterationCountLog2
+                        )
+                    ),
+                    'allowFallback' => true
+                );
+            }
         }
 
         $this->setOptions($options);
@@ -72,7 +83,13 @@ class Phpass
     {
         $options = array_change_key_case($options, CASE_LOWER);
 
-        // adapter can be an adapter instance or an array containing the adapter
+        // Fallback mode will register the Portable adapter if the registered
+        // adapter isn't supported.
+        if (isset($options['allowfallback'])) {
+            $this->_allowFallback = (bool) $options['allowfallback'];
+        }
+
+        // Adapter can be an adapter instance or an array containing the adapter
         // name or class and configuration options.
         if (isset($options['adapter'])) {
             if ($options['adapter'] instanceof Phpass_Adapter) {
@@ -92,6 +109,7 @@ class Phpass
      */
     public function getAdapter()
     {
+        // No adapter is registered.
         if (!$this->_adapter) {
             require_once 'Phpass/Exception/MissingAdapter.php';
             throw new Phpass_Exception_MissingAdapter(
@@ -112,9 +130,17 @@ class Phpass
         if (!$adapter instanceof Phpass_Adapter) {
             $adapter = Phpass_Adapter::factory($adapter, $options);
         }
-        $this->_adapter = $adapter;
 
-        if (!$this->_adapter->isSupported()) {
+        // Adapter isn't supported, but fallback is on.
+        if (!$adapter->isSupported() && $this->_allowFallback) {
+            $adapter = Phpass_Adapter::factory(
+                'Phpass_Adapter_Portable',
+                $options
+            );
+        }
+
+        // Adapter isn't supported, and fallback is off.
+        if (!$adapter->isSupported() && !$this->_allowFallback) {
             $className = get_class($this->_adapter);
 
             require_once 'Phpass/Exception/NotSupported.php';
@@ -123,6 +149,7 @@ class Phpass
             );
         }
 
+        $this->_adapter = $adapter;
         return $this;
     }
 
