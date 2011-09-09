@@ -12,6 +12,14 @@
  * @version 0.4
  */
 
+/**
+ * @namespace
+ */
+namespace Phpass\Exception;
+
+/**
+ * @see \Phpass\Exception
+ */
 require_once 'Phpass/Exception.php';
 
 /**
@@ -26,6 +34,6 @@ require_once 'Phpass/Exception.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.4
  */
-class Phpass_Exception_MissingAdapter extends Phpass_Exception
+class MissingAdapter extends \RuntimeException implements \Phpass\Exception
 {
 }

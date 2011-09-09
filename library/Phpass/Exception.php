@@ -13,6 +13,11 @@
  */
 
 /**
+ * @namespace
+ */
+namespace Phpass;
+
+/**
  * Portable PHP password hashing framework.
  *
  * @package PHPass
@@ -24,6 +29,6 @@
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.4
  */
-class Phpass_Exception extends Exception
+interface Exception
 {
 }

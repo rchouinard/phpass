@@ -12,6 +12,14 @@
  * @version 0.4
  */
 
+/**
+ * @namespace
+ */
+namespace Phpass;
+
+/**
+ * @see \Phpass\AdapterInterface
+ */
 require_once 'Phpass/AdapterInterface.php';
 
 /**
@@ -26,7 +34,7 @@ require_once 'Phpass/AdapterInterface.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.4
  */
-abstract class Phpass_Adapter implements Phpass_AdapterInterface
+abstract class Adapter implements AdapterInterface
 {
 
     /**
@@ -159,35 +167,26 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
     static public function factory($adapter, Array $options = array ())
     {
         if (!is_string($adapter)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 'Required argument $adapter is expected to be a string ' .
                 'containing the name of an adapter, or a salt value.'
             );
         }
 
         // Generic adapter names
-        if (strtolower($adapter) == 'blowfish') {
-            $adapter = 'Phpass_Adapter_Blowfish';
-        } else if (strtolower($adapter) == 'extdes') {
-            $adapter = 'Phpass_Adapter_ExtDes';
-        } else if (strtolower($adapter) == 'portable') {
-            $adapter = 'Phpass_Adapter_Portable';
-        }
-
-        // Load adapter by salt type.
-        else if (substr($adapter, 0, 4) == '$2a$') {
-            $adapter = 'Phpass_Adapter_Blowfish';
-        } else if (substr($adapter, 0, 1) == '_') {
-            $adapter = 'Phpass_Adapter_ExtDes';
-        } else if (substr($adapter, 0, 3) == '$P$' || substr($adapter, 0, 3) == '$H$') {
-            $adapter = 'Phpass_Adapter_Portable';
+        if (strtolower($adapter) == 'blowfish' || substr($adapter, 0, 4) == '$2a$') {
+            $adapter = '\Phpass\Adapter\Blowfish';
+        } else if (strtolower($adapter) == 'extdes' || substr($adapter, 0, 1) == '_') {
+            $adapter = '\Phpass\Adapter\ExtDes';
+        } else if (strtolower($adapter) == 'portable' || substr($adapter, 0, 3) == '$P$' || substr($adapter, 0, 3) == '$H$') {
+            $adapter = '\Phpass\Adapter\Portable';
         }
 
         $adapter = ucfirst($adapter);
 
         // Assume $adapter is a class name mappable to a file.
         if (!class_exists($adapter, false)) {
-            $file = str_replace('_', DIRECTORY_SEPARATOR, $adapter);
+            $file = trim(str_replace(array ('\\', '_'), DIRECTORY_SEPARATOR, $adapter), DIRECTORY_SEPARATOR);
             if (file_exists($file)) {
                 @include $file;
             }
@@ -196,22 +195,22 @@ abstract class Phpass_Adapter implements Phpass_AdapterInterface
         if (class_exists($adapter, false)) {
             $class = $adapter;
             $instance = new $class;
-            if ($instance instanceof Phpass_Adapter) {
+            if ($instance instanceof Adapter) {
                 $instance = new $class($options);
                 return $instance;
             }
             unset ($instance);
         }
 
-        if (substr($adapter, 0, 15) != 'Phpass_Adapter_') {
-            $adapter = 'Phpass_Adapter_' . $adapter;
+        if (substr($adapter, 0, 15) != '\\Phpass\\Adapter') {
+            $adapter = '\\Phpass\\Adapter\\' . $adapter;
             $instance = self::factory($adapter, $options);
-            if ($instance instanceof Phpass_Adapter) {
+            if ($instance instanceof Adapter) {
                 return $instance;
             }
         }
 
-        throw new Exception(
+        throw new \Exception(
             "Failed loading adapter '${adapter}'"
         );
     }

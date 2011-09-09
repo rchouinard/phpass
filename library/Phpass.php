@@ -11,6 +11,9 @@
  * @version 0.4
  */
 
+/**
+ * @see \Phpass\Adapter
+ */
 require_once 'Phpass/Adapter.php';
 
 /**
@@ -28,7 +31,7 @@ class Phpass
 {
 
     /**
-     * @var Phpass_Adapter
+     * @var \Phpass\Adapter
      */
     protected $_adapter;
 
@@ -53,7 +56,7 @@ class Phpass
             if ($portableHashes) {
                 $options = array (
                     'adapter' => array (
-                        'adapter' => 'Phpass_Adapter_Portable',
+                        'adapter' => '\Phpass\Adapter\Portable',
                         'options' => array (
                             'iterationCountLog2' => $iterationCountLog2
                         )
@@ -62,7 +65,7 @@ class Phpass
             } else {
                 $options = array (
                     'adapter' => array (
-                        'adapter' => 'Phpass_Adapter_Blowfish',
+                        'adapter' => '\Phpass\Adapter\Blowfish',
                         'options' => array (
                             'iterationCountLog2' => $iterationCountLog2
                         )
@@ -92,7 +95,7 @@ class Phpass
         // Adapter can be an adapter instance or an array containing the adapter
         // name or class and configuration options.
         if (isset($options['adapter'])) {
-            if ($options['adapter'] instanceof Phpass_Adapter) {
+            if ($options['adapter'] instanceof \Phpass\Adapter) {
                 $this->setAdapter($options['adapter']);
             } else if (is_array($options['adapter'])) {
                 $adapter = $options['adapter']['adapter'];
@@ -105,14 +108,14 @@ class Phpass
     }
 
     /**
-     * @return Phpass_Adapter;
+     * @return \Phpass\Adapter
      */
     public function getAdapter()
     {
         // No adapter is registered.
         if (!$this->_adapter) {
             require_once 'Phpass/Exception/MissingAdapter.php';
-            throw new Phpass_Exception_MissingAdapter(
+            throw new \Phpass\Exception\MissingAdapter(
                 'There is no adapter set.'
             );
         }
@@ -121,20 +124,20 @@ class Phpass
     }
 
     /**
-     * @param Phpass_Adapter|string $adapter
+     * @param \Phpass\Adapter|string $adapter
      * @param array $options
      * @return Phpass
      */
     public function setAdapter($adapter, Array $options = array ())
     {
-        if (!$adapter instanceof Phpass_Adapter) {
-            $adapter = Phpass_Adapter::factory($adapter, $options);
+        if (!$adapter instanceof \Phpass\Adapter) {
+            $adapter = \Phpass\Adapter::factory($adapter, $options);
         }
 
         // Adapter isn't supported, but fallback is on.
         if (!$adapter->isSupported() && $this->_allowFallback) {
-            $adapter = Phpass_Adapter::factory(
-                'Phpass_Adapter_Portable',
+            $adapter = \Phpass\Adapter::factory(
+                '\Phpass\Adapter\Portable',
                 $options
             );
         }
@@ -144,7 +147,7 @@ class Phpass
             $className = get_class($this->_adapter);
 
             require_once 'Phpass/Exception/NotSupported.php';
-            throw new Phpass_Exception_NotSupported(
+            throw new \Phpass\Exception\NotSupported(
                 "Adapter '${className}' is not supported on this system."
             );
         }
@@ -165,7 +168,7 @@ class Phpass
         $hash = $adapter->crypt($password, $storedHash);
         if (!$adapter->isValid($hash)) {
             require_once 'Phpass/Exception/UnexpectedValue.php';
-            throw new Phpass_Exception_UnexpectedValue(
+            throw new \Phpass\Exception\UnexpectedValue(
                 'The adapter returned an invalid value.'
             );
         }
@@ -184,7 +187,7 @@ class Phpass
         $hash = $adapter->crypt($password);
         if (!$adapter->isValid($hash)) {
             require_once 'Phpass/Exception/UnexpectedValue.php';
-            throw new Phpass_Exception_UnexpectedValue(
+            throw new \Phpass\Exception\UnexpectedValue(
                 'The adapter returned an invalid value.'
             );
         }

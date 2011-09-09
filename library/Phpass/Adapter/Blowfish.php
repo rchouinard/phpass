@@ -12,6 +12,14 @@
  * @version 0.4
  */
 
+/**
+ * @namespace
+ */
+namespace Phpass\Adapter;
+
+/**
+ * @see \Phpass\Adapter
+ */
 require_once 'Phpass/Adapter.php';
 
 /**
@@ -26,7 +34,7 @@ require_once 'Phpass/Adapter.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.4
  */
-class Phpass_Adapter_Blowfish extends Phpass_Adapter
+class Blowfish extends \Phpass\Adapter
 {
 
     /**
