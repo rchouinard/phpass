@@ -13,7 +13,7 @@
  */
 
 require_once 'PHPUnit/Framework/TestCase.php';
-require_once 'Phpass/Adapter.php';
+require_once 'Phpass/Adapter/Base.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -89,7 +89,7 @@ class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
     {
         $this->assertType(
             $className, // Expected
-            \Phpass\Adapter::factory($adapter), // Actual
+            \Phpass\Adapter\Base::factory($adapter), // Actual
             "Factory method should load ${className}"
         );
     }

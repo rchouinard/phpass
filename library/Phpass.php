@@ -12,9 +12,9 @@
  */
 
 /**
- * @see \Phpass\Adapter
+ * @see \Phpass\Adapter\Base
  */
-require_once 'Phpass/Adapter.php';
+require_once 'Phpass/Adapter/Base.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -131,12 +131,12 @@ class Phpass
     public function setAdapter($adapter, Array $options = array ())
     {
         if (!$adapter instanceof \Phpass\Adapter) {
-            $adapter = \Phpass\Adapter::factory($adapter, $options);
+            $adapter = \Phpass\Adapter\Base::factory($adapter, $options);
         }
 
         // Adapter isn't supported, but fallback is on.
         if (!$adapter->isSupported() && $this->_allowFallback) {
-            $adapter = \Phpass\Adapter::factory(
+            $adapter = \Phpass\Adapter\Base::factory(
                 '\Phpass\Adapter\Portable',
                 $options
             );

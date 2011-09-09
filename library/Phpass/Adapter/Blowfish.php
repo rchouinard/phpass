@@ -18,9 +18,9 @@
 namespace Phpass\Adapter;
 
 /**
- * @see \Phpass\Adapter
+ * @see \Phpass\Adapter\Base
  */
-require_once 'Phpass/Adapter.php';
+require_once 'Phpass/Adapter/Base.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -34,7 +34,7 @@ require_once 'Phpass/Adapter.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.4
  */
-class Blowfish extends \Phpass\Adapter
+class Blowfish extends Base
 {
 
     /**
