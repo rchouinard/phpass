@@ -41,7 +41,7 @@ class Phpass_Adapter_PortableTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new Phpass_Adapter_Portable;
+        $this->_adapter = new \Phpass\Adapter\Portable;
     }
 
     /**

@@ -45,7 +45,7 @@ class Phpass_Adapter_BlowfishTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('This system lacks Blowfish support.');
         }
 
-        $this->_adapter = new Phpass_Adapter_Blowfish;
+        $this->_adapter = new \Phpass\Adapter\Blowfish;
     }
 
     /**

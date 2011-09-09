@@ -45,7 +45,7 @@ class Phpass_Adapter_ExtDesTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('This system lacks Extended DES support.');
         }
 
-        $this->_adapter = new Phpass_Adapter_ExtDes;
+        $this->_adapter = new \Phpass\Adapter\ExtDes;
     }
 
     /**

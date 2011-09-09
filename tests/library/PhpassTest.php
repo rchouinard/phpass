@@ -43,7 +43,7 @@ class PhpassTest extends PHPUnit_Framework_TestCase
                         'options' => array ()
                     )
                 ),
-                'Phpass_Adapter_Blowfish'
+                '\Phpass\Adapter\Blowfish'
             ),
             array (
                 array (
@@ -52,7 +52,7 @@ class PhpassTest extends PHPUnit_Framework_TestCase
                         'options' => array ()
                     )
                 ),
-                'Phpass_Adapter_ExtDes'
+                '\Phpass\Adapter\ExtDes'
             ),
             array (
                 array (
@@ -61,14 +61,14 @@ class PhpassTest extends PHPUnit_Framework_TestCase
                         'options' => array ()
                     )
                 ),
-                'Phpass_Adapter_Portable'
+                '\Phpass\Adapter\Portable'
             )
         );
     }
 
     /**
      * @test
-     * @expectedException Phpass_Exception_MissingAdapter
+     * @expectedException \Phpass\Exception\MissingAdapter
      * @return void
      */
     public function constructorWithNoArgsSuppliesNoAdapter()

@@ -37,44 +37,44 @@ class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
     {
         return array (
             array (
-                'Phpass_Adapter_Blowfish',
-                'Phpass_Adapter_Blowfish'
+                '\Phpass\Adapter\Blowfish',
+                '\Phpass\Adapter\Blowfish'
             ),
             array (
-                'Phpass_Adapter_ExtDes',
-                'Phpass_Adapter_ExtDes'
+                '\Phpass\Adapter\ExtDes',
+                '\Phpass\Adapter\ExtDes'
             ),
             array (
-                'Phpass_Adapter_Portable',
-                'Phpass_Adapter_Portable'
+                '\Phpass\Adapter\Portable',
+                '\Phpass\Adapter\Portable'
             ),
             array (
                 'blowfish',
-                'Phpass_Adapter_Blowfish'
+                '\Phpass\Adapter\Blowfish'
             ),
             array (
                 'extdes',
-                'Phpass_Adapter_ExtDes'
+                '\Phpass\Adapter\ExtDes'
             ),
             array (
                 'portable',
-                'Phpass_Adapter_Portable'
+                '\Phpass\Adapter\Portable'
             ),
             array (
                 '$2a$08$',
-                'Phpass_Adapter_Blowfish'
+                '\Phpass\Adapter\Blowfish'
             ),
             array (
                 '_',
-                'Phpass_Adapter_ExtDes'
+                '\Phpass\Adapter\ExtDes'
             ),
             array (
                 '$P$',
-                'Phpass_Adapter_Portable'
+                '\Phpass\Adapter\Portable'
             ),
             array (
                 '$H$',
-                'Phpass_Adapter_Portable'
+                '\Phpass\Adapter\Portable'
             )
         );
     }
@@ -89,7 +89,7 @@ class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
     {
         $this->assertType(
             $className, // Expected
-            Phpass_Adapter::factory($adapter), // Actual
+            \Phpass\Adapter::factory($adapter), // Actual
             "Factory method should load ${className}"
         );
     }
