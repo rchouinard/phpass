@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 /**
@@ -32,8 +32,8 @@ require_once 'Phpass/Exception.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
-class NotSupported extends \RuntimeException implements \Phpass\Exception
+class RuntimeException extends \RuntimeException implements \Phpass\Exception
 {
 }

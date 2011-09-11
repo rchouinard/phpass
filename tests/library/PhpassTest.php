@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 require_once 'PHPUnit/Framework/TestCase.php';
@@ -25,7 +25,7 @@ require_once 'Phpass.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 class PhpassTest extends PHPUnit_Framework_TestCase
 {
@@ -39,7 +39,7 @@ class PhpassTest extends PHPUnit_Framework_TestCase
             array (
                 array (
                     'adapter' => array (
-                        'adapter' => 'blowfish',
+                        'type' => 'blowfish',
                         'options' => array ()
                     )
                 ),
@@ -48,7 +48,7 @@ class PhpassTest extends PHPUnit_Framework_TestCase
             array (
                 array (
                     'adapter' => array (
-                        'adapter' => 'extdes',
+                        'type' => 'extdes',
                         'options' => array ()
                     )
                 ),
@@ -57,24 +57,13 @@ class PhpassTest extends PHPUnit_Framework_TestCase
             array (
                 array (
                     'adapter' => array (
-                        'adapter' => 'portable',
+                        'type' => 'portable',
                         'options' => array ()
                     )
                 ),
                 '\Phpass\Adapter\Portable'
             )
         );
-    }
-
-    /**
-     * @test
-     * @expectedException \Phpass\Exception\MissingAdapter
-     * @return void
-     */
-    public function constructorWithNoArgsSuppliesNoAdapter()
-    {
-        $phpass = new Phpass;
-        $adapter = $phpass->getAdapter();
     }
 
     /**

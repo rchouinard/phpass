@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 /**
@@ -32,14 +32,14 @@ require_once 'Phpass/Adapter/Base.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 class ExtDes extends Base
 {
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::genSalt()
+     * @see \Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -65,7 +65,7 @@ class ExtDes extends Base
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isSupported()
+     * @see \Phpass\Adapter::isSupported()
      */
     public function isSupported()
     {
@@ -74,7 +74,7 @@ class ExtDes extends Base
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isValid()
+     * @see \PhpassAdapter::isValid()
      */
     public function isValid($hash)
     {

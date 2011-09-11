@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 require_once 'PHPUnit/Framework/TestCase.php';
@@ -25,7 +25,7 @@ require_once 'Phpass/Adapter/ExtDes.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 class Phpass_Adapter_ExtDesTest extends PHPUnit_Framework_TestCase
 {

@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 /**
@@ -32,14 +32,14 @@ require_once 'Phpass/Adapter/Base.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 class Portable extends Base
 {
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_Adapter::crypt()
+     * @see \Phpass\Adapter::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -70,6 +70,7 @@ class Portable extends Base
             return $output;
         }
 
+        // Original comment from PasswordHash class:
         // We're kind of forced to use MD5 here since it's the only
         // cryptographic primitive available in all versions of PHP
         // currently in use.  To implement our own low-level crypto
@@ -89,7 +90,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::genSalt()
+     * @see \Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -106,7 +107,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isSupported()
+     * @see \Phpass\Adapter::isSupported()
      */
     public function isSupported()
     {
@@ -115,7 +116,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::isValid()
+     * @see \Phpass\Adapter::isValid()
      */
     public function isValid($hash)
     {

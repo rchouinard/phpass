@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 require_once 'PHPUnit/Framework/TestCase.php';
@@ -25,7 +25,7 @@ require_once 'Phpass/Adapter/Base.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
 {
@@ -60,7 +60,7 @@ class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
                 'portable',
                 '\Phpass\Adapter\Portable'
             ),
-            array (
+            /*array (
                 '$2a$08$',
                 '\Phpass\Adapter\Blowfish'
             ),
@@ -75,7 +75,7 @@ class Phpass_AdapterTest extends PHPUnit_Framework_TestCase
             array (
                 '$H$',
                 '\Phpass\Adapter\Portable'
-            )
+            )*/
         );
     }
 

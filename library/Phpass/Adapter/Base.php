@@ -9,7 +9,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 
 /**
@@ -23,6 +23,16 @@ namespace Phpass\Adapter;
 require_once 'Phpass/Adapter.php';
 
 /**
+ * @see \Phpass\Exception\InvalidArgumentException
+ */
+require_once 'Phpass/Exception/InvalidArgumentException.php';
+
+/**
+ * @see \Phpass\Exception\RuntimeException
+ */
+require_once 'Phpass/Exception/RuntimeException.php';
+
+/**
  * Portable PHP password hashing framework.
  *
  * @package PHPass
@@ -32,7 +42,7 @@ require_once 'Phpass/Adapter.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.4
+ * @version 0.5
  */
 abstract class Base implements \Phpass\Adapter
 {
@@ -72,7 +82,7 @@ abstract class Base implements \Phpass\Adapter
 
     /**
      * (non-PHPdoc)
-     * @see Phpass_AdapterInterface::crypt()
+     * @see \Phpass\Adapter::crypt()
      */
     public function crypt($password, $salt = null)
     {
@@ -162,23 +172,22 @@ abstract class Base implements \Phpass\Adapter
     /**
      * @param string $adapter
      * @param array $options
-     * @return Phpass_Adapter
+     * @return \Phpass\Adapter
+     * @throws \Phpass\Exception\InvalidArgumentException
      */
     static public function factory($adapter, Array $options = array ())
     {
         if (!is_string($adapter)) {
-            throw new \InvalidArgumentException(
-                'Required argument $adapter is expected to be a string ' .
-                'containing the name of an adapter, or a salt value.'
+            throw new \Phpass\Exception\InvalidArgumentException(
+                'Required argument $adapter is expected to be a string containing the name of an adapter'
             );
         }
 
-        // Generic adapter names
-        if (strtolower($adapter) == 'blowfish' || substr($adapter, 0, 4) == '$2a$') {
+        if (strtolower($adapter) == 'blowfish') {
             $adapter = '\Phpass\Adapter\Blowfish';
-        } else if (strtolower($adapter) == 'extdes' || substr($adapter, 0, 1) == '_') {
+        } else if (strtolower($adapter) == 'extdes') {
             $adapter = '\Phpass\Adapter\ExtDes';
-        } else if (strtolower($adapter) == 'portable' || substr($adapter, 0, 3) == '$P$' || substr($adapter, 0, 3) == '$H$') {
+        } else if (strtolower($adapter) == 'portable') {
             $adapter = '\Phpass\Adapter\Portable';
         }
 
@@ -210,7 +219,7 @@ abstract class Base implements \Phpass\Adapter
             }
         }
 
-        throw new \Exception(
+        throw new \Phpass\Exception\RuntimeException(
             "Failed loading adapter '${adapter}'"
         );
     }
