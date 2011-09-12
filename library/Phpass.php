@@ -60,25 +60,25 @@ class Phpass
      * everything, including the adapter type and adapter options. This is the
      * most flexible method, and is probably preferred moving forward.
      *
-     *   $phpass = new Phpass($myOptionsArray);
+     *   $phpass = new \Phpass($myOptionsArray);
      *
      * The second is to pass in a previously instantiated adapter, presumably
      * already configured. This method will probably continue to be supported
      * along with the first.
      *
-     *   $adapter = new Phpass\Adapter\Blowfish($myAdapterOptions);
-     *   $phpass = new Phpass($adapter);
+     *   $adapter = new \Phpass\Adapter\Blowfish($myAdapterOptions);
+     *   $phpass = new \Phpass($adapter);
      *
      * The third way is in-line with the way Zend_Db and similar operate. The
      * first argument is a string giving the name of the adapter type, and the
      * second is an array of adapter options.
      *
-     *   $phpass = new Phpass('blowfish', $myAdapterOptions);
+     *   $phpass = new \Phpass('blowfish', $myAdapterOptions);
      *
      * All three methods are currently supported, although this may change as
      * I continue to use the class and gain feedback from other developers.
      *
-     * @param array|Phpass\Adapter|string $options
+     * @param array|\Phpass\Adapter|string $options
      * @param array $adapterOptions
      * @return void
      * @throws \Phpass\Exception\InvalidArgumentException
@@ -124,8 +124,23 @@ class Phpass
     }
 
     /**
+     * Set library options
+     *
+     * Currently, the only option is 'adapter', which may be either a concrete
+     * instance of \Phpass\Adapter or an array. The adapter array should contain
+     * at least a 'type' key with the name of the desired adapter, and
+     * optionally an 'options' key containing an array of options to pass to the
+     * adapter.
+     *
+     * array (
+     *     'adapter' => array (
+     *         'type' => 'blowfish',
+     *         'options' => array ()
+     *     )
+     * )
+     *
      * @param array $options
-     * @return Phpass
+     * @return \Phpass
      */
     public function setOptions(Array $options)
     {
@@ -145,6 +160,8 @@ class Phpass
     }
 
     /**
+     * Return the currently configured adapter
+     *
      * @return \Phpass\Adapter
      * @throws \Phpass\Exception\RuntimeException
      */
@@ -158,6 +175,8 @@ class Phpass
     }
 
     /**
+     * Pass in a configured adapter
+     *
      * @param \Phpass\Adapter|string $adapter
      * @param array $options
      * @return \Phpass
@@ -183,6 +202,8 @@ class Phpass
     }
 
     /**
+     * Check that a given password matches a given hash
+     *
      * @param string $password
      * @param string $storedHash
      * @return boolean
@@ -194,6 +215,8 @@ class Phpass
     }
 
     /**
+     * Generate a hash from the given password
+     *
      * @param string $password
      * @return string
      */

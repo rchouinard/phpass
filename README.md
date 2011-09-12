@@ -1,86 +1,100 @@
 PHPass: Portable PHP password hashing framework
 ===============================================
 
-This library is a reimplementation of the [PHPass](http://openwall.com/phpass/) class. The output is 100% compatible with the original, the library is simply updated to use more PHP5 conventions.
+This library is a reimplementation of the [PHPass](http://openwall.com/phpass/) class. The output is 100% compatible with the original, the library is simply updated to be more extensible.
 
-The hashing methods used by the library have been broken out into adapters.
+The PHPass library uses two main methods to generate secure password hashes. The first is simply to use salts and high-quality one-way hash functions. The use of cryptographic salts prevents an attacker from using [rainbow tables](http://en.wikipedia.org/wiki/Rainbow_table) for password lookup. The only way for an attacker to determine the original password is to use either [dictionary](http://en.wikipedia.org/wiki/Dictionary_attack) or [brute-force](http://en.wikipedia.org/wiki/Brute_force_attack) methods.
 
- * Blowfish (blowfish)
- * Extended DES (extdes)
- * Portable (portable)
+The second method is to utilize [key stretching](http://en.wikipedia.org/wiki/Key_stretching). Key stretching makes hash generation exponentially more computationally expensive. This means that instead of being able to try 100 passwords per second, an attacker might only be able to try 10.
 
-Usage
------
+These methods, combined with a good (yet sane!) password policy will create password hashes which are highly improbable to crack.
 
-The basic library can be used in the same way as the original PasswordHash class.
+
+Quick Start
+-----------
+
+The main class is Phpass, and uses two main methods: `hashPassword()` and `checkPassword()`, shown in the example below. By default, the class will create an instance of the blowfish adapter if an adapter is not otherwise given.
 
 ```php
 <?php
+$phpass = new Phpass;
 
-// Use the class with an iteration count of 12, using the Blowfish adapter.
-// If the blowfish is not available, the class will fall back to Portable.
-$phpass = new Phpass(12, false);
+// Returns a hash which can be stored in a database
+$hash = $phpass->hashPassword($myPassword);
 
-// Use the class with an iteration count of 12, using the Portable adapter.
-$phpass = new Phpass(12, true);
-
-// Hash a password.
-$hash = $phpass->hashPassword('password');
-
-// Check that a password matches a hash.
-if ($phpass->checkPassword('password', $hash)) {
-    echo "It's good!";
+// Checks a password against a stored hash, probably from a database
+if ($phpass->checkPassword($myPassword, $hash) {
+    echo 'Password matches!';
+} else {
+    echo 'Password does not match!';
 }
-```
-
-For more control over the library, it can be instantiated with an options array.
-
-```php
-<?php
-
-$options = array (
-    'allowFallback' => false, // If the adapter isn't supported, use Portable.
-    'adapter' => array (
-        'adapter' => 'extdes', // Options are blowfish, extdes, or portable.
-        'options' => array (
-            'iterationCountLog2' => 12 // Options may vary by adapter, although
-                                       // currently all only support
-                                       // iterationCountLog2
-        )
-    )
-);
-
-$phpass = new Phpass($options);
 ```
 
 Adapters
 --------
 
-Adapters may be used outside of the main Phpass class very easily. The main methods in these adapters are `genSalt()` and `crypt()`. Creating new adapters is very easy by implementing Phpass_AdapterInterface or extending Phpass_Adapter. Using custom adapters with the Phpass class is very easy.
+The library includes three adapters which wrap different cipher methods.
+
+#### Common Options
+
+<dt>iterationCountLog2</dt>
+  <dd>_Integer_; This number is the base-2 logarithm representation of the iteration count used for key stretching. The final iteration count can be calculated with 2^x, so a value of 8 will yield 2^8, or 256, iterations. A value of 12 will yield 2^12, or 4,096 iterations.</dd>
+
+### Blowfish
+
+This adapter uses the blowfish cipher to create one-way hashes.
 
 ```php
 <?php
-
-// Use a custom adapter using the Phpass options.
-$options = array (
-    'adapter' => array (
-        'adapter' => 'My_Custom_Adapter', // Use the full class name!
-        'options' => array (
-            'myOption' => true
-        )
-    )
+$adapterOptions = array (
+    'iterationCountLog2' => 8
 );
 
-$phpass = new Phpass($options);
+$adapter = new Phpass\Adapter\Blowfish($adapterOptions);
 
-// Use a custom adapter by passing it to Phpass via setAdapter().
-$options = array (
-    'myOption' => true
+// $2a$08$xZQ8G2a1XLjxr14Rc0zOP.
+$salt = $adapter->genSalt();
+
+// $2a$08$xZQ8G2a1XLjxr14Rc0zOP.X8atMFBx8J6EaFhniNvujgcqs17TgGC
+$hash = $adapter->crypt('password', $salt);
+```
+
+### Extended DES
+
+This adapter uses the extended DES cipher to create one-way hashes.
+
+```php
+<?php
+$adapterOptions = array (
+    'iterationCountLog2' => 8
 );
-$myAdapter = new My_Custom_Adapter($options);
 
-$phpass = new Phpass;
-$phpass->setAdapter($myAdapter);
+$adapter = new Phpass\Adapter\ExtDes($adapterOptions);
+
+// _zzD.d84Z
+$salt = $adapter->genSalt();
+
+// _zzD.d84ZhoAfE8.PYgQ
+$hash = $adapter->crypt('password', $salt);
+```
+
+### Portable
+
+This adapter uses a custom cipher to create one-way hashes. It is compatible with phpBB passwords.
+
+```php
+<?php
+$adapterOptions = array (
+    'iterationCountLog2' => 8
+);
+
+$adapter = new Phpass\Adapter\Portable($adapterOptions);
+
+// $P$BItJrOG/2
+$salt = $adapter->genSalt();
+
+// $P$BItJrOG/2OwpzlDFMRNPR8vUIlcBbi/
+$hash = $adapter->crypt('password', $salt);
 ```
 
 License
