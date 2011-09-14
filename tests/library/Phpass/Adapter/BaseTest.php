@@ -44,6 +44,16 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * (non-PHPdoc)
+     * @see PHPUnit_Framework_TestCase::run()
+     */
+    public function run(\PHPUnit_Framework_TestResult $result = null)
+    {
+        $this->setPreserveGlobalState(false);
+        return parent::run($result);
+    }
+
+    /**
      * @return array
      */
     public function providerForFactoryTest()
