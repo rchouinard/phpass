@@ -186,42 +186,26 @@ abstract class Base implements Adapter
             );
         }
 
+        // Map adapter aliases to class names
         if (strtolower($adapter) == 'blowfish') {
-            $adapter = 'Blowfish';
+            $adapter = 'Phpass\Adapter\Blowfish';
         } else if (strtolower($adapter) == 'extdes') {
-            $adapter = 'ExtDes';
+            $adapter = 'Phpass\Adapter\ExtDes';
         } else if (strtolower($adapter) == 'portable') {
-            $adapter = 'Portable';
+            $adapter = 'Phpass\Adapter\Portable';
         }
 
-        $adapter = ucfirst($adapter);
-
-        // Assume $adapter is a class name mappable to a file.
+        // Attempt to include file based on adapter class name
         if (!class_exists($adapter, false)) {
             // Work with My_Adapter or My\Adapter
             $file = trim(str_replace(array ('\\', '_'), DIRECTORY_SEPARATOR, $adapter), DIRECTORY_SEPARATOR);
-            if (file_exists($file)) {
-                @include $file;
-            }
+            @include $file . '.php';
         }
 
-        if (class_exists($adapter, false)) {
-            $class = $adapter;
-            $instance = new $class;
-            if ($instance instanceof Adapter) {
-                $instance = new $class($options);
-                return $instance;
-            }
-            unset ($instance);
-        }
-
-        // Try prefixing the Phpass\Adapter namespace
-        if (substr(trim($adapter, '\\'), 0, 14) != 'Phpass\Adapter') {
-            $adapter = 'Phpass\Adapter\\' . $adapter;
-            $instance = self::factory($adapter, $options);
-            if ($instance instanceof Adapter) {
-                return $instance;
-            }
+        // Create an instance of the adapter if it exists and implements Adapter
+        if (class_exists($adapter, false) && in_array('Phpass\Adapter', class_implements($adapter, false))) {
+            $instance = new $adapter($options);
+            return $instance;
         }
 
         throw new RuntimeException(
