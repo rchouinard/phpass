@@ -61,27 +61,27 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         return array (
             array (
                 'blowfish',
-                'Blowfish'
+                'Phpass\Adapter\Blowfish'
             ),
             array (
                 'extdes',
-                'ExtDes'
+                'Phpass\Adapter\ExtDes'
             ),
             array (
                 'portable',
-                'Portable'
+                'Phpass\Adapter\Portable'
             ),
             array (
                 'Phpass\Adapter\Blowfish',
-                'Blowfish'
+                'Phpass\Adapter\Blowfish'
             ),
             array (
                 'Phpass\Adapter\ExtDes',
-                'ExtDes'
+                'Phpass\Adapter\ExtDes'
             ),
             array (
                 'Phpass\Adapter\Portable',
-                'Portable'
+                'Phpass\Adapter\Portable'
             )
         );
     }
