@@ -12,7 +12,20 @@
  * @version 0.5
  */
 
+/**
+ * @namespace
+ */
+namespace Phpass\Adapter;
+use Phpass\Adapter\Portable;
+
+/**
+ * @see PHPUnit_Framework_TestCase
+ */
 require_once 'PHPUnit/Framework/TestCase.php';
+
+/**
+ * @see Phpass\Adapter\Blowfish
+ */
 require_once 'Phpass/Adapter/Portable.php';
 
 /**
@@ -27,11 +40,11 @@ require_once 'Phpass/Adapter/Portable.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.5
  */
-class Phpass_Adapter_PortableTest extends PHPUnit_Framework_TestCase
+class PortableTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Phpass_Adapter
+     * @var Phpass\Adapter
      */
     protected $_adapter;
 
@@ -41,69 +54,99 @@ class Phpass_Adapter_PortableTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new \Phpass\Adapter\Portable;
+        $this->_adapter = new Portable;
+        if (!$this->_adapter->isSupported()) {
+            $this->markTestSkipped('This system lacks required support.');
+        }
     }
 
     /**
+     * Test that adapter generates a valid salt
+     *
+     * The portable adapter should generate a 12-character salt string which
+     * begins with $P$ followed by 1 byte of iteration count and 8 bytes of
+     * salt.
+     *
+     * By default, the adapter should use an iteration count of 8, so the salt
+     * string should look like $P$B..., so that's what we test for.
+     *
      * @test
      * @return string
      */
-    public function generatedSaltSuitableForHashMethod()
+    public function adapterGeneratesValidSalt()
     {
         $salt = $this->_adapter->genSalt();
 
+        // Salt begins with correct string
         $this->assertStringStartsWith(
-            '$P$', // Expected
-            $salt,  // Actual
-            'Generated salt should begin with \'$P$\' with default adapter options.'
+            '$P$B', // Expected
+            $salt  // Actual
         );
 
+        // Salt has proper length
         $this->assertEquals(
             12, // Expected
-            strlen($salt), // Actual
-            'Generated salt should be 12 characters in length.'
+            strlen($salt) // Actual
         );
 
         return $salt;
     }
 
     /**
+     * Test that the adapter generates a valid hash
+     *
+     * The blowfish adapter should generate a 34-character hash which begins
+     * with the salt.
+     *
+     * This test depends on the salt test, and uses the output of that test.
+     * This way, the test focuses on the hash, and won't be affected by the call
+     * to Phpass\Adapter::genSalt().
+     *
      * @test
-     * @depends generatedSaltSuitableForHashMethod
+     * @depends adapterGeneratesValidSalt
      * @return string
      */
-    public function generatedHashShouldBeProperLength($salt)
+    public function adapterGeneratesValidHash($salt)
     {
         $hash = $this->_adapter->crypt('password', $salt);
 
-        $this->assertEquals(
-            34, // Expected
-            strlen($hash), // Actual
-            'Generated hash should be 34 characters in length.'
-        );
-
+        // Hash string begins with salt
         $this->assertStringStartsWith(
             $salt, // Expected
-            $hash, // Actual
-            'Generated hash string should begin with salt.'
+            $hash // Actual
+        );
+
+        // Hash string has proper length
+        $this->assertEquals(
+            34, // Expected
+            strlen($hash) // Actual
         );
 
         return $hash;
     }
 
     /**
+     * Test that the adapter generates the same hash given the same input
+     *
+     * The adapter should be consistent with hash generation given the same
+     * input parameters, otherwise the adapter won't be able to actually
+     * validate a password (making it useless).
+     *
+     * This test uses the output of the hash test in order to be consistent and
+     * focus on validation.
+     *
      * @test
-     * @depends generatedHashShouldBeProperLength
+     * @depends adapterGeneratesValidHash
      * @return void
      */
-    public function adapterCanVerifyHash($storedHash)
+    public function adapterGeneratesSameHashGivenOriginalSaltAndPasswordString($storedHash)
     {
         $hash = $this->_adapter->crypt('password', $storedHash);
 
+        // Generated hash matches stored hash value
         $this->assertEquals(
             $storedHash, // Expected
-            $hash, // Actual
-            'Crypt method should generate the same hash given the original password and hash as salt.'
+            $hash // Actual
         );
     }
 
