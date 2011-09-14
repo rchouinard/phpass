@@ -16,6 +16,7 @@
  * @namespace
  */
 namespace Phpass\Exception;
+use Phpass\Exception;
 
 /**
  * @see \Phpass\Exception
@@ -34,6 +35,6 @@ require_once 'Phpass/Exception.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.5
  */
-class UnexpectedValueException extends \UnexpectedValueException implements \Phpass\Exception
+class UnexpectedValueException extends \UnexpectedValueException implements Exception
 {
 }

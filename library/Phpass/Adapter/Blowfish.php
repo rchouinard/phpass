@@ -18,7 +18,7 @@
 namespace Phpass\Adapter;
 
 /**
- * @see \Phpass\Adapter\Base
+ * @see Phpass\Adapter\Base
  */
 require_once 'Phpass/Adapter/Base.php';
 
@@ -49,7 +49,7 @@ class Blowfish extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::genSalt()
+     * @see Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -93,7 +93,7 @@ class Blowfish extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::isSupported()
+     * @see Phpass\Adapter::isSupported()
      */
     public function isSupported()
     {
@@ -102,7 +102,7 @@ class Blowfish extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::isValid()
+     * @see Phpass\Adapter::isValid()
      */
     public function isValid($hash)
     {

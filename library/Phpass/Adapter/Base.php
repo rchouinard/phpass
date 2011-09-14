@@ -16,19 +16,22 @@
  * @namespace
  */
 namespace Phpass\Adapter;
+use Phpass\Adapter,
+    Phpass\Exception\InvalidArgumentException,
+    Phpass\Exception\RuntimeException;
 
 /**
- * @see \Phpass\Adapter
+ * @see Phpass\Adapter
  */
 require_once 'Phpass/Adapter.php';
 
 /**
- * @see \Phpass\Exception\InvalidArgumentException
+ * @see Phpass\Exception\InvalidArgumentException
  */
 require_once 'Phpass/Exception/InvalidArgumentException.php';
 
 /**
- * @see \Phpass\Exception\RuntimeException
+ * @see Phpass\Exception\RuntimeException
  */
 require_once 'Phpass/Exception/RuntimeException.php';
 
@@ -44,7 +47,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.5
  */
-abstract class Base implements \Phpass\Adapter
+abstract class Base implements Adapter
 {
 
     /**
@@ -82,7 +85,7 @@ abstract class Base implements \Phpass\Adapter
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::crypt()
+     * @see Phpass\Adapter::crypt()
      */
     public function crypt($password, $salt = null)
     {
@@ -172,29 +175,30 @@ abstract class Base implements \Phpass\Adapter
     /**
      * @param string $adapter
      * @param array $options
-     * @return \Phpass\Adapter
-     * @throws \Phpass\Exception\InvalidArgumentException
+     * @return Phpass\Adapter
+     * @throws Phpass\Exception\InvalidArgumentException
      */
     static public function factory($adapter, Array $options = array ())
     {
         if (!is_string($adapter)) {
-            throw new \Phpass\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Required argument $adapter is expected to be a string containing the name of an adapter'
             );
         }
 
         if (strtolower($adapter) == 'blowfish') {
-            $adapter = '\Phpass\Adapter\Blowfish';
+            $adapter = 'Blowfish';
         } else if (strtolower($adapter) == 'extdes') {
-            $adapter = '\Phpass\Adapter\ExtDes';
+            $adapter = 'ExtDes';
         } else if (strtolower($adapter) == 'portable') {
-            $adapter = '\Phpass\Adapter\Portable';
+            $adapter = 'Portable';
         }
 
         $adapter = ucfirst($adapter);
 
         // Assume $adapter is a class name mappable to a file.
         if (!class_exists($adapter, false)) {
+            // Work with My_Adapter or My\Adapter
             $file = trim(str_replace(array ('\\', '_'), DIRECTORY_SEPARATOR, $adapter), DIRECTORY_SEPARATOR);
             if (file_exists($file)) {
                 @include $file;
@@ -204,22 +208,23 @@ abstract class Base implements \Phpass\Adapter
         if (class_exists($adapter, false)) {
             $class = $adapter;
             $instance = new $class;
-            if ($instance instanceof \Phpass\Adapter) {
+            if ($instance instanceof Adapter) {
                 $instance = new $class($options);
                 return $instance;
             }
             unset ($instance);
         }
 
-        if (substr($adapter, 0, 15) != '\\Phpass\\Adapter') {
-            $adapter = '\\Phpass\\Adapter\\' . $adapter;
+        // Try prefixing the Phpass\Adapter namespace
+        if (substr(trim($adapter, '\\'), 0, 14) != 'Phpass\Adapter') {
+            $adapter = 'Phpass\Adapter\\' . $adapter;
             $instance = self::factory($adapter, $options);
-            if ($instance instanceof \Phpass\Adapter) {
+            if ($instance instanceof Adapter) {
                 return $instance;
             }
         }
 
-        throw new \Phpass\Exception\RuntimeException(
+        throw new RuntimeException(
             "Failed loading adapter '${adapter}'"
         );
     }

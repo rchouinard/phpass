@@ -16,9 +16,10 @@
  * @namespace
  */
 namespace Phpass\Exception;
+use Phpass\Exception;
 
 /**
- * @see \Phpass\Exception
+ * @see Phpass\Exception
  */
 require_once 'Phpass/Exception.php';
 
@@ -34,6 +35,6 @@ require_once 'Phpass/Exception.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @version 0.5
  */
-class InvalidArgumentException extends \InvalidArgumentException implements \Phpass\Exception
+class InvalidArgumentException extends \InvalidArgumentException implements Exception
 {
 }

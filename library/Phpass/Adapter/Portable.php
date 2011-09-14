@@ -18,7 +18,7 @@
 namespace Phpass\Adapter;
 
 /**
- * @see \Phpass\Adapter\Base
+ * @see Phpass\Adapter\Base
  */
 require_once 'Phpass/Adapter/Base.php';
 
@@ -39,7 +39,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::crypt()
+     * @see Phpass\Adapter::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -90,7 +90,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::genSalt()
+     * @see Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -107,7 +107,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::isSupported()
+     * @see Phpass\Adapter::isSupported()
      */
     public function isSupported()
     {
@@ -116,7 +116,7 @@ class Portable extends Base
 
     /**
      * (non-PHPdoc)
-     * @see \Phpass\Adapter::isValid()
+     * @see Phpass\Adapter::isValid()
      */
     public function isValid($hash)
     {
