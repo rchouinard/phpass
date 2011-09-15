@@ -45,6 +45,34 @@ if ($phpass->checkPassword($myPassword, $hash) {
 }
 ```
 
+Configuration
+-------------
+
+The Phpass class can be given either a pre-configured Adapter instance, or an array of configuration options. Currently, the only supported options key is "adapter", which is expected to be either an Adapter instance or an array with the keys "type" and "options."
+
+### Passing an adapter to the constructor
+
+```php
+<?php
+$adapter = new Phpass\Adapter\Portable;
+$phpass = new Phpass($adapter);
+```
+
+### Passing an array of options to the constructor
+
+```php
+<?php
+$options = array (
+    'adapter' => array (
+        'type' => 'extdes', // One of blowfish, extdes, or portable
+        'options' => array ( // Options array passed to adapter constructor
+            'iterationCountLog2' => 12
+        )
+    )
+);
+$phpass = new Phpass($options);
+```
+
 Adapters
 --------
 
