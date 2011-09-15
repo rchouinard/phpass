@@ -143,4 +143,4 @@ $hash = $adapter->crypt('password', $salt);
 License
 -------
 
-In keeping with the original project, this library is entered into the public domain.
+Since US law does not allow directly publishing works to the public domain, I'm licensing this library under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html).
