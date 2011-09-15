@@ -8,7 +8,7 @@
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.5
+ * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
 
 /**
@@ -40,7 +40,7 @@ require_once 'Phpass/Exception/UnexpectedValueException.php';
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license Public Domain
  * @link http://www.openwall.com/phpass/ Original phpass project page.
- * @version 0.5
+ * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
 class Phpass
 {
