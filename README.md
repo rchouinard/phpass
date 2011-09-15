@@ -9,6 +9,11 @@ The second method is to utilize [key stretching](http://en.wikipedia.org/wiki/Ke
 
 These methods, combined with a good (yet sane!) password policy will create password hashes which are highly improbable to crack.
 
+Requirements
+------------
+
+You will need to be using PHP 5.3+ in order to use this library. It should not have any other external dependencies.
+
 Installation
 ------------
 
