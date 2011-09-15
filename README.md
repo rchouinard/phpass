@@ -9,6 +9,21 @@ The second method is to utilize [key stretching](http://en.wikipedia.org/wiki/Ke
 
 These methods, combined with a good (yet sane!) password policy will create password hashes which are highly improbable to crack.
 
+Installation
+------------
+
+Installation can be done via PEAR.
+
+```bash
+pear channel-discover rchouinard.github.com/pear
+pear install rych/PHPass-1.0.0RC1
+```
+
+Alternatively, you may choose to clone the git repository and add the library folder to your include path.
+
+```bash
+git clone git://github.com/rchouinard/phpass.git
+```
 
 Quick Start
 -----------
