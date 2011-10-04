@@ -17,22 +17,22 @@ use Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\UnexpectedValueException;
 
 /**
- * @see \Phpass\Adapter\Base
+ * @see Phpass\Adapter\Base
  */
 require_once 'Phpass/Adapter/Base.php';
 
 /**
- * @see \Phpass\Exception\InvalidArgumentException
+ * @see Phpass\Exception\InvalidArgumentException
  */
 require_once 'Phpass/Exception/InvalidArgumentException.php';
 
 /**
- * @see \Phpass\Exception\RuntimeException
+ * @see Phpass\Exception\RuntimeException
  */
 require_once 'Phpass/Exception/RuntimeException.php';
 
 /**
- * @see \Phpass\Exception\UnexpectedValueException
+ * @see Phpass\Exception\UnexpectedValueException
  */
 require_once 'Phpass/Exception/UnexpectedValueException.php';
 
@@ -51,7 +51,7 @@ class Phpass
 {
 
     /**
-     * @var \Phpass\Adapter
+     * @var Phpass\Adapter
      */
     protected $_adapter;
 
@@ -75,34 +75,34 @@ class Phpass
      * everything, including the adapter type and adapter options. This is the
      * most flexible method, and is probably preferred moving forward.
      *
-     *   $phpass = new \Phpass($myOptionsArray);
+     *   $phpass = new Phpass($myOptionsArray);
      *
      * The second is to pass in a previously instantiated adapter, presumably
      * already configured. This method will probably continue to be supported
      * along with the first.
      *
-     *   $adapter = new \Phpass\Adapter\Blowfish($myAdapterOptions);
-     *   $phpass = new \Phpass($adapter);
+     *   $adapter = new Phpass\Adapter\Blowfish($myAdapterOptions);
+     *   $phpass = new Phpass($adapter);
      *
      * The third way is in-line with the way Zend_Db and similar operate. The
      * first argument is a string giving the name of the adapter type, and the
      * second is an array of adapter options.
      *
-     *   $phpass = new \Phpass('blowfish', $myAdapterOptions);
+     *   $phpass = new Phpass('blowfish', $myAdapterOptions);
      *
      * All three methods are currently supported, although this may change as
      * I continue to use the class and gain feedback from other developers.
      *
-     * @see \Phpass::setOptions()
-     * @param array|\Phpass\Adapter|string $options
+     * @see Phpass::setOptions()
+     * @param array|Phpass\Adapter|string $options
      * @param array $adapterOptions
      * @return void
-     * @throws \Phpass\Exception\InvalidArgumentException
+     * @throws Phpass\Exception\InvalidArgumentException
      */
     public function __construct($options = array (), Array $adapterOptions = array ())
     {
         // Support for method 2, above
-        if ($options instanceof \Phpass\Adapter) {
+        if ($options instanceof Phpass\Adapter) {
             $options = array ('adapter' => $options);
         }
 
@@ -119,7 +119,7 @@ class Phpass
         // Sanity check
         if (!is_array($options)) {
             $type = gettype($options);
-            throw new InvalidArgumentException("Expected array or instance of \Phpass\Adapter; ${type} given");
+            throw new InvalidArgumentException("Expected array or instance of Phpass\Adapter; ${type} given");
         }
 
         // Default adapter and options
@@ -141,11 +141,11 @@ class Phpass
      * <dl>
      *
      *     <dt>adapter</dt>
-     *     <dd>May be either a concrete instance of \Phpass\Adapter or an array.
+     *     <dd>May be either a concrete instance of Phpass\Adapter or an array.
      *     The adapter array should contain at least a 'type' key with the name
      *     of the desired adapter, and optionally an 'options' key containing
      *     an array of options to pass to the adapter. See
-     *     \Phpass\Adapter\Base::setOptions() for details.</dd>
+     *     Phpass\Adapter\Base::setOptions() for details.</dd>
      *
      *     <dt>hmacKey</dt>
      *     <dd>Optional; Application-wide key used to generate HMAC hashes.
@@ -158,16 +158,16 @@ class Phpass
      *
      * </dl>
      *
-     * @see \Phpass\Adapter\Base::setOptions()
+     * @see Phpass\Adapter\Base::setOptions()
      * @param array $options
-     * @return \Phpass
+     * @return Phpass
      */
     public function setOptions(Array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
 
         if (isset($options['adapter'])) {
-            if ($options['adapter'] instanceof \Phpass\Adapter) {
+            if ($options['adapter'] instanceof Phpass\Adapter) {
                 $this->setAdapter($options['adapter']);
             } else if (is_array($options['adapter'])) {
                 $adapter = $options['adapter']['type'];
@@ -193,12 +193,12 @@ class Phpass
     /**
      * Return the currently configured adapter
      *
-     * @return \Phpass\Adapter
-     * @throws \Phpass\Exception\RuntimeException
+     * @return Phpass\Adapter
+     * @throws Phpass\Exception\RuntimeException
      */
     public function getAdapter()
     {
-        if (!$this->_adapter instanceof \Phpass\Adapter) {
+        if (!$this->_adapter instanceof Phpass\Adapter) {
             throw new RuntimeException('There is no adapter set');
         }
 
@@ -208,15 +208,15 @@ class Phpass
     /**
      * Pass in a configured adapter
      *
-     * @param \Phpass\Adapter|string $adapter
+     * @param Phpass\Adapter|string $adapter
      * @param array $options
-     * @return \Phpass
-     * @throws \Phpass\Exception\RuntimeException
+     * @return Phpass
+     * @throws Phpass\Exception\RuntimeException
      */
     public function setAdapter($adapter, Array $options = array ())
     {
-        if (!$adapter instanceof \Phpass\Adapter) {
-            $adapter = \Phpass\Adapter\Base::factory($adapter, $options);
+        if (!$adapter instanceof Phpass\Adapter) {
+            $adapter = Phpass\Adapter\Base::factory($adapter, $options);
         }
 
         // Adapter isn't supported
@@ -258,7 +258,7 @@ class Phpass
      * @param string $password
      * @param string $salt
      * @return string
-     * @throws \Phpass\Exception\UnexpectedValueException
+     * @throws Phpass\Exception\UnexpectedValueException
      */
     protected function _crypt($password, $salt = null)
     {
