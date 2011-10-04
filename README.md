@@ -1,13 +1,21 @@
 PHPass: Portable PHP password hashing framework
 ===============================================
 
-This library is a reimplementation of the [PHPass](http://openwall.com/phpass/) class. The output is 100% compatible with the original, the library is simply updated to be more extensible.
+What is PHPass?
+---------------
 
-The PHPass library uses two main methods to generate secure password hashes. The first is simply to use salts and high-quality one-way hash functions. The use of cryptographic salts prevents an attacker from using [rainbow tables](http://en.wikipedia.org/wiki/Rainbow_table) for password lookup. The only way for an attacker to determine the original password is to use either [dictionary](http://en.wikipedia.org/wiki/Dictionary_attack) or [brute-force](http://en.wikipedia.org/wiki/Brute_force_attack) methods.
+PHPass is a library useful in creating secure password hashes suitable for storage in a database.
 
-The second method is to utilize [key stretching](http://en.wikipedia.org/wiki/Key_stretching). Key stretching makes hash generation exponentially more computationally expensive. This means that instead of being able to try 100 passwords per second, an attacker might only be able to try 10.
+This library is a reimplementation of the [PasswordHash](http://openwall.com/phpass/) class from Openwall. It uses the same underlying methods as the original class, so the output is 100% compatible. The goal is to create a library which is more flexible than the original.
 
-These methods, combined with a good (yet sane!) password policy will create password hashes which are highly improbable to crack.
+How does it work?
+-----------------
+
+Multiple methods of generating secure password hashes are implemented in the library. The quick version is that it uses [bcrypt](http://en.wikipedia.org/wiki/Bcrypt), and may be combined with [HMAC](http://en.wikipedia.org/wiki/Hmac).
+
+The longer version is that the library may be configured to use a variety of adapters to generate the hash string. While most applications will want to use the Blowfish adapter, it is also possible to generate Extended DES or MD5-based salted passwords (compatible with phpBB). All included adapters support [key stretching](http://en.wikipedia.org/wiki/Key_stretching), and will generate random, unique salt values. Developers may also create their own adapters for custom hashing methods.
+
+As mentioned previously, it is possible, and very easy, to use HMAC + bcrypt using this library. By passing in the options 'hmacKey' and (optionally) 'hmacAlgo', the password string will be hashed using the chosen HMAC algorithm and key prior to being passed to bcrypt. The benefits of this are outlined in [Mozilla's Web Application Security wiki](https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines#Password_Storage).
 
 Requirements
 ------------
@@ -21,7 +29,7 @@ Installation can be done via PEAR.
 
 ```bash
 pear channel-discover rchouinard.github.com/pear
-pear install rych/PHPass-1.0.0RC1
+pear install rych/PHPass-1.0.0RC2
 ```
 
 Alternatively, you may choose to clone the git repository and add the library folder to your include path.
@@ -39,6 +47,9 @@ The main class is Phpass, and uses two main methods: `hashPassword()` and `check
 <?php
 $phpass = new Phpass;
 
+// Alternative, if using HMAC
+//$phpass = new Phpass(array ('hmacKey' => 'MySuperSecretKey'));
+
 // Returns a hash which can be stored in a database
 $hash = $phpass->hashPassword($myPassword);
 
@@ -53,7 +64,14 @@ if ($phpass->checkPassword($myPassword, $hash) {
 Configuration
 -------------
 
-The Phpass class can be given either a pre-configured Adapter instance, or an array of configuration options. Currently, the only supported options key is "adapter", which is expected to be either an Adapter instance or an array with the keys "type" and "options."
+The Phpass class can be given either a pre-configured Adapter instance, or an array of configuration options. The following configuration options are supported.
+
+<dt>adapter</dt>
+  <dd>May be either a concrete instance of \Phpass\Adapter or an array. The adapter array should contain at least a 'type' key with the name of the desired adapter, and optionally an 'options' key containing an array of options to pass to the adapter. See \Phpass\Adapter\Base::setOptions() for details.</dd>
+<dt>hmacKey</dt>
+  <dd>Optional; Application-wide key used to generate HMAC hashes. If omitted, HMAC hashing is disabled.</dd>
+<dt>hmacAlgo</dt>
+  <dd>Optional; String naming one of the many hashing algorithms available. A full list may be retrieved from the hash_algos() function. Defaults to sha256.</dd>
 
 ### Passing an adapter to the constructor
 

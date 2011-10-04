@@ -147,7 +147,7 @@ class Phpass
      *     The adapter array should contain at least a 'type' key with the name
      *     of the desired adapter, and optionally an 'options' key containing
      *     an array of options to pass to the adapter. See
-     *     {@link \Phpass\Adapter\Base::setOptions()}</dd>
+     *     \Phpass\Adapter\Base::setOptions() for details.</dd>
      *
      *     <dt>hmacKey</dt>
      *     <dd>Optional; Application-wide key used to generate HMAC hashes.
@@ -160,6 +160,7 @@ class Phpass
      *
      * </dl>
      *
+     * @see \Phpass\Adapter\Base::setOptions()
      * @param array $options
      * @return \Phpass
      */
