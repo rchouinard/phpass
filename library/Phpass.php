@@ -11,6 +11,11 @@
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
 
+
+use Phpass\Exception\InvalidArgumentException,
+    Phpass\Exception\RuntimeException,
+    Phpass\Exception\UnexpectedValueException;
+
 /**
  * @see \Phpass\Adapter\Base
  */
@@ -51,6 +56,16 @@ class Phpass
     protected $_adapter;
 
     /**
+     * @var string
+     */
+    protected $_hmacAlgo;
+
+    /**
+     * @var string
+     */
+    protected $_hmacKey;
+
+    /**
      * Constructor
      *
      * I'm still debating on the API here. I can see three valid ways of
@@ -78,6 +93,7 @@ class Phpass
      * All three methods are currently supported, although this may change as
      * I continue to use the class and gain feedback from other developers.
      *
+     * @see \Phpass::setOptions()
      * @param array|\Phpass\Adapter|string $options
      * @param array $adapterOptions
      * @return void
@@ -103,9 +119,7 @@ class Phpass
         // Sanity check
         if (!is_array($options)) {
             $type = gettype($options);
-            throw new \Phpass\Exception\InvalidArgumentException(
-                "Expected array or instance of \Phpass\Adapter; {$type} given"
-            );
+            throw new InvalidArgumentException("Expected array or instance of \Phpass\Adapter; ${type} given");
         }
 
         // Default adapter and options
@@ -126,18 +140,25 @@ class Phpass
     /**
      * Set library options
      *
-     * Currently, the only option is 'adapter', which may be either a concrete
-     * instance of \Phpass\Adapter or an array. The adapter array should contain
-     * at least a 'type' key with the name of the desired adapter, and
-     * optionally an 'options' key containing an array of options to pass to the
-     * adapter.
+     * <dl>
      *
-     * array (
-     *     'adapter' => array (
-     *         'type' => 'blowfish',
-     *         'options' => array ()
-     *     )
-     * )
+     *     <dt>adapter</dt>
+     *     <dd>May be either a concrete instance of \Phpass\Adapter or an array.
+     *     The adapter array should contain at least a 'type' key with the name
+     *     of the desired adapter, and optionally an 'options' key containing
+     *     an array of options to pass to the adapter. See
+     *     {@link \Phpass\Adapter\Base::setOptions()}</dd>
+     *
+     *     <dt>hmacKey</dt>
+     *     <dd>Optional; Application-wide key used to generate HMAC hashes.
+     *     If omitted, HMAC hashing is disabled.</dd>
+     *
+     *     <dt>hmacAlgo</dt>
+     *     <dd>Optional; String naming one of the many hashing algorithms
+     *     available. A full list may be retrieved from the hash_algos()
+     *     function. Defaults to sha256.</dd>
+     *
+     * </dl>
      *
      * @param array $options
      * @return \Phpass
@@ -156,6 +177,17 @@ class Phpass
             }
         }
 
+        if (isset($options['hmackey'])) {
+            if (!extension_loaded('hash')) {
+                throw new RuntimeException('Required extension "hash" is not loaded');
+            }
+            $this->_hmacKey = $options['hmackey'];
+            $this->_hmacAlgo = isset($options['hmacalgo']) ? $options['hmacalgo'] : 'sha256';
+            if (!in_array($this->_hmacAlgo, hash_algos())) {
+                throw new InvalidArgumentException("Hash algorithm '${$this->_hashAlgo}' is not supported on this system");
+            }
+        }
+
         return $this;
     }
 
@@ -168,7 +200,7 @@ class Phpass
     public function getAdapter()
     {
         if (!$this->_adapter instanceof \Phpass\Adapter) {
-            throw new \Phpass\Exception\RuntimeException('There is no adapter set');
+            throw new RuntimeException('There is no adapter set');
         }
 
         return $this->_adapter;
@@ -192,9 +224,7 @@ class Phpass
         if (!$adapter->isSupported()) {
             $className = get_class($this->_adapter);
 
-            throw new \Phpass\Exception\RuntimeException(
-                "Adapter '${className}' is not supported on this system"
-            );
+            throw new RuntimeException("Adapter '${className}' is not supported on this system");
         }
 
         $this->_adapter = $adapter;
@@ -233,12 +263,13 @@ class Phpass
      */
     protected function _crypt($password, $salt = null)
     {
+        if (isset($this->_hmacKey)) {
+            $password = hash_hmac($this->_hmacAlgo, $password, $this->_hmacKey);
+        }
         $adapter = $this->getAdapter();
         $hash = $adapter->crypt($password, $salt);
         if (!$adapter->isValid($hash)) {
-            throw new \Phpass\Exception\UnexpectedValueException(
-                'The adapter returned an invalid hash'
-            );
+            throw new UnexpectedValueException('The adapter returned an invalid hash');
         }
 
         return $hash;
