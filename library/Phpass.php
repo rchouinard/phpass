@@ -123,13 +123,11 @@ class Phpass
         }
 
         // Default adapter and options
-        if (empty($options)) {
-            $options = array (
-                'adapter' => array (
-                    'type' => 'blowfish',
-                    'options' => array (
-                        'iterationCountLog2' => 8
-                    )
+        if (!isset($options['adapter'])) {
+            $options['adapter'] = array (
+                'type' => 'blowfish',
+                'options' => array (
+                    'iterationCountLog2' => 8
                 )
             );
         }
