@@ -154,12 +154,23 @@ abstract class Base implements Adapter
      */
     protected function _getRandomBytes($count)
     {
+        // Try OpenSSL's random generator
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            $strongCrypto = false;
+            $output = openssl_random_pseudo_bytes($count, $strongCrypto);
+            if ($strongCrypto && strlen($output) == $count) {
+                return $output;
+            }
+        }
+
+        // Try reading from /dev/urandom, if present
         $output = '';
-        if (is_readable('/dev/urandom') && ($fh = @fopen('/dev/urandom', 'rb'))) {
+        if (is_readable('/dev/urandom') && ($fh = fopen('/dev/urandom', 'rb'))) {
             $output = fread($fh, $count);
             fclose($fh);
         }
 
+        // Fall back to a locally generated "random" string
         if (strlen($output) < $count) {
             $output = '';
             for ($i = 0; $i < $count; $i += 16) {
