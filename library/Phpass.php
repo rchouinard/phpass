@@ -11,7 +11,6 @@
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
 
-
 use Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\RuntimeException,
     Phpass\Exception\UnexpectedValueException;
@@ -127,7 +126,7 @@ class Phpass
             $options['adapter'] = array (
                 'type' => 'blowfish',
                 'options' => array (
-                    'iterationCountLog2' => 8
+                    'iterationCountLog2' => 12
                 )
             );
         }

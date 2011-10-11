@@ -73,7 +73,7 @@ abstract class Base implements Adapter
     public function __construct(Array $options = array ())
     {
         $this->_itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $this->_iterationCountLog2 = 8;
+        $this->_iterationCountLog2 = 12;
 
         $this->_randomState = microtime();
         if (function_exists('getmypid')) {
