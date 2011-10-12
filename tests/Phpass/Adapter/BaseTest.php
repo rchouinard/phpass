@@ -68,6 +68,10 @@ class BaseTest extends \PHPUnit_Framework_TestCase
                 'Phpass\Adapter\ExtDes'
             ),
             array (
+                'pbkdf2',
+                'Phpass\Adapter\Pbkdf2'
+            ),
+            array (
                 'portable',
                 'Phpass\Adapter\Portable'
             ),
@@ -78,6 +82,10 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             array (
                 'Phpass\Adapter\ExtDes',
                 'Phpass\Adapter\ExtDes'
+            ),
+            array (
+                'Phpass\Adapter\Pbkdf2',
+                'Phpass\Adapter\Pbkdf2'
             ),
             array (
                 'Phpass\Adapter\Portable',

@@ -202,6 +202,8 @@ abstract class Base implements Adapter
             $adapter = 'Phpass\Adapter\Blowfish';
         } else if (strtolower($adapter) == 'extdes') {
             $adapter = 'Phpass\Adapter\ExtDes';
+        } else if (strtolower($adapter) == 'pbkdf2') {
+            $adapter = 'Phpass\Adapter\Pbkdf2';
         } else if (strtolower($adapter) == 'portable') {
             $adapter = 'Phpass\Adapter\Portable';
         }
