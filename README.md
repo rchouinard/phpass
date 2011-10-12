@@ -11,7 +11,7 @@ This library is a reimplementation of the [PasswordHash](http://openwall.com/php
 How does it work?
 -----------------
 
-Multiple methods of generating secure password hashes are implemented in the library. The quick version is that it uses [bcrypt](http://en.wikipedia.org/wiki/Bcrypt), and may be combined with [HMAC](http://en.wikipedia.org/wiki/Hmac).
+Multiple methods of generating secure password hashes are implemented in the library. The quick version is that it uses [bcrypt](http://en.wikipedia.org/wiki/Bcrypt), and may be combined with [HMAC](http://en.wikipedia.org/wiki/Hmac). Support for the popular [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2) with HMAC-SHA2 hashing is also provided. 
 
 The longer version is that the library may be configured to use a variety of adapters to generate the hash string. While most applications will want to use the Blowfish adapter, it is also possible to generate Extended DES or MD5-based salted passwords (compatible with phpBB). All included adapters support [key stretching](http://en.wikipedia.org/wiki/Key_stretching), and will generate random, unique salt values. Developers may also create their own adapters for custom hashing methods.
 
@@ -141,6 +141,25 @@ $adapter = new Phpass\Adapter\ExtDes($adapterOptions);
 $salt = $adapter->genSalt();
 
 // _zzD.d84ZhoAfE8.PYgQ
+$hash = $adapter->crypt('password', $salt);
+```
+
+### PBKDF2
+
+This adapter uses PBKDF2 HMAC-SHA2 in order to create one-way hashes.
+
+```php
+<?php
+$adapterOptions = array (
+    'iterationCountLog2' => 12
+);
+
+$adapter = new Phpass\Adapter\Pbkdf2($adapterOptions);
+
+// $p5v2$AY8J8OdvL$
+$salt = $adapter->genSalt();
+
+// $p5v2$AY8J8OdvL$.wQWX6hD9T6ERlpYY8vb12jYueQVW5Ai
 $hash = $adapter->crypt('password', $salt);
 ```
 
