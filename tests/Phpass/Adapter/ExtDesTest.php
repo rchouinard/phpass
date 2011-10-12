@@ -68,8 +68,8 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
      * 4 bytes of salt. The iteration count is encoded as the characters
      * /0-9A-Za-z/.
      *
-     * By default, the adapter should use an iteration count of 8, so the salt
-     * string should look like _zzD...., so that's what we test for.
+     * By default, the adapter should use an iteration count of 12, so the salt
+     * string should look like _zzz1..., so that's what we test for.
      *
      * @test
      * @return string
@@ -80,7 +80,7 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '_zzD.', // Expected
+            '_zzz1', // Expected
             $salt  // Actual
         );
 

@@ -66,8 +66,8 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
      * The blowfish adapter should generate a 29-character salt string which
      * begins with $2a$ followed by a two-digit iteration count.
      *
-     * By default, the adapter should use an iteration count of 8, so the salt
-     * string should look like $2a$08$..., so that's what we test for.
+     * By default, the adapter should use an iteration count of 12, so the salt
+     * string should look like $2a$12$..., so that's what we test for.
      *
      * @test
      * @return string
@@ -78,7 +78,7 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '$2a$08$', // Expected
+            '$2a$12$', // Expected
             $salt  // Actual
         );
 

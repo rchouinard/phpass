@@ -67,8 +67,8 @@ class PortableTest extends \PHPUnit_Framework_TestCase
      * begins with $P$ followed by 1 byte of iteration count and 8 bytes of
      * salt.
      *
-     * By default, the adapter should use an iteration count of 8, so the salt
-     * string should look like $P$B..., so that's what we test for.
+     * By default, the adapter should use an iteration count of 12, so the salt
+     * string should look like $P$F..., so that's what we test for.
      *
      * @test
      * @return string
@@ -79,7 +79,7 @@ class PortableTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '$P$B', // Expected
+            '$P$F', // Expected
             $salt  // Actual
         );
 
