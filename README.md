@@ -29,7 +29,7 @@ Installation can be done via PEAR.
 
 ```bash
 pear channel-discover rchouinard.github.com/pear
-pear install rych/PHPass-1.0.0RC2
+pear install rych/PHPass-1.0.0
 ```
 
 Alternatively, you may choose to clone the git repository and add the library folder to your include path.
