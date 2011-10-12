@@ -182,7 +182,7 @@ class Phpass
             $this->_hmacKey = $options['hmackey'];
             $this->_hmacAlgo = isset($options['hmacalgo']) ? $options['hmacalgo'] : 'sha256';
             if (!in_array($this->_hmacAlgo, hash_algos())) {
-                throw new InvalidArgumentException("Hash algorithm '${$this->_hashAlgo}' is not supported on this system");
+                throw new InvalidArgumentException("Hash algorithm '{$this->_hashAlgo}' is not supported on this system");
             }
         }
 
