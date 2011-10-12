@@ -24,7 +24,7 @@ use Phpass\Adapter\Portable;
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
- * @see Phpass\Adapter\Blowfish
+ * @see Phpass\Adapter\Portable
  */
 require_once 'Phpass/Adapter/Portable.php';
 
