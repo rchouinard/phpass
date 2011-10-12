@@ -16,8 +16,8 @@
  * @namespace
  */
 namespace Phpass\Adapter;
-use Phpass\Exception\RuntimeException,
-    Phpass\Exception\UnexpectedValueException;
+use Phpass\Exception\InvalidArgumentException,
+    Phpass\Exception\RuntimeException;
 
 /**
  * @see Phpass\Adapter\Base
@@ -25,14 +25,14 @@ use Phpass\Exception\RuntimeException,
 require_once 'Phpass/Adapter/Base.php';
 
 /**
+ * @see Phpass\Exception\InvalidArgumentException
+ */
+require_once 'Phpass/Exception/InvalidArgumentException.php';
+
+/**
  * @see Phpass\Exception\RuntimeException
  */
 require_once 'Phpass/Exception/RuntimeException.php';
-
-/**
- * @see Phpass\Exception\UnexpectedValueException
- */
-require_once 'Phpass/Exception/UnexpectedValueException.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -55,67 +55,80 @@ class Pbkdf2 extends Base
     protected $_algo;
 
     /**
-     * @var integer
-     */
-    protected $_keyLength;
-
-    /**
-     * @var string
-     */
-    protected $_salt;
-
-    /**
      * @param array $options
      * @return void
      */
     public function __construct(Array $options = array ())
     {
-        $this->_algo = 'sha256';
-        $this->_iterationCountLog2 = 12;
-        $this->_keyLength = 32;
+        parent::__construct($options);
 
-        $this->setOptions($options);
+        $this->_algo = $this->_algo ?: 'sha256';
+        $this->_iterationCountLog2 = $this->_iterationCountLog2 ?: 12;
     }
 
     /**
      * (non-PHPdoc)
      * @see Phpass\Adapter\Base::crypt()
      */
-    public function crypt($password, $salt = null)
+    public function crypt($password, $setting = null)
     {
-        $derivedKey = '';
-        $iterationCount = (1 << $this->_iterationCountLog2);
-        $hashLength = strlen(hash($this->_algo, null, true));
-        $keyBlocks = ceil($this->_keyLength / $hashLength);
-
-        if (!$salt) {
-            $salt = $this->genSalt();
+        if (!$setting) {
+            $setting = $this->genSalt();
         }
 
-        for ($block = 1; $block <= $keyBlocks; ++$block) {
-            $iteratedBlock = hash_hmac($this->_algo, $salt . pack('N', $block), $password, true);
-
-            for ($iteration = 1; $iteration < $iterationCount; ++$iteration) {
-                $iteratedBlock ^= hash_hmac($this->_algo, $iteratedBlock, $password, true);
-            }
-
-            $derivedKey .= $iteratedBlock;
+        // Return blowfish error string *0 or *1 on failure
+        // Portable adapter does this, so we do it here to remain consistent
+        $output = '*0';
+        if (substr($setting, 0, 2) == $output) {
+            $output = '*1';
         }
 
-        return substr($derivedKey, 0, $this->_keyLength);
+        if (substr($setting, 0, 6) != '$p5v2$') {
+            return $output;
+        }
+
+        $countLog2 = $countLog2 = strpos($this->_itoa64, $setting[6]);
+        if ($countLog2 < 0 || $countLog2 > 30) {
+            return $output;
+        }
+        $count = 1 << $countLog2;
+
+        $salt = substr($setting, 7, 8);
+        if (strlen($salt) != 8) {
+            return $output;
+        }
+
+        $hash = $this->_pbkdf2($password, $salt, $count, 24, $this->_algo);
+
+        $output = substr($setting, 0, 16);
+        $output .= $this->_encode64($hash, 24);
+
+        return $output;
     }
 
     /**
      * (non-PHPdoc)
      * @see Phpass\Adapter::genSalt()
      */
-    public function genSalt($input)
+    public function genSalt($input = null)
     {
-        if (!$this->_salt) {
-            throw new RuntimeException('Salt value must be supplied when using PBKDF2 adapter');
+        if (!$input) {
+            $input = $this->_getRandomBytes(6);
         }
 
-        return $this->_salt;
+        // PKCS #5, version 2
+        // Python implementation uses $p5k2$, but we're not using a compatible
+        // string. https://www.dlitz.net/software/python-pbkdf2/
+        $output = '$p5v2$';
+
+        // Iteration count between 1 and 1,073,741,824
+        $output .= $this->_itoa64[min(max($this->_iterationCountLog2, 0), 30)];
+
+        // 8-byte (64-bit) salt value, as recommended by the standard
+        $output .= $this->_encode64($input, 6);
+
+        // $p5v2$CSSSSSSSS$
+        return $output . '$';
     }
 
     /**
@@ -133,43 +146,43 @@ class Pbkdf2 extends Base
      */
     public function isValid($hash)
     {
-        return true;
+        $isValid = true;
+        if (substr($hash, 0, 6) != '$p5v2$' || strlen($hash) != 48) {
+            $isValid = false;
+        }
+
+        return $isValid;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Phpass\Adapter\Base::setOptions()
+     * Internal implementation of PKCS #5 v2.0
+     *
+     * This implementation passes tests using vectors given in RFC 6070 s.2,
+     * PBKDF2 HMAC-SHA1 Test Vectors. Vectors given for PBKDF2 HMAC-SHA2 at
+     * {@link http://stackoverflow.com/questions/5130513} also pass.
+     *
+     * @param string $password
+     * @param string $salt
+     * @param integer $iterationCount
+     * @param integer $keyLength
+     * @return string
      */
-    public function setOptions(Array $options)
+    protected function _pbkdf2($password, $salt, $iterationCount = 1000, $keyLength = 20, $algo = 'sha1')
     {
-        $options = array_change_key_case($options, CASE_LOWER);
+        $hashLength = strlen(hash($algo, null, true));
+        $keyBlocks = ceil($keyLength / $hashLength);
+        $derivedKey = '';
 
-        foreach ($options as $key => $value) {
-            switch ($key) {
-
-                case 'algo':
-                case 'algorithm':
-                    if (!in_array($value, hash_algos())) {
-                        throw new UnexpectedValueException("Hash algorithm '${$this->_hashAlgo}' is not supported on this system");
-                    }
-                    $this->_algo = $value;
-                    break;
-
-                case 'keyLength':
-                    $this->_keyLength = (int) $value;
-                    break;
-
-                case 'salt':
-                    $this->_salt = $value;
-                    break;
-
-                default:
-                    break;
-
+        for ($block = 1; $block <= $keyBlocks; ++$block) {
+            $iteratedBlock = $currentBlock = hash_hmac($algo, $salt . pack('N', $block), $password, true);
+            for ($iteration = 1; $iteration < $iterationCount; ++$iteration) {
+                $iteratedBlock ^= $currentBlock = hash_hmac($algo, $currentBlock, $password, true);
             }
+
+            $derivedKey .= $iteratedBlock;
         }
 
-        parent::setOptions($options);
+        return substr($derivedKey, 0, $keyLength);
     }
 
 }
