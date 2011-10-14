@@ -38,8 +38,7 @@ class Blowfish extends Base
 {
 
     /**
-     * @param array $options
-     * @return void
+     * @see Phpass\Adapter\Base::__construct()
      */
     public function __construct(Array $options = array ())
     {
@@ -48,7 +47,6 @@ class Blowfish extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
@@ -92,7 +90,6 @@ class Blowfish extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::isSupported()
      */
     public function isSupported()
@@ -101,7 +98,6 @@ class Blowfish extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::isValid()
      */
     public function isValid($hash)

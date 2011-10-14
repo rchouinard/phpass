@@ -50,53 +50,100 @@ class Phpass
 {
 
     /**
+     * Instance of adapter to use for hashing.
+     *
+     * Defaults to an instance of Phpass\Adapter\Blowfish configured with
+     * iterationCountLog2 set to 12 if none is given otherwise.
+     *
+     * @see Phpass::setAdapter()
+     * @see Phpass::setOptions()
      * @var Phpass\Adapter
      */
     protected $_adapter;
 
     /**
+     * Algorithm to use with HMAC.
+     *
+     * Defaults to sha256 if not otherwise specified.
+     *
+     * @see Phpass::setOptions()
+     * @see Phpass::$_hmacKey
      * @var string
      */
     protected $_hmacAlgo;
 
     /**
+     * Key to use with HMAC.
+     *
+     * If set, the password string given to either Phpass::hashPassword()
+     * or Phpass::checkPassword() is passed through hash_hmac() before
+     * it is passed to the adapter.
+     *
+     * @see Phpass::setOptions()
+     * @see Phpass::$_hmacAlgo
      * @var string
      */
     protected $_hmacKey;
 
     /**
-     * Constructor
+     * Class constructor.
      *
-     * I'm still debating on the API here. I can see three valid ways of
-     * instantiating the class, all of which have merit.
+     * There are three ways to configure the class via the constructor.
      *
-     * The first, and most verbose method, is to use an $options array to pass
-     * everything, including the adapter type and adapter options. This is the
-     * most flexible method, and is probably preferred moving forward.
+     *  * Pass an associative array containing class options as the first
+     *    argument to the constructor.
      *
-     *   $phpass = new Phpass($myOptionsArray);
+     *         <?php
+     *         $phpass = new Phpass(array (
+     *             'adapter' => array (
+     *                 'type' => 'blowfish',
+     *                 'options' => array (
+     *                     'iterationCountLog2' => 12
+     *                 )
+     *             ),
+     *             'hmacAlgo' => 'sha256',
+     *             'hmacKey' => 'mySuperSecretKey'
+     *         ));
      *
-     * The second is to pass in a previously instantiated adapter, presumably
-     * already configured. This method will probably continue to be supported
-     * along with the first.
+     *  * Pass a pre-configured adapter as the first argument to the
+     *    constructor. This method blocks passing non-adapter options to the
+     *    class via the constructor, though. Developers would need to call
+     *    Phpass::setOptions() in order to do so.
      *
-     *   $adapter = new Phpass\Adapter\Blowfish($myAdapterOptions);
-     *   $phpass = new Phpass($adapter);
+     *         <?php
+     *         $adapter = new Phpass\Adapter\Blowfish(array (
+     *             'iterationCountLog2' => 12
+     *         ));
+     *         $phpass = new Phpass($adapter);
+     *         $phpass->setOptions(array (
+     *             'hmacAlgo' => 'sha256',
+     *             'hmacKey' => 'mySuperSecretKey'
+     *         ));
      *
-     * The third way is in-line with the way Zend_Db and similar operate. The
-     * first argument is a string giving the name of the adapter type, and the
-     * second is an array of adapter options.
+     *  * Pass a string representing the name of an adapter as the first
+     *    constructor argument, and an associative array of adapter options as
+     *    the second. This method also necessitates the use of
+     *    Phpass::setOptions() in order to pass class options.
      *
-     *   $phpass = new Phpass('blowfish', $myAdapterOptions);
-     *
-     * All three methods are currently supported, although this may change as
-     * I continue to use the class and gain feedback from other developers.
+     *         <?php
+     *         $phpass = new Phpass('blowfish', array (
+     *             'iterationCountLog2' => 12
+     *         ));
+     *         $phpass->setOptions(array (
+     *             'hmacAlgo' => 'sha256',
+     *             'hmacKey' => 'mySuperSecretKey'
+     *         ));
      *
      * @see Phpass::setOptions()
      * @param array|Phpass\Adapter|string $options
+     *   Either an associative array of options, a string naming an adapter,
+     *   or an instance of a class implementing Phpass\Adapter.
      * @param array $adapterOptions
+     *   Optional; If the first argument is a string, the second should be an
+     *   associative array of adapter options.
      * @return void
      * @throws Phpass\Exception\InvalidArgumentException
+     *   Thrown if $options isn't valid.
      */
     public function __construct($options = array (), Array $adapterOptions = array ())
     {
@@ -135,31 +182,36 @@ class Phpass
     }
 
     /**
-     * Set library options
+     * Set class options.
      *
-     * <dl>
+     * <dt>adapter</dt>
+     *   <dd>Optional; Either an instance of a class which implements
+     *   Phpass\Adapter or an associative array. The array should contain at
+     *   least a 'type' key with the name of an adapter as a string. An
+     *   'options' key may also be specified, containing an associative array
+     *   of adapter options. See Phpass\Adapter\Base::setOptions() for
+     *   details.</dd>
      *
-     *     <dt>adapter</dt>
-     *     <dd>May be either a concrete instance of Phpass\Adapter or an array.
-     *     The adapter array should contain at least a 'type' key with the name
-     *     of the desired adapter, and optionally an 'options' key containing
-     *     an array of options to pass to the adapter. See
-     *     Phpass\Adapter\Base::setOptions() for details.</dd>
+     * <dt>hmacKey</dt>
+     *   <dd>Optional; Key used to generate HMAC hashes. If omitted, HMAC
+     *   hashing is disabled.</dd>
      *
-     *     <dt>hmacKey</dt>
-     *     <dd>Optional; Application-wide key used to generate HMAC hashes.
-     *     If omitted, HMAC hashing is disabled.</dd>
-     *
-     *     <dt>hmacAlgo</dt>
-     *     <dd>Optional; String naming one of the many hashing algorithms
-     *     available. A full list may be retrieved from the hash_algos()
-     *     function. Defaults to sha256.</dd>
-     *
-     * </dl>
+     * <dt>hmacAlgo</dt>
+     *   <dd>Optional; String naming one of the many hashing algorithms
+     *   available. A full list may be retrieved from the hash_algos()
+     *   function. Defaults to sha256.</dd>
      *
      * @see Phpass\Adapter\Base::setOptions()
      * @param array $options
+     *   An associative array containing class options.
      * @return Phpass
+     *   Instance of Phpass for chaining.
+     * @throws Phpass\Exception\RuntimeException
+     *   Thrown if an HMAC key has been provided, but the required hash
+     *   extension isn't loaded.
+     * @throws Phpass\Exception\InvalidArgumentException
+     *   Thrown if an HMAC key has been provided, but the chosen algorithm
+     *   isn't supported on the system.
      */
     public function setOptions(Array $options)
     {
@@ -190,10 +242,12 @@ class Phpass
     }
 
     /**
-     * Return the currently configured adapter
+     * Get the currently configured adapter instance.
      *
      * @return Phpass\Adapter
+     *   Instance of a class which implements Phpass\Adapter.
      * @throws Phpass\Exception\RuntimeException
+     *   Thrown if no adapter is configured.
      */
     public function getAdapter()
     {
@@ -205,12 +259,18 @@ class Phpass
     }
 
     /**
-     * Pass in a configured adapter
+     * Set a configured adapter instance.
      *
      * @param Phpass\Adapter|string $adapter
+     *   Either a string naming an adapter or an instance of a class
+     *   implementing Phpass\Adapter.
      * @param array $options
+     *   Optional; If the first argument is a string, the second should be an
+     *   associative array of adapter options.
      * @return Phpass
+     *   Instance of Phpass for chaining.
      * @throws Phpass\Exception\RuntimeException
+     *   Thrown if the adapter isn't supported on the system.
      */
     public function setAdapter($adapter, Array $options = array ())
     {
@@ -218,10 +278,8 @@ class Phpass
             $adapter = Phpass\Adapter\Base::factory($adapter, $options);
         }
 
-        // Adapter isn't supported
         if (!$adapter->isSupported()) {
             $className = get_class($this->_adapter);
-
             throw new RuntimeException("Adapter '${className}' is not supported on this system");
         }
 
@@ -230,11 +288,14 @@ class Phpass
     }
 
     /**
-     * Check that a given password matches a given hash
+     * Check that a password string matches a given hash.
      *
      * @param string $password
+     *   The plain-text password string.
      * @param string $storedHash
+     *   The stored hash value to compare against.
      * @return boolean
+     *   True if password string matches the stored hash, false otherwise.
      */
     public function checkPassword($password, $storedHash)
     {
@@ -243,10 +304,12 @@ class Phpass
     }
 
     /**
-     * Generate a hash from the given password
+     * Generate a hash from a password string.
      *
      * @param string $password
+     *   the plain-text password string.
      * @return string
+     *   Hashed version of the password string.
      */
     public function hashPassword($password)
     {
@@ -254,10 +317,19 @@ class Phpass
     }
 
     /**
+     * Proxy method to Phpass\Adapter::crypt()
+     *
+     * Additional processing of the password string is performed if
+     * Phpass::$_hmacKey is set.
+     *
      * @param string $password
+     *   The plain-text password string.
      * @param string $salt
+     *   Optional; The salt or stored hash value used to generate a new hash.
      * @return string
+     *   Hashed version of the password string.
      * @throws Phpass\Exception\UnexpectedValueException
+     *   Thrown if the adapter returns an invalid hash value.
      */
     protected function _crypt($password, $salt = null)
     {

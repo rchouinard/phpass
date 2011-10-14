@@ -50,13 +50,16 @@ class Pbkdf2 extends Base
 {
 
     /**
+     * Hashing algorithm used by the PBKDF2 implementation.
+     *
+     * Defaults to sha256.
+     *
      * @var string
      */
     protected $_algo;
 
     /**
-     * @param array $options
-     * @return void
+     * @see Phpass\Adapter\Base::__construct()
      */
     public function __construct(Array $options = array ())
     {
@@ -67,7 +70,6 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter\Base::crypt()
      */
     public function crypt($password, $setting = null)
@@ -107,7 +109,6 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
@@ -132,7 +133,6 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::isSupported()
      */
     public function isSupported()
@@ -141,7 +141,6 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::isValid()
      */
     public function isValid($hash)
@@ -155,17 +154,24 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * Internal implementation of PKCS #5 v2.0
+     * Internal implementation of PKCS #5 v2.0.
      *
      * This implementation passes tests using vectors given in RFC 6070 s.2,
      * PBKDF2 HMAC-SHA1 Test Vectors. Vectors given for PBKDF2 HMAC-SHA2 at
-     * {@link http://stackoverflow.com/questions/5130513} also pass.
+     * http://stackoverflow.com/questions/5130513 also pass.
      *
      * @param string $password
+     *   The plain-text password string.
      * @param string $salt
+     *   Salt value used by the HMAC function.
      * @param integer $iterationCount
+     *   Optional; Number of iterations for key stretching.
      * @param integer $keyLength
+     *   Optional; Length of derived key.
+     * @param string $alog
+     *   Optional; Algorithm to use when generating HMAC digest.
      * @return string
+     *   Raw hash value.
      */
     protected function _pbkdf2($password, $salt, $iterationCount = 1000, $keyLength = 20, $algo = 'sha1')
     {

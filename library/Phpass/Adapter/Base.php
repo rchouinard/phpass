@@ -51,23 +51,44 @@ abstract class Base implements Adapter
 {
 
     /**
+     * Binary logarithm value used in password stretching.
+     *
+     * This number determines the cost of calculating hash values for the
+     * various adapters. This value should be between 4 and 30, representing a
+     * total cost of 2^x, or 16 and 1,073,741,824, respectively.
+     *
+     * Each adapter may treat this number differently. Generally, a calculated
+     * value of 256 means that the password string is iteratively hashed 256
+     * times, which increases the time and CPU cost associated with generating
+     * the hash value.
+     *
      * @var integer
      */
     protected $_iterationCountLog2;
 
     /**
+     * String of ASCII characters used in itoa64 operations.
+     *
      * @var string
      */
     protected $_itoa64;
 
     /**
+     * Cached random data.
+     *
+     * This value is used when better methods of generating random data are
+     * unavailable.
+     *
      * @var string
      */
     protected $_randomState;
 
 
     /**
+     * Class constructor.
+     *
      * @param array $options
+     *   Optional; Associative array of adapter options.
      * @return void
      */
     public function __construct(Array $options = array ())
@@ -84,7 +105,6 @@ abstract class Base implements Adapter
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::crypt()
      */
     public function crypt($password, $salt = null)
@@ -96,7 +116,10 @@ abstract class Base implements Adapter
     }
 
     /**
+     * Configure the adapter.
+     *
      * @param array $options
+     *   Associative array of adapter options.
      * @return void
      */
     public function setOptions(Array $options)
@@ -118,6 +141,8 @@ abstract class Base implements Adapter
     }
 
     /**
+     * Encode binary data.
+     *
      * @param string $input
      * @param integer $count
      */
@@ -149,8 +174,12 @@ abstract class Base implements Adapter
     }
 
     /**
+     * Generate random data.
+     *
      * @param integer $count
+     *   Number of bytes to generate.
      * @return string
+     *   String containg requisite number of random bytes.
      */
     protected function _getRandomBytes($count)
     {
@@ -184,10 +213,18 @@ abstract class Base implements Adapter
     }
 
     /**
+     * Adapter factory.
+     *
      * @param string $adapter
+     *   String represnting an adapter name.
      * @param array $options
+     *   Optional; Associative array of adapter options.
      * @return Phpass\Adapter
+     *   Instance of a class which implements Phpass\Adapter.
      * @throws Phpass\Exception\InvalidArgumentException
+     *   Thrown when first argument is not a string.
+     * @throws Phpass\Exception\RuntimeException
+     *   Thrown when the adapter cannot be loaded.
      */
     static public function factory($adapter, Array $options = array ())
     {

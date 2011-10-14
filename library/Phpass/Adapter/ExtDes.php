@@ -38,7 +38,6 @@ class ExtDes extends Base
 {
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::genSalt()
      */
     public function genSalt($input = null)
@@ -64,7 +63,6 @@ class ExtDes extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see Phpass\Adapter::isSupported()
      */
     public function isSupported()
@@ -73,7 +71,6 @@ class ExtDes extends Base
     }
 
     /**
-     * (non-PHPdoc)
      * @see PhpassAdapter::isValid()
      */
     public function isValid($hash)
