@@ -3,7 +3,7 @@
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -15,18 +15,18 @@
 /**
  * @namespace
  */
-namespace Phpass\Adapter;
+namespace Phpass\Hash;
 
 /**
- * @see Phpass\Adapter\Base
+ * @see Phpass\Hash\Base
  */
-require_once 'Phpass/Adapter/Base.php';
+require_once 'Phpass/Hash/Base.php';
 
 /**
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -38,7 +38,7 @@ class Portable extends Base
 {
 
     /**
-     * @see Phpass\Adapter::crypt()
+     * @see Phpass\Hash::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -88,7 +88,7 @@ class Portable extends Base
     }
 
     /**
-     * @see Phpass\Adapter::genSalt()
+     * @see Phpass\Hash::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -104,7 +104,7 @@ class Portable extends Base
     }
 
     /**
-     * @see Phpass\Adapter::isSupported()
+     * @see Phpass\Hash::isSupported()
      */
     public function isSupported()
     {
@@ -112,7 +112,7 @@ class Portable extends Base
     }
 
     /**
-     * @see Phpass\Adapter::isValid()
+     * @see Phpass\Hash::isValid()
      */
     public function isValid($hash)
     {

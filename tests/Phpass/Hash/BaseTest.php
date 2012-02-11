@@ -15,8 +15,8 @@
 /**
  * @namespace
  */
-namespace Phpass\Adapter;
-use Phpass\Adapter\Base;
+namespace Phpass\Hash;
+use Phpass\Hash\Base;
 
 /**
  * @see PHPUnit_Framework_TestCase
@@ -24,9 +24,9 @@ use Phpass\Adapter\Base;
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
- * @see Phpass\Adapter\Base
+ * @see Phpass\Hash\Base
  */
-require_once 'Phpass/Adapter/Base.php';
+require_once 'Phpass/Hash/Base.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -61,35 +61,35 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         return array (
             array (
                 'blowfish',
-                'Phpass\Adapter\Blowfish'
+                'Phpass\Hash\Blowfish'
             ),
             array (
                 'extdes',
-                'Phpass\Adapter\ExtDes'
+                'Phpass\Hash\ExtDes'
             ),
             array (
                 'pbkdf2',
-                'Phpass\Adapter\Pbkdf2'
+                'Phpass\Hash\Pbkdf2'
             ),
             array (
                 'portable',
-                'Phpass\Adapter\Portable'
+                'Phpass\Hash\Portable'
             ),
             array (
-                'Phpass\Adapter\Blowfish',
-                'Phpass\Adapter\Blowfish'
+                'Phpass\Hash\Blowfish',
+                'Phpass\Hash\Blowfish'
             ),
             array (
-                'Phpass\Adapter\ExtDes',
-                'Phpass\Adapter\ExtDes'
+                'Phpass\Hash\ExtDes',
+                'Phpass\Hash\ExtDes'
             ),
             array (
-                'Phpass\Adapter\Pbkdf2',
-                'Phpass\Adapter\Pbkdf2'
+                'Phpass\Hash\Pbkdf2',
+                'Phpass\Hash\Pbkdf2'
             ),
             array (
-                'Phpass\Adapter\Portable',
-                'Phpass\Adapter\Portable'
+                'Phpass\Hash\Portable',
+                'Phpass\Hash\Portable'
             )
         );
     }

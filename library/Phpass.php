@@ -16,9 +16,9 @@ use Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\UnexpectedValueException;
 
 /**
- * @see Phpass\Adapter\Base
+ * @see Phpass\Hash\Base
  */
-require_once 'Phpass/Adapter/Base.php';
+require_once 'Phpass/Hash/Base.php';
 
 /**
  * @see Phpass\Exception\InvalidArgumentException
@@ -52,12 +52,12 @@ class Phpass
     /**
      * Instance of adapter to use for hashing.
      *
-     * Defaults to an instance of Phpass\Adapter\Blowfish configured with
+     * Defaults to an instance of Phpass\Hash\Blowfish configured with
      * iterationCountLog2 set to 12 if none is given otherwise.
      *
      * @see Phpass::setAdapter()
      * @see Phpass::setOptions()
-     * @var Phpass\Adapter
+     * @var Phpass\Hash
      */
     protected $_adapter;
 
@@ -111,7 +111,7 @@ class Phpass
      *    Phpass::setOptions() in order to do so.
      *
      *         <?php
-     *         $adapter = new Phpass\Adapter\Blowfish(array (
+     *         $adapter = new Phpass\Hash\Blowfish(array (
      *             'iterationCountLog2' => 12
      *         ));
      *         $phpass = new Phpass($adapter);
@@ -135,7 +135,7 @@ class Phpass
      *         ));
      *
      * @see Phpass::setOptions()
-     * @param array|Phpass\Adapter|string $options
+     * @param array|Phpass\Hash|string $options
      *   Either an associative array of options, a string naming an adapter,
      *   or an instance of a class implementing Phpass\Adapter.
      * @param array $adapterOptions
@@ -148,7 +148,7 @@ class Phpass
     public function __construct($options = array (), Array $adapterOptions = array ())
     {
         // Support for method 2, above
-        if ($options instanceof Phpass\Adapter) {
+        if ($options instanceof Phpass\Hash) {
             $options = array ('adapter' => $options);
         }
 
@@ -186,10 +186,10 @@ class Phpass
      *
      * <dt>adapter</dt>
      *   <dd>Optional; Either an instance of a class which implements
-     *   Phpass\Adapter or an associative array. The array should contain at
+     *   Phpass\Hash or an associative array. The array should contain at
      *   least a 'type' key with the name of an adapter as a string. An
      *   'options' key may also be specified, containing an associative array
-     *   of adapter options. See Phpass\Adapter\Base::setOptions() for
+     *   of adapter options. See Phpass\Hash\Base::setOptions() for
      *   details.</dd>
      *
      * <dt>hmacKey</dt>
@@ -201,7 +201,7 @@ class Phpass
      *   available. A full list may be retrieved from the hash_algos()
      *   function. Defaults to sha256.</dd>
      *
-     * @see Phpass\Adapter\Base::setOptions()
+     * @see Phpass\Hash\Base::setOptions()
      * @param array $options
      *   An associative array containing class options.
      * @return Phpass
@@ -218,7 +218,7 @@ class Phpass
         $options = array_change_key_case($options, CASE_LOWER);
 
         if (isset($options['adapter'])) {
-            if ($options['adapter'] instanceof Phpass\Adapter) {
+            if ($options['adapter'] instanceof Phpass\Hash) {
                 $this->setAdapter($options['adapter']);
             } else if (is_array($options['adapter'])) {
                 $adapter = $options['adapter']['type'];
@@ -244,14 +244,14 @@ class Phpass
     /**
      * Get the currently configured adapter instance.
      *
-     * @return Phpass\Adapter
-     *   Instance of a class which implements Phpass\Adapter.
+     * @return Phpass\Hash
+     *   Instance of a class which implements Phpass\Hash.
      * @throws Phpass\Exception\RuntimeException
      *   Thrown if no adapter is configured.
      */
     public function getAdapter()
     {
-        if (!$this->_adapter instanceof Phpass\Adapter) {
+        if (!$this->_adapter instanceof Phpass\Hash) {
             throw new RuntimeException('There is no adapter set');
         }
 
@@ -261,9 +261,9 @@ class Phpass
     /**
      * Set a configured adapter instance.
      *
-     * @param Phpass\Adapter|string $adapter
+     * @param Phpass\Hash|string $adapter
      *   Either a string naming an adapter or an instance of a class
-     *   implementing Phpass\Adapter.
+     *   implementing Phpass\Hash.
      * @param array $options
      *   Optional; If the first argument is a string, the second should be an
      *   associative array of adapter options.
@@ -274,8 +274,8 @@ class Phpass
      */
     public function setAdapter($adapter, Array $options = array ())
     {
-        if (!$adapter instanceof Phpass\Adapter) {
-            $adapter = Phpass\Adapter\Base::factory($adapter, $options);
+        if (!$adapter instanceof Phpass\Hash) {
+            $adapter = Phpass\Hash\Base::factory($adapter, $options);
         }
 
         if (!$adapter->isSupported()) {
@@ -317,7 +317,7 @@ class Phpass
     }
 
     /**
-     * Proxy method to Phpass\Adapter::crypt()
+     * Proxy method to Phpass\Hash::crypt()
      *
      * Additional processing of the password string is performed if
      * Phpass::$_hmacKey is set.

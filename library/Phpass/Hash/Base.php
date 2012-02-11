@@ -3,7 +3,7 @@
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -15,15 +15,15 @@
 /**
  * @namespace
  */
-namespace Phpass\Adapter;
-use Phpass\Adapter,
+namespace Phpass\Hash;
+use Phpass\Hash,
     Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\RuntimeException;
 
 /**
- * @see Phpass\Adapter
+ * @see Phpass\Hash
  */
-require_once 'Phpass/Adapter.php';
+require_once 'Phpass/Hash.php';
 
 /**
  * @see Phpass\Exception\InvalidArgumentException
@@ -39,7 +39,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -47,7 +47,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-abstract class Base implements Adapter
+abstract class Base implements Hash
 {
 
     /**
@@ -105,7 +105,7 @@ abstract class Base implements Adapter
     }
 
     /**
-     * @see Phpass\Adapter::crypt()
+     * @see Phpass\Hash::crypt()
      */
     public function crypt($password, $salt = null)
     {
@@ -219,8 +219,8 @@ abstract class Base implements Adapter
      *   String represnting an adapter name.
      * @param array $options
      *   Optional; Associative array of adapter options.
-     * @return Phpass\Adapter
-     *   Instance of a class which implements Phpass\Adapter.
+     * @return Phpass\Hash
+     *   Instance of a class which implements Phpass\Hash.
      * @throws Phpass\Exception\InvalidArgumentException
      *   Thrown when first argument is not a string.
      * @throws Phpass\Exception\RuntimeException
@@ -236,24 +236,24 @@ abstract class Base implements Adapter
 
         // Map adapter aliases to class names
         if (strtolower($adapter) == 'blowfish') {
-            $adapter = 'Phpass\Adapter\Blowfish';
+            $adapter = 'Phpass\Hash\Blowfish';
         } else if (strtolower($adapter) == 'extdes') {
-            $adapter = 'Phpass\Adapter\ExtDes';
+            $adapter = 'Phpass\Hash\ExtDes';
         } else if (strtolower($adapter) == 'pbkdf2') {
-            $adapter = 'Phpass\Adapter\Pbkdf2';
+            $adapter = 'Phpass\Hash\Pbkdf2';
         } else if (strtolower($adapter) == 'portable') {
-            $adapter = 'Phpass\Adapter\Portable';
+            $adapter = 'Phpass\Hash\Portable';
         }
 
         // Attempt to include file based on adapter class name
         if (!class_exists($adapter, false)) {
-            // Work with My_Adapter or My\Adapter
+            // Work with My_Hash or My\Hash
             $file = trim(str_replace(array ('\\', '_'), DIRECTORY_SEPARATOR, $adapter), DIRECTORY_SEPARATOR);
             @include $file . '.php';
         }
 
-        // Create an instance of the adapter if it exists and implements Adapter
-        if (class_exists($adapter, false) && in_array('Phpass\Adapter', class_implements($adapter, false))) {
+        // Create an instance of the adapter if it exists and implements Hash
+        if (class_exists($adapter, false) && in_array('Phpass\Hash', class_implements($adapter, false))) {
             $instance = new $adapter($options);
             return $instance;
         }

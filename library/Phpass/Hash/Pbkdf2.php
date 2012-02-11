@@ -3,7 +3,7 @@
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -15,14 +15,14 @@
 /**
  * @namespace
  */
-namespace Phpass\Adapter;
+namespace Phpass\Hash;
 use Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\RuntimeException;
 
 /**
- * @see Phpass\Adapter\Base
+ * @see Phpass\Hash\Base
  */
-require_once 'Phpass/Adapter/Base.php';
+require_once 'Phpass/Hash/Base.php';
 
 /**
  * @see Phpass\Exception\InvalidArgumentException
@@ -38,7 +38,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -46,7 +46,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * @link http://www.openwall.com/phpass/ Original phpass project page.
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class Pbkdf2 extends Base
+class Pbkdf2 extends Hash
 {
 
     /**
@@ -59,7 +59,7 @@ class Pbkdf2 extends Base
     protected $_algo;
 
     /**
-     * @see Phpass\Adapter\Base::__construct()
+     * @see Phpass\Hash\Base::__construct()
      */
     public function __construct(Array $options = array ())
     {
@@ -70,7 +70,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see Phpass\Adapter\Base::crypt()
+     * @see Phpass\Hash\Base::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -109,7 +109,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see Phpass\Adapter::genSalt()
+     * @see Phpass\Hash::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -133,7 +133,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see Phpass\Adapter::isSupported()
+     * @see Phpass\Hash::isSupported()
      */
     public function isSupported()
     {
@@ -141,7 +141,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see Phpass\Adapter::isValid()
+     * @see Phpass\Hash::isValid()
      */
     public function isValid($hash)
     {

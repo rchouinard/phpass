@@ -15,8 +15,8 @@
 /**
  * @namespace
  */
-namespace Phpass\Adapter;
-use Phpass\Adapter\Portable;
+namespace Phpass\Hash;
+use Phpass\Hash\Portable;
 
 /**
  * @see PHPUnit_Framework_TestCase
@@ -24,9 +24,9 @@ use Phpass\Adapter\Portable;
 require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
- * @see Phpass\Adapter\Portable
+ * @see Phpass\Hash\Portable
  */
-require_once 'Phpass/Adapter/Portable.php';
+require_once 'Phpass/Hash/Portable.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -44,7 +44,7 @@ class PortableTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Phpass\Adapter
+     * @var Phpass\Hash
      */
     protected $_adapter;
 
@@ -100,7 +100,7 @@ class PortableTest extends \PHPUnit_Framework_TestCase
      *
      * This test depends on the salt test, and uses the output of that test.
      * This way, the test focuses on the hash, and won't be affected by the call
-     * to Phpass\Adapter::genSalt().
+     * to Phpass\Hash::genSalt().
      *
      * @test
      * @depends adapterGeneratesValidSalt

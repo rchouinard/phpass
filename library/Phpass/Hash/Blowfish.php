@@ -3,7 +3,7 @@
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -15,18 +15,18 @@
 /**
  * @namespace
  */
-namespace Phpass\Adapter;
+namespace Phpass\Hash;
 
 /**
- * @see Phpass\Adapter\Base
+ * @see Phpass\Hash\Base
  */
-require_once 'Phpass/Adapter/Base.php';
+require_once 'Phpass/Hash/Base.php';
 
 /**
  * Portable PHP password hashing framework.
  *
  * @package PHPass
- * @subpackage Adapters
+ * @subpackage Hash
  * @category Cryptography
  * @author Solar Designer <solar at openwall.com>
  * @author Ryan Chouinard <rchouinard at gmail.com>
@@ -38,7 +38,7 @@ class Blowfish extends Base
 {
 
     /**
-     * @see Phpass\Adapter\Base::__construct()
+     * @see Phpass\Hash\Base::__construct()
      */
     public function __construct(Array $options = array ())
     {
@@ -47,7 +47,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Adapter::genSalt()
+     * @see Phpass\Hash::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -90,7 +90,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Adapter::isSupported()
+     * @see Phpass\Hash::isSupported()
      */
     public function isSupported()
     {
@@ -98,7 +98,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Adapter::isValid()
+     * @see Phpass\Hash::isValid()
      */
     public function isValid($hash)
     {

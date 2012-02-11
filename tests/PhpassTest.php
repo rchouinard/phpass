@@ -23,19 +23,19 @@ require_once 'PHPUnit/Framework/TestCase.php';
 require_once 'Phpass.php';
 
 /**
- * @see Phpass\Adapter\Blowfish
+ * @see Phpass\Hash\Blowfish
  */
-require_once 'Phpass/Adapter/Blowfish.php';
+require_once 'Phpass/Hash/Blowfish.php';
 
 /**
- * @see Phpass\Adapter\ExtDes
+ * @see Phpass\Hash\ExtDes
  */
-require_once 'Phpass/Adapter/ExtDes.php';
+require_once 'Phpass/Hash/ExtDes.php';
 
 /**
- * @see Phpass\Adapter\Portable
+ * @see Phpass\Hash\Portable
  */
-require_once 'Phpass/Adapter/Portable.php';
+require_once 'Phpass/Hash/Portable.php';
 
 /**
  * Portable PHP password hashing framework.
@@ -62,7 +62,7 @@ class PhpassTest extends PHPUnit_Framework_TestCase
         $adapter = $phpass->getAdapter();
 
         $this->assertInstanceOf(
-            'Phpass\Adapter\Blowfish',
+            'Phpass\Hash\Blowfish',
             $adapter
         );
     }
@@ -77,7 +77,7 @@ class PhpassTest extends PHPUnit_Framework_TestCase
         $adapter = $phpass->getAdapter();
 
         $this->assertInstanceOf(
-            'Phpass\Adapter\ExtDes',
+            'Phpass\Hash\ExtDes',
             $adapter
         );
     }
@@ -88,11 +88,11 @@ class PhpassTest extends PHPUnit_Framework_TestCase
      */
     public function passingAdapterInstanceToConstructorDefaultsToThatAdapter()
     {
-        $phpass = new Phpass(new Phpass\Adapter\ExtDes);
+        $phpass = new Phpass(new Phpass\Hash\ExtDes);
         $adapter = $phpass->getAdapter();
 
         $this->assertInstanceOf(
-            'Phpass\Adapter\ExtDes',
+            'Phpass\Hash\ExtDes',
             $adapter
         );
     }
