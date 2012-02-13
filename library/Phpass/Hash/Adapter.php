@@ -13,7 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass;
+namespace Phpass\Hash;
 
 /**
  * PHP Password Library
@@ -25,7 +25,7 @@ namespace Phpass;
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-interface Hash
+interface Adapter
 {
 
     /**

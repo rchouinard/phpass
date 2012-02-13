@@ -43,7 +43,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Hash::genSalt()
+     * @see Phpass\Hash\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -86,7 +86,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Hash::isSupported()
+     * @see Phpass\Hash\Adapter::isSupported()
      */
     public function isSupported()
     {
@@ -94,7 +94,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Hash::isValid()
+     * @see Phpass\Hash\Adapter::isValid()
      */
     public function isValid($hash)
     {

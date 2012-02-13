@@ -34,7 +34,7 @@ class Nist extends Base
 {
 
     /**
-     * @see Phpass\Strength::check()
+     * @see Phpass\Strength\Adapter::check()
      */
     public function check($password)
     {

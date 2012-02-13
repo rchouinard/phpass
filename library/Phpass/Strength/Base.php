@@ -14,12 +14,12 @@
  * @namespace
  */
 namespace Phpass\Strength;
-use Phpass\Strength;
+use Phpass\Strength\Adapter;
 
 /**
- * @see Phpass\Strength
+ * @see Phpass\Strength\Adapter
  */
-require_once 'Phpass/Strength.php';
+require_once 'Phpass/Strength/Adapter.php';
 
 /**
  * PHP Password Library
@@ -31,7 +31,7 @@ require_once 'Phpass/Strength.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-abstract class Base implements Strength
+abstract class Base implements Adapter
 {
 
     const CLASS_LETTER = 'letter';

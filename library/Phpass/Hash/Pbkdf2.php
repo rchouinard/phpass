@@ -105,7 +105,7 @@ class Pbkdf2 extends Hash
     }
 
     /**
-     * @see Phpass\Hash::genSalt()
+     * @see Phpass\Hash\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -129,7 +129,7 @@ class Pbkdf2 extends Hash
     }
 
     /**
-     * @see Phpass\Hash::isSupported()
+     * @see Phpass\Hash\Adapter::isSupported()
      */
     public function isSupported()
     {
@@ -137,7 +137,7 @@ class Pbkdf2 extends Hash
     }
 
     /**
-     * @see Phpass\Hash::isValid()
+     * @see Phpass\Hash\Adapter::isValid()
      */
     public function isValid($hash)
     {

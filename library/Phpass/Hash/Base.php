@@ -14,14 +14,14 @@
  * @namespace
  */
 namespace Phpass\Hash;
-use Phpass\Hash,
+use Phpass\Hash\Adapter,
     Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\RuntimeException;
 
 /**
- * @see Phpass\Hash
+ * @see Phpass\Hash\Adapter
  */
-require_once 'Phpass/Hash.php';
+require_once 'Phpass/Hash/Adapter.php';
 
 /**
  * @see Phpass\Exception\InvalidArgumentException
@@ -43,7 +43,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-abstract class Base implements Hash
+abstract class Base implements Adapter
 {
 
     /**
@@ -101,7 +101,7 @@ abstract class Base implements Hash
     }
 
     /**
-     * @see Phpass\Hash::crypt()
+     * @see Phpass\Hash\Adapter::crypt()
      */
     public function crypt($password, $salt = null)
     {
@@ -215,8 +215,8 @@ abstract class Base implements Hash
      *   String represnting an adapter name.
      * @param array $options
      *   Optional; Associative array of adapter options.
-     * @return Phpass\Hash
-     *   Instance of a class which implements Phpass\Hash.
+     * @return Phpass\Hash\Adapter
+     *   Instance of a class which implements Phpass\Hash\Adapter.
      * @throws Phpass\Exception\InvalidArgumentException
      *   Thrown when first argument is not a string.
      * @throws Phpass\Exception\RuntimeException
@@ -248,8 +248,8 @@ abstract class Base implements Hash
             @include $file . '.php';
         }
 
-        // Create an instance of the adapter if it exists and implements Hash
-        if (class_exists($adapter, false) && in_array('Phpass\Hash', class_implements($adapter, false))) {
+        // Create an instance of the adapter if it exists and implements Adapter
+        if (class_exists($adapter, false) && in_array('Phpass\Hash\Adapter', class_implements($adapter, false))) {
             $instance = new $adapter($options);
             return $instance;
         }

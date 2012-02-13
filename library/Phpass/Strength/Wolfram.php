@@ -34,7 +34,7 @@ class Wolfram extends Base
 {
 
     /**
-     * @see Phpass\Strength::check()
+     * @see Phpass\Strength\Adapter::check()
      */
     public function check($password)
     {
@@ -124,7 +124,7 @@ class Wolfram extends Base
         $symbolCount = $this->_getClassCount(self::CLASS_SYMBOL);
 
         if ($symbolCount > 0) {
-            $score += $symbolCount * 6;
+            $score += $symbolCount * 4;
         }
 
         return $score;
