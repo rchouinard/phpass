@@ -13,18 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-use Phpass\Hash\Portable;
-
-/**
- * @see PHPUnit_Framework_TestCase
- */
-require_once 'PHPUnit/Framework/TestCase.php';
-
-/**
- * @see Phpass\Hash\Portable
- */
-require_once 'Phpass/Hash/Portable.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -36,11 +25,11 @@ require_once 'Phpass/Hash/Portable.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class PortableTest extends \PHPUnit_Framework_TestCase
+class ExtDesTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Phpass\Hash
+     * @var Phpass\Hash\Adapter
      */
     protected $_adapter;
 
@@ -50,21 +39,19 @@ class PortableTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new Portable;
-        if (!$this->_adapter->isSupported()) {
-            $this->markTestSkipped('This system lacks required support.');
-        }
+        $this->_adapter = new ExtDes;
     }
 
     /**
      * Test that adapter generates a valid salt
      *
-     * The portable adapter should generate a 12-character salt string which
-     * begins with $P$ followed by 1 byte of iteration count and 8 bytes of
-     * salt.
+     * The extdes adapter should generate a 9-character salt string which
+     * begins with and underscore followed by 4 bytes of iteration count and
+     * 4 bytes of salt. The iteration count is encoded as the characters
+     * /0-9A-Za-z/.
      *
      * By default, the adapter should use an iteration count of 12, so the salt
-     * string should look like $P$F..., so that's what we test for.
+     * string should look like _zzz1..., so that's what we test for.
      *
      * @test
      * @return string
@@ -75,13 +62,13 @@ class PortableTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '$P$F', // Expected
+            '_zzz1', // Expected
             $salt  // Actual
         );
 
         // Salt has proper length
         $this->assertEquals(
-            12, // Expected
+            9, // Expected
             strlen($salt) // Actual
         );
 
@@ -91,7 +78,7 @@ class PortableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the adapter generates a valid hash
      *
-     * The blowfish adapter should generate a 34-character hash which begins
+     * The blowfish adapter should generate a 20-character hash which begins
      * with the salt.
      *
      * This test depends on the salt test, and uses the output of that test.
@@ -114,7 +101,7 @@ class PortableTest extends \PHPUnit_Framework_TestCase
 
         // Hash string has proper length
         $this->assertEquals(
-            34, // Expected
+            20, // Expected
             strlen($hash) // Actual
         );
 

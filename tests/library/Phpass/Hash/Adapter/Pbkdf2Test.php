@@ -13,18 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-use Phpass\Hash\Pbkdf2;
-
-/**
- * @see PHPUnit_Framework_TestCase
- */
-require_once 'PHPUnit/Framework/TestCase.php';
-
-/**
- * @see Phpass\Hash\Pbkdf2
- */
-require_once 'Phpass/Hash/Pbkdf2.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -40,7 +29,7 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Phpass\Hash
+     * @var Phpass\Hash\Adapter
      */
     protected $_adapter;
 
@@ -51,9 +40,6 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_adapter = new Pbkdf2;
-        if (!$this->_adapter->isSupported()) {
-            $this->markTestSkipped('This system lacks required support.');
-        }
     }
 
     /**
@@ -131,7 +117,7 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
      */
     public function pbkdf2MethodPassesUsingRfc6070TestVectors($input, $output)
     {
-        $class = new \ReflectionClass('Phpass\Hash\Pbkdf2');
+        $class = new \ReflectionClass('Phpass\Hash\Adapter\Pbkdf2');
         $method = $class->getMethod('_pbkdf2');
         $method->setAccessible(true);
 

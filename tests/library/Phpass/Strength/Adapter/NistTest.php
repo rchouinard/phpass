@@ -13,18 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Exception;
-use Phpass\Exception\RuntimeException;
-
-/**
- * @see PHPUnit_Framework_TestCase
- */
-require_once 'PHPUnit/Framework/TestCase.php';
-
-/**
- * @see Phpass\Exception\RuntimeException
- */
-require_once 'Phpass/Exception/RuntimeException.php';
+namespace Phpass\Strength\Adapter;
 
 /**
  * PHP Password Library
@@ -36,27 +25,23 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class RuntimeExceptionTest extends \PHPUnit_Framework_TestCase
+class NistTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
      * @test
      * @return void
      */
-    public function exceptionClassImplementsCorrectInterface()
+    public function checkMethodCalculatesExpectedResult()
     {
-        $exception = new RuntimeException('Test exception');
-
-        $this->assertInstanceOf(
-            '\Phpass\Exception',
-            $exception
-        );
-
-        $this->assertInstanceOf(
-            '\RuntimeException',
-            $exception
-        );
-
+        $adapter = new Nist;
+        $this->assertEquals( 0, $adapter->check(''));
+        $this->assertEquals( 4, $adapter->check('M'));
+        $this->assertEquals( 6, $adapter->check('My'));
+        $this->assertEquals(18, $adapter->check('MySuperS'));
+        $this->assertEquals(36, $adapter->check('MySuperSecretPasswor'));
+        $this->assertEquals(37, $adapter->check('MySuperSecretPassword'));
+        $this->assertEquals(43, $adapter->check('Super!Secret*Password'));
     }
 
 }

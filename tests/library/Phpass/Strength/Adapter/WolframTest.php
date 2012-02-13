@@ -13,17 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Strength;
-
-/**
- * @see PHPUnit_Framework_TestCase
- */
-require_once 'PHPUnit/Framework/TestCase.php';
-
-/**
- * @see Phpass\Strength\Wolfram
- */
-require_once 'Phpass/Strength/Wolfram.php';
+namespace Phpass\Strength\Adapter;
 
 /**
  * PHP Password Library
@@ -40,6 +30,7 @@ class WolframTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @return void
      */
     public function checkMethodCalculatesExpectedResult()
     {

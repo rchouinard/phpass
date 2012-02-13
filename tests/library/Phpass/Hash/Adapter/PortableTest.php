@@ -13,18 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-use Phpass\Hash\Blowfish;
-
-/**
- * @see PHPUnit_Framework_TestCase
- */
-require_once 'PHPUnit/Framework/TestCase.php';
-
-/**
- * @see Phpass\Hash\Blowfish
- */
-require_once 'Phpass/Hash/Blowfish.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -36,11 +25,11 @@ require_once 'Phpass/Hash/Blowfish.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class BlowfishTest extends \PHPUnit_Framework_TestCase
+class PortableTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Phpass\Hash
+     * @var Phpass\Hash\Adapter
      */
     protected $_adapter;
 
@@ -50,20 +39,18 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new Blowfish;
-        if (!$this->_adapter->isSupported()) {
-            $this->markTestSkipped('This system lacks required support.');
-        }
+        $this->_adapter = new Portable;
     }
 
     /**
      * Test that adapter generates a valid salt
      *
-     * The blowfish adapter should generate a 29-character salt string which
-     * begins with $2a$ followed by a two-digit iteration count.
+     * The portable adapter should generate a 12-character salt string which
+     * begins with $P$ followed by 1 byte of iteration count and 8 bytes of
+     * salt.
      *
      * By default, the adapter should use an iteration count of 12, so the salt
-     * string should look like $2a$12$..., so that's what we test for.
+     * string should look like $P$F..., so that's what we test for.
      *
      * @test
      * @return string
@@ -74,13 +61,13 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '$2a$12$', // Expected
+            '$P$F', // Expected
             $salt  // Actual
         );
 
         // Salt has proper length
         $this->assertEquals(
-            29, // Expected
+            12, // Expected
             strlen($salt) // Actual
         );
 
@@ -90,7 +77,7 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the adapter generates a valid hash
      *
-     * The blowfish adapter should generate a 60-character hash which begins
+     * The blowfish adapter should generate a 34-character hash which begins
      * with the salt.
      *
      * This test depends on the salt test, and uses the output of that test.
@@ -113,7 +100,7 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
 
         // Hash string has proper length
         $this->assertEquals(
-            60, // Expected
+            34, // Expected
             strlen($hash) // Actual
         );
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" verbose="true">
+<phpunit colors="true" verbose="true" bootstrap="bootstrap.php">
 
     <php>
         <includePath>../library</includePath>
@@ -7,7 +7,7 @@
 
     <testsuites>
         <testsuite name="PHPass Tests">
-            <directory suffix="Test.php" phpVersion="5.3.3" phpVersionOperator=">=">.</directory>
+            <directory suffix="Test.php" phpVersion="5.3.3" phpVersionOperator=">=">./library</directory>
         </testsuite>
     </testsuites>
 

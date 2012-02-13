@@ -13,18 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-use Phpass\Hash\ExtDes;
-
-/**
- * @see PHPUnit_Framework_TestCase
- */
-require_once 'PHPUnit/Framework/TestCase.php';
-
-/**
- * @see Phpass\Hash\ExtDes
- */
-require_once 'Phpass/Hash/ExtDes.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -36,11 +25,11 @@ require_once 'Phpass/Hash/ExtDes.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class ExtDesTest extends \PHPUnit_Framework_TestCase
+class BlowfishTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var Phpass\Hash
+     * @var Phpass\Hash\Adapter
      */
     protected $_adapter;
 
@@ -50,22 +39,17 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new ExtDes;
-        if (!$this->_adapter->isSupported()) {
-            $this->markTestSkipped('This system lacks required support.');
-        }
+        $this->_adapter = new Blowfish;
     }
 
     /**
      * Test that adapter generates a valid salt
      *
-     * The extdes adapter should generate a 9-character salt string which
-     * begins with and underscore followed by 4 bytes of iteration count and
-     * 4 bytes of salt. The iteration count is encoded as the characters
-     * /0-9A-Za-z/.
+     * The blowfish adapter should generate a 29-character salt string which
+     * begins with $2a$ followed by a two-digit iteration count.
      *
      * By default, the adapter should use an iteration count of 12, so the salt
-     * string should look like _zzz1..., so that's what we test for.
+     * string should look like $2a$12$..., so that's what we test for.
      *
      * @test
      * @return string
@@ -76,13 +60,13 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '_zzz1', // Expected
+            '$2a$12$', // Expected
             $salt  // Actual
         );
 
         // Salt has proper length
         $this->assertEquals(
-            9, // Expected
+            29, // Expected
             strlen($salt) // Actual
         );
 
@@ -92,7 +76,7 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the adapter generates a valid hash
      *
-     * The blowfish adapter should generate a 20-character hash which begins
+     * The blowfish adapter should generate a 60-character hash which begins
      * with the salt.
      *
      * This test depends on the salt test, and uses the output of that test.
@@ -115,7 +99,7 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
 
         // Hash string has proper length
         $this->assertEquals(
-            20, // Expected
+            60, // Expected
             strlen($hash) // Actual
         );
 
