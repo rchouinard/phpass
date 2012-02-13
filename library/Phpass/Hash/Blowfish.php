@@ -1,6 +1,6 @@
 <?php
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Hash
@@ -23,7 +23,7 @@ namespace Phpass\Hash;
 require_once 'Phpass/Hash/Base.php';
 
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Hash

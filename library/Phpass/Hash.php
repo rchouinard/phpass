@@ -1,6 +1,6 @@
 <?php
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Hash
@@ -18,7 +18,7 @@
 namespace Phpass;
 
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Hash

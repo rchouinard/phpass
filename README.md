@@ -1,4 +1,4 @@
-PHPass: PHP password library
+PHPass: PHP Password Library
 ============================
 
 What is PHPass?

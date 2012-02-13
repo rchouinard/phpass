@@ -1,6 +1,6 @@
 <?php
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @category Cryptography
@@ -36,7 +36,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
 require_once 'Phpass/Exception/UnexpectedValueException.php';
 
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @category Cryptography

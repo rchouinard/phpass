@@ -1,6 +1,6 @@
 <?php
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Tests
@@ -29,7 +29,7 @@ require_once 'PHPUnit/Framework/TestCase.php';
 require_once 'Phpass/Hash/ExtDes.php';
 
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Tests

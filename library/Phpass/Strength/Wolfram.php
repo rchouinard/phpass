@@ -1,6 +1,6 @@
 <?php
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Strength
@@ -21,7 +21,7 @@ namespace Phpass\Strength;
 require_once 'Phpass/Strength/Base.php';
 
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Strength

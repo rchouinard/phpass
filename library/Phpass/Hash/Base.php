@@ -1,6 +1,6 @@
 <?php
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Hash
@@ -36,7 +36,7 @@ require_once 'Phpass/Exception/InvalidArgumentException.php';
 require_once 'Phpass/Exception/RuntimeException.php';
 
 /**
- * Portable PHP password hashing framework.
+ * PHP Password Library
  *
  * @package PHPass
  * @subpackage Hash
