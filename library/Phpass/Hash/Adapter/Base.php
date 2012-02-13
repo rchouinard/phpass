@@ -13,25 +13,8 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-use Phpass\Hash\Adapter,
-    Phpass\Exception\InvalidArgumentException,
-    Phpass\Exception\RuntimeException;
-
-/**
- * @see Phpass\Hash\Adapter
- */
-require_once 'Phpass/Hash/Adapter.php';
-
-/**
- * @see Phpass\Exception\InvalidArgumentException
- */
-require_once 'Phpass/Exception/InvalidArgumentException.php';
-
-/**
- * @see Phpass\Exception\RuntimeException
- */
-require_once 'Phpass/Exception/RuntimeException.php';
+namespace Phpass\Hash\Adapter;
+use Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -206,57 +189,6 @@ abstract class Base implements Adapter
         }
 
         return $output;
-    }
-
-    /**
-     * Adapter factory.
-     *
-     * @param string $adapter
-     *   String represnting an adapter name.
-     * @param array $options
-     *   Optional; Associative array of adapter options.
-     * @return Phpass\Hash\Adapter
-     *   Instance of a class which implements Phpass\Hash\Adapter.
-     * @throws Phpass\Exception\InvalidArgumentException
-     *   Thrown when first argument is not a string.
-     * @throws Phpass\Exception\RuntimeException
-     *   Thrown when the adapter cannot be loaded.
-     */
-    static public function factory($adapter, Array $options = array ())
-    {
-        if (!is_string($adapter)) {
-            throw new InvalidArgumentException(
-                'Required argument $adapter is expected to be a string containing the name of an adapter'
-            );
-        }
-
-        // Map adapter aliases to class names
-        if (strtolower($adapter) == 'blowfish') {
-            $adapter = 'Phpass\Hash\Blowfish';
-        } else if (strtolower($adapter) == 'extdes') {
-            $adapter = 'Phpass\Hash\ExtDes';
-        } else if (strtolower($adapter) == 'pbkdf2') {
-            $adapter = 'Phpass\Hash\Pbkdf2';
-        } else if (strtolower($adapter) == 'portable') {
-            $adapter = 'Phpass\Hash\Portable';
-        }
-
-        // Attempt to include file based on adapter class name
-        if (!class_exists($adapter, false)) {
-            // Work with My_Hash or My\Hash
-            $file = trim(str_replace(array ('\\', '_'), DIRECTORY_SEPARATOR, $adapter), DIRECTORY_SEPARATOR);
-            @include $file . '.php';
-        }
-
-        // Create an instance of the adapter if it exists and implements Adapter
-        if (class_exists($adapter, false) && in_array('Phpass\Hash\Adapter', class_implements($adapter, false))) {
-            $instance = new $adapter($options);
-            return $instance;
-        }
-
-        throw new RuntimeException(
-            "Failed loading adapter '${adapter}'"
-        );
     }
 
 }

@@ -17,11 +17,6 @@ namespace Phpass\Exception;
 use Phpass\Exception;
 
 /**
- * @see \Phpass\Exception
- */
-require_once 'Phpass/Exception.php';
-
-/**
  * PHP Password Library
  *
  * @package PHPass

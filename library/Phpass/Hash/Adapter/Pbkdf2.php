@@ -13,24 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-use Phpass\Exception\InvalidArgumentException,
-    Phpass\Exception\RuntimeException;
-
-/**
- * @see Phpass\Hash\Base
- */
-require_once 'Phpass/Hash/Base.php';
-
-/**
- * @see Phpass\Exception\InvalidArgumentException
- */
-require_once 'Phpass/Exception/InvalidArgumentException.php';
-
-/**
- * @see Phpass\Exception\RuntimeException
- */
-require_once 'Phpass/Exception/RuntimeException.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -42,7 +25,7 @@ require_once 'Phpass/Exception/RuntimeException.php';
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class Pbkdf2 extends Hash
+class Pbkdf2 extends Base
 {
 
     /**
@@ -126,27 +109,6 @@ class Pbkdf2 extends Hash
 
         // $p5v2$CSSSSSSSS$
         return $output . '$';
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isSupported()
-     */
-    public function isSupported()
-    {
-        return extension_loaded('hash');
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 6) != '$p5v2$' || strlen($hash) != 48) {
-            $isValid = false;
-        }
-
-        return $isValid;
     }
 
     /**

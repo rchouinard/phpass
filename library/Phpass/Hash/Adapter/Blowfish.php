@@ -13,12 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-
-/**
- * @see Phpass\Hash\Base
- */
-require_once 'Phpass/Hash/Base.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -83,27 +78,6 @@ class Blowfish extends Base
         } while (1);
 
         return $output;
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isSupported()
-     */
-    public function isSupported()
-    {
-        return (bool) CRYPT_BLOWFISH;
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 4) != '$2a$' || strlen($hash) != 60) {
-            $isValid = false;
-        }
-
-        return $isValid;
     }
 
 }

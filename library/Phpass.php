@@ -14,26 +14,6 @@ use Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\UnexpectedValueException;
 
 /**
- * @see Phpass\Hash\Base
- */
-require_once 'Phpass/Hash/Base.php';
-
-/**
- * @see Phpass\Exception\InvalidArgumentException
- */
-require_once 'Phpass/Exception/InvalidArgumentException.php';
-
-/**
- * @see Phpass\Exception\RuntimeException
- */
-require_once 'Phpass/Exception/RuntimeException.php';
-
-/**
- * @see Phpass\Exception\UnexpectedValueException
- */
-require_once 'Phpass/Exception/UnexpectedValueException.php';
-
-/**
  * PHP Password Library
  *
  * @package PHPass

@@ -50,24 +50,4 @@ interface Adapter
      */
     public function genSalt($input = null);
 
-
-    /**
-     * Check if the adapter is supported on the system.
-     *
-     * @return boolean
-     *   True if the system has all the required dependencies to use the
-     *   adapter, false otherwise.
-     */
-    public function isSupported();
-
-    /**
-     * Check if a hash is compatible with the adapter.
-     *
-     * @param string $hash
-     *   Password hash string.
-     * @return boolean
-     *   True if the hash is compatible with the adapter, false otherwise.
-     */
-    public function isValid($hash);
-
 }

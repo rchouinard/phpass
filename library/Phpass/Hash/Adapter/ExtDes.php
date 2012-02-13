@@ -13,12 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-
-/**
- * @see \Phpass\Hash\Base
- */
-require_once 'Phpass/Hash/Base.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -56,27 +51,6 @@ class ExtDes extends Base
         $output .= $this->_encode64($input, 3);
 
         return $output;
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isSupported()
-     */
-    public function isSupported()
-    {
-        return (bool) CRYPT_EXT_DES;
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 1) != '_' || strlen($hash) != 20) {
-            $isValid = false;
-        }
-
-        return $isValid;
     }
 
 }

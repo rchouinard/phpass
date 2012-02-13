@@ -13,12 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Hash;
-
-/**
- * @see Phpass\Hash\Base
- */
-require_once 'Phpass/Hash/Base.php';
+namespace Phpass\Hash\Adapter;
 
 /**
  * PHP Password Library
@@ -97,27 +92,6 @@ class Portable extends Base
         $output .= $this->_encode64($input, 6);
 
         return $output;
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isSupported()
-     */
-    public function isSupported()
-    {
-        return true;
-    }
-
-    /**
-     * @see Phpass\Hash\Adapter::isValid()
-     */
-    public function isValid($hash)
-    {
-        $isValid = true;
-        if (substr($hash, 0, 3) != '$P$' || strlen($hash) != 34) {
-            $isValid = false;
-        }
-
-        return $isValid;
     }
 
 }

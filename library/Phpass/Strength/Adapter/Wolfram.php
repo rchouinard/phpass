@@ -13,12 +13,7 @@
 /**
  * @namespace
  */
-namespace Phpass\Strength;
-
-/**
- * @see Phpass\Strength\Base
- */
-require_once 'Phpass/Strength/Base.php';
+namespace Phpass\Strength\Adapter;
 
 /**
  * PHP Password Library
