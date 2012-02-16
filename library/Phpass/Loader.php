@@ -53,7 +53,7 @@ class Loader
      * Register an autoloader for the library.
      *
      * @return boolean
-     *   True on success, false on failure.
+     *   Returns true on success, false on failure.
      */
     static public function registerAutoloader()
     {
