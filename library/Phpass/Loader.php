@@ -73,7 +73,7 @@ class Loader
      */
     static public function registerAutoloader()
     {
-        return spl_autoload_register(array (self, 'load'));
+        return spl_autoload_register(array ('Phpass\\Loader', 'load'));
     }
 
 }
