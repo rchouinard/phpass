@@ -15,25 +15,38 @@ The library provides the ability to generate strong cryptographic hashes of user
 
 ```php
 <?php
-// Default configuration (bcrypt adapter, 2^12 iterations)
-$phpass = new Phpass;
-$passwordHash = $phpass->hashPassword('MySecretPassword');
-
-// Returns true
-$isValid = $phpass->checkPassword('MySecretPassword', $passwordHash);
+// Default configuration - bcrypt adapter, 2^12 (4,096) iterations
+$phpassHash = new \Phpass\Hash;
 ```
 
 ```php
 <?php
-// Custom hash adapter (PBKDF2 adapter, 2^16 iterations)
-$hashAdapter = new Phpass\Hash\Pbkdf2(array (
-  'iterationCountLog2' => 16
+// Customize hash adapter
+$adapter = new \Phpass\Hash\Pbkdf2(array (
+  'iterationCountLog2' => 16 // 2^16 (65,536) iterations
 ));
-$phpass = new Phpass($hashAdapter);
-$passwordHash = $phpass->hashPassword('MySecretPassword');
+$phpassHash = new \Phpass\Hash($adapter);
+```
 
-// Returns true
-$isValid = $phpass->checkPassword('MySecretPassword', $passwordHash);
+```php
+<?php
+// Customize hash adapter, with added HMAC hashing
+$options = array (
+  'adapter' => new \Phpass\Hash\Pbkdf2(array (
+    'iterationCountLog2' => 16 // 2^16 (65,536) iterations
+  ),
+  'hmacKey' => 'mys3cr3tk3y',
+  'hmacAlgo' => 'sha512'
+);
+$phpassHash = new \Phpass\Hash($options);
+```
+
+```php
+// Create and verify a password hash from any of the above configurations
+$passwordHash = $phpassHash->hashPassword($password);
+if ($phpassHash->checkPassword($password, $passwordHash)) {
+  // Password verified...
+}
 ```
 
 Calculating password strength
@@ -46,18 +59,18 @@ There are many different ways to calculate the relative strength of a given pass
 ```php
 <?php
 // Default configuration (NIST recommendations)
-$phpass = new Phpass;
+$phpassStrength = new \Phpass\Strength;
 
 // Returns 30
-$passwordEntropy = $phpass->calculateEntropy('MySecretPassword');
+$passwordEntropy = $phpassStrength->calculate('MySecretPassword');
 ```
 
 ```php
 <?php
 // Custom strength adapter (Wolfram algorithm)
-$strengthAdapter = new Phpass\Strength\Wolfram;
-$phpass = new Phpass($strengthAdapter);
+$adapter = new \Phpass\Strength\Wolfram;
+$phpassStrength = new \Phpass\Strength($adapter);
 
 // Returns 59
-$passwordEntropy = $phpass->calculateEntropy('MySecretPassword');
+$passwordEntropy = $phpassStrength->calculate('MySecretPassword');
 ```
