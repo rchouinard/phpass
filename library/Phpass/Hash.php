@@ -125,7 +125,7 @@ class Hash
         }
 
         if (!is_array($options)) {
-            throw new InvalidArgumentException('Expected either an array, or an instance of Phpass\Hash\Adapter.');
+            throw new InvalidArgumentException('Expected either an array, or an instance of Phpass\\Hash\\Adapter.');
         }
 
         $this->setOptions($options);
