@@ -47,6 +47,8 @@ class WolframTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @dataProvider passwordScoreProvider
+     * @param string $password
+     * @param integer $expectedScore
      * @return void
      */
     public function checkMethodCalculatesExpectedResult($password, $expectedScore)

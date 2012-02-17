@@ -29,19 +29,32 @@ class NistTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @return array
+     */
+    public function passwordScoreProvider()
+    {
+        return array (
+            array ('', 0),
+            array ('M', 4),
+            array ('My', 6),
+            array ('MySuperS', 18),
+            array ('MySuperSecretPasswor', 36),
+            array ('MySuperSecretPassword', 37),
+            array ('Super!Secret*Password', 43)
+        );
+    }
+
+    /**
      * @test
+     * @dataProvider passwordScoreProvider
+     * @param string $password
+     * @param integer $expectedScore
      * @return void
      */
-    public function checkMethodCalculatesExpectedResult()
+    public function checkMethodCalculatesExpectedResult($password, $expectedScore)
     {
         $adapter = new Nist;
-        $this->assertEquals( 0, $adapter->check(''));
-        $this->assertEquals( 4, $adapter->check('M'));
-        $this->assertEquals( 6, $adapter->check('My'));
-        $this->assertEquals(18, $adapter->check('MySuperS'));
-        $this->assertEquals(36, $adapter->check('MySuperSecretPasswor'));
-        $this->assertEquals(37, $adapter->check('MySuperSecretPassword'));
-        $this->assertEquals(43, $adapter->check('Super!Secret*Password'));
+        $this->assertEquals($expectedScore, $adapter->check($password));
     }
 
 }
