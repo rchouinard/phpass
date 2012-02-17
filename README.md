@@ -22,7 +22,7 @@ $phpassHash = new \Phpass\Hash;
 ```php
 <?php
 // Customize hash adapter
-$adapter = new \Phpass\Hash\Pbkdf2(array (
+$adapter = new \Phpass\Hash\Adapter\Pbkdf2(array (
   'iterationCountLog2' => 16 // 2^16 (65,536) iterations
 ));
 $phpassHash = new \Phpass\Hash($adapter);
@@ -32,7 +32,7 @@ $phpassHash = new \Phpass\Hash($adapter);
 <?php
 // Customize hash adapter, with added HMAC hashing
 $options = array (
-  'adapter' => new \Phpass\Hash\Pbkdf2(array (
+  'adapter' => new \Phpass\Hash\Adapter\Pbkdf2(array (
     'iterationCountLog2' => 16 // 2^16 (65,536) iterations
   ),
   'hmacKey' => 'mys3cr3tk3y',
@@ -68,7 +68,7 @@ $passwordEntropy = $phpassStrength->calculate('MySecretPassword');
 ```php
 <?php
 // Custom strength adapter (Wolfram algorithm)
-$adapter = new \Phpass\Strength\Wolfram;
+$adapter = new \Phpass\Strength\Adapter\Wolfram;
 $phpassStrength = new \Phpass\Strength($adapter);
 
 // Returns 59
