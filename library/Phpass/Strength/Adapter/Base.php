@@ -162,8 +162,16 @@ abstract class Base implements Adapter
     protected function _getClassIndices($class)
     {
         $indices = array ();
-        if (isset ($this->_tokenIndices[$class])) {
-            $indices = $this->_tokenIndices[$class];
+        if ($class == self::CLASS_LETTER) {
+            $indices = array_merge(
+                $this->_getClassIndices(self::CLASS_LOWER),
+                $this->_getClassIndices(self::CLASS_UPPER)
+            );
+            sort($indices);
+        } else {
+            if (isset ($this->_tokenIndices[$class])) {
+                $indices = $this->_tokenIndices[$class];
+            }
         }
         return $indices;
     }
@@ -180,8 +188,13 @@ abstract class Base implements Adapter
     protected function _getClassCount($class)
     {
         $count = 0;
-        if (isset ($this->_tokenCounts[$class])) {
-            $count = $this->_tokenCounts[$class];
+        if ($class == self::CLASS_LETTER) {
+            $count = $this->_getClassCount(self::CLASS_LOWER)
+                   + $this->_getClassCount(self::CLASS_UPPER);
+        } else {
+            if (isset ($this->_tokenCounts[$class])) {
+                $count = $this->_tokenCounts[$class];
+            }
         }
         return $count;
     }

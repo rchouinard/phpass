@@ -119,7 +119,7 @@ class Wolfram extends Base
         $symbolCount = $this->_getClassCount(self::CLASS_SYMBOL);
 
         if ($symbolCount > 0) {
-            $score += $symbolCount * 4;
+            $score += $symbolCount * 6;
         }
 
         return $score;
@@ -134,11 +134,18 @@ class Wolfram extends Base
     {
         $score = 0;
 
+        // The Wolfram algorithm actually only accounts for numbers, despite
+        // what the rule name implies and others have documented.
+        //
+        // I've decided to account for both numbers and symbols as the rule
+        // implies, and treat the Wolfram calculator as bugged. This will mean
+        // that the calculations of this class and the Wolfram calculator may
+        // not always match.
         foreach (array (self::CLASS_NUMBER, self::CLASS_SYMBOL) as $class) {
             $indices = $this->_getClassIndices($class);
-            foreach (array (0, $this->_length - 1) as $index) {
-                if (array_search($index, $indices)) {
-                    unset ($indicies[array_search($index, $indices)]);
+            foreach ($indices as $key => $index) {
+                if ($index == 0 || $index == $this->_length - 1) {
+                    unset ($indices[$key]);
                 }
             }
             $score += count($indices) * 2;
@@ -157,7 +164,7 @@ class Wolfram extends Base
         $score = 0;
         $repeats = 0;
 
-        foreach ($this->_tokens as $token => $tokenCount) {
+        foreach ($this->_tokens as $tokenCount) {
             if ($tokenCount > 1) {
                 $repeats += $tokenCount - 1;
             }
@@ -221,25 +228,14 @@ class Wolfram extends Base
         $password = $this->_password;
         $sequences = array ();
 
+        $indices = $this->_getClassIndices($class);
         if ($class == self::CLASS_LETTER) {
-            $indices = array_merge(
-                $this->_getClassIndices(self::CLASS_LOWER),
-                $this->_getClassIndices(self::CLASS_UPPER)
-            );
             $password = strtolower($password);
-        } else {
-            $indices = $this->_getClassIndices($class);
         }
-
-        sort($indices);
 
         $sequence = '';
         for ($index = 0; $index < count($indices); ++$index) {
-            if (!isset ($indices[$index + 1])) {
-                continue;
-            }
-
-            if ($indices[$index + 1] - $indices[$index] == 1 && ord($password[$indices[$index + 1]]) - ord($password[$indices[$index]]) == 1) {
+            if (isset ($indices[$index + 1]) && $indices[$index + 1] - $indices[$index] == 1 && ord($password[$indices[$index + 1]]) - ord($password[$indices[$index]]) == 1) {
                 if ($sequence == '') {
                     $sequence = $password[$indices[$index]] . $password[$indices[$index + 1]];
                 } else {

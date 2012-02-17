@@ -29,16 +29,30 @@ class WolframTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @return array
+     */
+    public function passwordScoreProvider()
+    {
+        return array (
+            array ('', 0),
+            array ('MySuperSecretPassword', 78),
+            array ('MySup3rS3cr3tP4ssw0rd', 155),
+            array ('Super!Secret*Password', 119),
+            array ('password32PASSWORD23password32PASSWORD23', 236),
+            array ('123456', 8),
+            array ('abcdef', 0)
+        );
+    }
+
+    /**
      * @test
+     * @dataProvider passwordScoreProvider
      * @return void
      */
-    public function checkMethodCalculatesExpectedResult()
+    public function checkMethodCalculatesExpectedResult($password, $expectedScore)
     {
         $adapter = new Wolfram;
-        $this->assertEquals(  0, $adapter->check(''));
-        $this->assertEquals( 78, $adapter->check('MySuperSecretPassword'));
-        $this->assertEquals(155, $adapter->check('MySup3rS3cr3tP4ssw0rd'));
-        $this->assertEquals(115, $adapter->check('Super!Secret*Password'));
+        $this->assertEquals($expectedScore, $adapter->check($password));
     }
 
 }
