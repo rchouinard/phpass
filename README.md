@@ -42,6 +42,7 @@ $phpassHash = new \Phpass\Hash($options);
 ```
 
 ```php
+<?php
 // Create and verify a password hash from any of the above configurations
 $passwordHash = $phpassHash->hashPassword($password);
 if ($phpassHash->checkPassword($password, $passwordHash)) {
