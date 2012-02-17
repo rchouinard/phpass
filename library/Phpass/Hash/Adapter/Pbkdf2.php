@@ -16,7 +16,7 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass PBKDF2 Hash Adapter
  *
  * @package PHPass
  * @subpackage Hash
@@ -38,7 +38,7 @@ class Pbkdf2 extends Base
     protected $_algo;
 
     /**
-     * @see Phpass\Hash\Base::__construct()
+     * @see \Phpass\Hash\Base::__construct()
      */
     public function __construct(Array $options = array ())
     {
@@ -49,7 +49,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see Phpass\Hash\Base::crypt()
+     * @see \Phpass\Hash\Base::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -88,7 +88,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see Phpass\Hash\Adapter::genSalt()
+     * @see \Phpass\Hash\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -126,10 +126,10 @@ class Pbkdf2 extends Base
      *   Optional; Number of iterations for key stretching.
      * @param integer $keyLength
      *   Optional; Length of derived key.
-     * @param string $alog
+     * @param string $algo
      *   Optional; Algorithm to use when generating HMAC digest.
      * @return string
-     *   Raw hash value.
+     *   Returns the raw hash value.
      */
     protected function _pbkdf2($password, $salt, $iterationCount = 1000, $keyLength = 20, $algo = 'sha1')
     {

@@ -9,10 +9,26 @@
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
 
+/**
+ * @namespace
+ */
 namespace Phpass;
 
 /**
- * PHP Password Library
+ * PHPass Class Loader
+ *
+ * This class provides static methods for loading and autoloading PHPass
+ * library classes. The most common use for this class is to simply call
+ * \Phpass\Loader::registerAutoloader() before using any library components.
+ *
+ * <code>
+ * <?php
+ * require_once 'Phpass/Loader.php';
+ * \Phpass\Loader::registerAutoloader();
+ *
+ * $phpassHash = new \Phpass\Hash;
+ * // ...
+ * </code>
  *
  * @package PHPass
  * @category Cryptography

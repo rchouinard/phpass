@@ -16,7 +16,7 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass Bcrypt Hash Adapter
  *
  * @package PHPass
  * @subpackage Hash
@@ -29,7 +29,7 @@ class Blowfish extends Base
 {
 
     /**
-     * @see Phpass\Hash\Base::__construct()
+     * @see \Phpass\Hash\Base::__construct()
      */
     public function __construct(Array $options = array ())
     {
@@ -38,7 +38,7 @@ class Blowfish extends Base
     }
 
     /**
-     * @see Phpass\Hash\Adapter::genSalt()
+     * @see \Phpass\Hash\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {

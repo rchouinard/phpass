@@ -16,7 +16,7 @@
 namespace Phpass\Strength;
 
 /**
- * PHP Password Library
+ * PHPass Strength Adapter Interface
  *
  * @package PHPass
  * @subpackage Strength
@@ -34,7 +34,7 @@ interface Adapter
      * @param string $password
      *   The plain-text password string.
      * @return integer
-     *   A numeric value representing the calculated password strength.
+     *   Returns a numeric value representing the calculated password strength.
      */
     public function check($password);
 

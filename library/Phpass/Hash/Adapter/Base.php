@@ -17,7 +17,7 @@ namespace Phpass\Hash\Adapter;
 use Phpass\Hash\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass Hash Adapter Base Class
  *
  * @package PHPass
  * @subpackage Hash
@@ -84,7 +84,7 @@ abstract class Base implements Adapter
     }
 
     /**
-     * @see Phpass\Hash\Adapter::crypt()
+     * @see \Phpass\Hash\Adapter::crypt()
      */
     public function crypt($password, $salt = null)
     {
@@ -104,17 +104,13 @@ abstract class Base implements Adapter
     public function setOptions(Array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
-
         foreach ($options as $key => $value) {
             switch ($key) {
-
                 case 'iterationcountlog2':
                     $this->_iterationCountLog2 = (int) $value;
                     break;
-
                 default:
                     break;
-
             }
         }
     }
@@ -123,7 +119,11 @@ abstract class Base implements Adapter
      * Encode binary data.
      *
      * @param string $input
+     *   Raw binary data to encode.
      * @param integer $count
+     *   Number of bytes to encode.
+     * @return string
+     *   Returns the encoded data as a string.
      */
     protected function _encode64($input, $count)
     {
@@ -158,7 +158,7 @@ abstract class Base implements Adapter
      * @param integer $count
      *   Number of bytes to generate.
      * @return string
-     *   String containg requisite number of random bytes.
+     *   Returns a string containing the requisite number of random bytes.
      */
     protected function _getRandomBytes($count)
     {

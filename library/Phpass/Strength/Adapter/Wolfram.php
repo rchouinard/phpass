@@ -16,7 +16,7 @@
 namespace Phpass\Strength\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass Strength Adapter for the Wolfram|Alpha Algorithm
  *
  * @package PHPass
  * @subpackage Strength
@@ -29,7 +29,7 @@ class Wolfram extends Base
 {
 
     /**
-     * @see Phpass\Strength\Adapter::check()
+     * @see \Phpass\Strength\Adapter::check()
      */
     public function check($password)
     {

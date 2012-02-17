@@ -16,7 +16,7 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass Extended DES Hash Adapter
  *
  * @package PHPass
  * @subpackage Hash
@@ -29,7 +29,7 @@ class ExtDes extends Base
 {
 
     /**
-     * @see Phpass\Hash\Adapter::genSalt()
+     * @see \Phpass\Hash\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {

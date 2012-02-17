@@ -17,7 +17,7 @@ namespace Phpass\Strength\Adapter;
 use Phpass\Strength\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass Strength Adapter Base Class
  *
  * @package PHPass
  * @subpackage Strength
@@ -156,6 +156,8 @@ abstract class Base implements Adapter
      * @param string $class
      *   Token class to retrieve indices for.
      * @return array
+     *   Returns a numerically indexed array of indicies where characters of a
+     *   given class may be found in the password string.
      */
     protected function _getClassIndices($class)
     {
@@ -172,6 +174,8 @@ abstract class Base implements Adapter
      * @param string $class
      *   Token class to retrieve count for.
      * @return integer
+     *   Returns the total number of characters of a given class which are in
+     *   the password string.
      */
     protected function _getClassCount($class)
     {

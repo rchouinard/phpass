@@ -17,7 +17,7 @@ namespace Phpass\Exception;
 use Phpass\Exception;
 
 /**
- * PHP Password Library
+ * PHPass Runtime Exception
  *
  * @package PHPass
  * @subpackage Exceptions

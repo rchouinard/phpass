@@ -16,7 +16,7 @@
 namespace Phpass\Hash;
 
 /**
- * PHP Password Library
+ * PHPass Hash Adapter Interface
  *
  * @package PHPass
  * @subpackage Hash
@@ -36,7 +36,7 @@ interface Adapter
      * @param string $salt
      *   Optional; The salt or stored hash value used to generate a new hash.
      * @return string
-     *   Hashed version of the password string.
+     *   Returns the calculated hash value of the password string.
      */
     public function crypt($password, $salt = null);
 
@@ -46,7 +46,7 @@ interface Adapter
      * @param string $input
      *   Optional; Random data used to generate the salt.
      * @return string
-     *   Generated salt string.
+     *   Returns a generated salt string.
      */
     public function genSalt($input = null);
 

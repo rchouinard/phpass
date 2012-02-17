@@ -16,7 +16,7 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass Portable Hash Adapter
  *
  * @package PHPass
  * @subpackage Hash
@@ -29,7 +29,7 @@ class Portable extends Base
 {
 
     /**
-     * @see Phpass\Hash\Adapter::crypt()
+     * @see \Phpass\Hash\Adapter::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -79,7 +79,7 @@ class Portable extends Base
     }
 
     /**
-     * @see Phpass\Hash\Adapter::genSalt()
+     * @see \Phpass\Hash\Adapter::genSalt()
      */
     public function genSalt($input = null)
     {

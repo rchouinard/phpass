@@ -16,7 +16,7 @@
 namespace Phpass;
 
 /**
- * PHP Password Library
+ * PHPass Exception Marker Interface
  *
  * @package PHPass
  * @subpackage Exceptions
