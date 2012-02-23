@@ -1,0 +1,24 @@
+{
+    "name": "rych/phpass",
+    "type": "library",
+    "description": "PHPass: Easy, secure password management for PHP",
+    "keywords": ["cryptography", "password"],
+    "homepage": "https://www.github.com/rchouinard/phpass",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Chouinard",
+            "email": "rchouinard@gmail.com",
+            "homepage": "http://ryanchouinard.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.1",
+        "ext-hash": "*"
+    },
+    "autoload": {
+        "psr-0" : {
+            "Phpass" : "library/"
+        }
+    }
+}
