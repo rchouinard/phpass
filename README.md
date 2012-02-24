@@ -6,6 +6,16 @@ What is PHPass?
 
 PHPass is a PHP library designed to ease the tasks associated with working with passwords. It is capable of generating strong cryptographic hashes, verifying supplied passwords against those hashes, and calculating the relative strength of a given password.
 
+Installation
+------------
+
+Either download a tarball or clone the project from GitHub and add the library folder to you include path, or use PEAR:
+
+```bash
+pear channel-discover rchouinard.github.com/pear
+pear install rych/PHPass-2.0.0
+```
+
 Hashing passwords
 -----------------
 
