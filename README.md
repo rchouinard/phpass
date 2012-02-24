@@ -9,12 +9,14 @@ PHPass is a PHP library designed to ease the tasks associated with working with 
 Installation
 ------------
 
-Either download a tarball or clone the project from GitHub and add the library folder to you include path, or use PEAR:
+Either download a tarball or clone the project from GitHub and add the library folder to you include path, or use [the PEAR channel](http://rchouinard.github.com/pear/):
 
 ```bash
 pear channel-discover rchouinard.github.com/pear
 pear install rych/PHPass-2.0.0
 ```
+
+Alternatively, you may use the [Composer](http://getcomposer.org) package manager to install the [rych/phpass](http://packagist.org/packages/rych/phpass) package.
 
 Hashing passwords
 -----------------
