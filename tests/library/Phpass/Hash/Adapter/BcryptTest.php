@@ -25,7 +25,7 @@ namespace Phpass\Hash\Adapter;
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
  */
-class BlowfishTest extends \PHPUnit_Framework_TestCase
+class BcryptTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -39,13 +39,13 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new Blowfish;
+        $this->_adapter = new Bcrypt;
     }
 
     /**
      * Test that adapter generates a valid salt
      *
-     * The blowfish adapter should generate a 29-character salt string which
+     * The bcrypt adapter should generate a 29-character salt string which
      * begins with $2a$ followed by a two-digit iteration count.
      *
      * By default, the adapter should use an iteration count of 12, so the salt
@@ -76,7 +76,7 @@ class BlowfishTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the adapter generates a valid hash
      *
-     * The blowfish adapter should generate a 60-character hash which begins
+     * The bcrypt adapter should generate a 60-character hash which begins
      * with the salt.
      *
      * This test depends on the salt test, and uses the output of that test.

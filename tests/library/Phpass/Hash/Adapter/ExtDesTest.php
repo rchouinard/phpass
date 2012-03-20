@@ -78,7 +78,7 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the adapter generates a valid hash
      *
-     * The blowfish adapter should generate a 20-character hash which begins
+     * The extdes adapter should generate a 20-character hash which begins
      * with the salt.
      *
      * This test depends on the salt test, and uses the output of that test.

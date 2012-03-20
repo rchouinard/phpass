@@ -77,7 +77,7 @@ class PortableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test that the adapter generates a valid hash
      *
-     * The blowfish adapter should generate a 34-character hash which begins
+     * The portable adapter should generate a 34-character hash which begins
      * with the salt.
      *
      * This test depends on the salt test, and uses the output of that test.

@@ -38,12 +38,12 @@ class HashTest extends \PHPUnit_Framework_TestCase
 
         // Verify adapter instance
         $this->assertInstanceOf(
-            'Phpass\\Hash\\Adapter\\Blowfish', // Expected
+            'Phpass\\Hash\\Adapter\\Bcrypt', // Expected
             $hash->getAdapter() // Actual
         );
 
         // Verify adapter configuration
-        $property = new \ReflectionProperty('Phpass\\Hash\\Adapter\\Blowfish', '_iterationCountLog2');
+        $property = new \ReflectionProperty('Phpass\\Hash\\Adapter\\Bcrypt', '_iterationCountLog2');
         $property->setAccessible(true);
         $this->assertEquals(
             12, // Expected

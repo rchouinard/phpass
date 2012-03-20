@@ -15,7 +15,7 @@
  */
 namespace Phpass;
 use Phpass\Hash\Adapter,
-    Phpass\Hash\Adapter\Blowfish,
+    Phpass\Hash\Adapter\Bcrypt,
     Phpass\Exception\InvalidArgumentException,
     Phpass\Exception\RuntimeException;
 
@@ -24,7 +24,7 @@ use Phpass\Hash\Adapter,
  *
  * This class provides a simple API for working with the various hash adapters.
  * When instantiated with no arguments, it creates an instance of
- * \Phpass\Hash\Adapter\Blowfish, configured for 2^12 (or 4,096) iterations.
+ * \Phpass\Hash\Adapter\Bcrypt, configured for 2^12 (or 4,096) iterations.
  * It is also possible to configure the class to use HMAC to provide some extra
  * security where needed.
  *
@@ -81,7 +81,7 @@ class Hash
      * Accepts either an associative array of option key value pairs, or a
      * concrete instance of \Phpass\Hash\Adapter. If neither is given, or if the
      * 'adapter' option key is omitted, an instance of
-     * \Phpass\Hash\Adapter\Blowfish is used by default.
+     * \Phpass\Hash\Adapter\Bcrypt is used by default.
      *
      * <code>
      * <?php
@@ -111,7 +111,7 @@ class Hash
     public function __construct($options = array ())
     {
         // Default adapter
-        $this->_adapter = new Blowfish(array (
+        $this->_adapter = new Bcrypt(array (
             'iterationCountLog2' => 12 // 2^12 = 4096 iterations
         ));
 
