@@ -91,7 +91,7 @@ class Bcrypt extends Base
             switch ($key) {
                 case 'iterationcountlog2':
                     $value = (int) $value;
-                    if ($value <= 4 || $value >= 31) {
+                    if ($value < 4 || $value > 31) {
                         throw new InvalidArgumentException('Iteration count must be a logarithmic value between 4 and 31');
                     }
                     $this->_iterationCountLog2 = $value;
@@ -100,11 +100,41 @@ class Bcrypt extends Base
                     if (!in_array($value, $this->_validIdentifiers)) {
                         throw new InvalidArgumentException('Invalid hash identifier.');
                     }
+                    $this->_identifier = $value;
+                    break;
                 default:
                     break;
             }
         }
     }
+
+    /**
+     * Check if a string contains a valid salt value for this adapter.
+     *
+     * @param string $input
+     *   String
+     * @return boolean
+     */
+    //public function verifySalt($input)
+    //{
+    //    return (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', substr($input, 0, 29)));
+    //}
+
+    /**
+     * Check if a string contains a valid hash value for this adapter.
+     *
+     * @param string $input
+     * @return boolean
+     */
+    //public function verifyHash($input)
+    //{
+    //    return ($this->verifySalt($input) && 1 === preg_match('/^[\.\/0-9A-Za-z]{31}$/', substr($input, 29)));
+    //}
+
+    //public function verify($input)
+    //{
+    //    return ($this->verifyHash($input) || $this->verifySalt($input));
+    //}
 
     /**
      * Generate a salt string suitable for PHP's crypt() function
