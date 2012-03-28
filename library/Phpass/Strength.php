@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -19,57 +18,78 @@ use Phpass\Strength\Adapter,
     Phpass\Exception\InvalidArgumentException;
 
 /**
- * PHPass Strength Class
+ * Strength class
  *
- * @package PHPass
- * @subpackage Strength
+ * Provides a simple API for working with the various strength calculator
+ * adapters. If the class is constructed with no arguments, it will construct
+ * an NIST adapter with default settings for use internally.
+ * 
+ *     <?php
+ *     $phpassStrength = new \Phpass\Strength;
+ *     
+ *     // Calculate password string entropy
+ *     $passwordStrength = $phpassStrength->calculate($password);
+ *
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class Strength
 {
 
     /**
-     * Instance of the adapter to use for calculating password strength.
+     * Instance of the adapter to use for calculating string entropy.
      *
-     * @var \Phpass\Strength\Adapter
+     * @var Adapter
      */
     protected $_adapter;
 
     /**
      * Class constructor.
      *
-     * @param array|\Phpass\Strength\Adapter $options
-     *   Either an associative array of options, or an instance of
-     *   \Phpass\Strength\Adapter.
+     *     <?php
+     *     // Just use the default NIST adapter
+     *     $phpassStrength = new \Phpass\Strength;
+     *     
+     *     // Customize the adapter
+     *     $adapter = new \Phpass\Strength\Adapter\Wolfram;
+     *     $phpassStrength = new \Phpass\Strength($adapter);
+     *     
+     *     // Customize the adapter via options array
+     *     $options = array (
+     *         'adapter' => new \Phpass\Strength\Adapter\Wolfram
+     *     );
+     *     $phpassStrength = new \Phpass\Strength($options);
+     *
+     * @param array|Adapter $options
+     *   Either an associative array of options, or an instance of Adapter.
      * @return void
+     * @throws InvalidArgumentException
+     *   An InvalidArgumentException is thrown if a value other than an Adapter
+     *   instance or options array is passed to the constructor.
      */
     public function __construct($options = array ())
     {
-        // Default adapter
         $this->_adapter = new Nist;
-
         if ($options instanceof Adapter) {
-            $options = array (
-                'adapter' => $options
-            );
+            $options = array ('adapter' => $options);
         }
 
         if (!is_array($options)) {
-            throw new InvalidArgumentException('Expected either an array, or an instance of Phpass\\Strength\\Adapter.');
+            throw new InvalidArgumentException('Expected an instance of Phpass\\Strength\\Adapter or an associative array of options.');
         }
 
         $this->setOptions($options);
     }
 
     /**
-     * Set the adapter to use for calculating password strength.
+     * Set the adapter to use for calculating string entropy.
      *
-     * @param \Phpass\Strength\Adapter $adapter
-     *   An instance of \Phpass\Strength\Adapter.
-     * @return \Phpass\Strength
+     * @param Adapter $adapter
+     *   An instance of a class implementing the Adapter interface.
+     * @return Strength
      */
     public function setAdapter(Adapter $adapter)
     {
@@ -78,9 +98,9 @@ class Strength
     }
 
     /**
-     * Retrieve the adapter used for calculating password strength.
+     * Retrieve the adapter used for calculating string entropy.
      *
-     * @return \Phpass\Strength\Adapter
+     * @return Adapter
      */
     public function getAdapter()
     {
@@ -88,14 +108,19 @@ class Strength
     }
 
     /**
-     * Set instance options.
+     * Set options.
      *
-     * Available options:
-     *   - adapter: An instance of Phpass\Strength\Adapter.
+     * <dl>
+     *   <dt>adapter</dt>
+     *     <dd>Instance of a class implementing the Adapter interface.</dd>
+     * </dl>
      *
      * @param array $options
      *   An associative array of options.
-     * @return \Phpass\Strength
+     * @return Strength
+     * @throws InvalidArgumentException
+     *   An InvalidArgumentException is thrown if a value does not match what
+     *   is expected for the option key.
      */
     public function setOptions(Array $options)
     {
@@ -117,12 +142,12 @@ class Strength
     }
 
     /**
-     * Calculate the strength of the given password.
+     * Return the calculated entropy.
      *
      * @param string $password
-     *   The password string to check.
+     *   The string to check.
      * @return integer
-     *   Returns the calculated password entropy.
+     *   Returns the calculated string entropy.
      */
     public function calculate($password)
     {

@@ -2,7 +2,7 @@
 /**
  * PHP Password Library
  *
- * @package PHPass\Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
@@ -41,7 +41,7 @@ use Phpass\Hash\Adapter,
  *         // Passwords match!
  *     }
  *
- * @package PHPass\Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License

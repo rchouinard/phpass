@@ -6,7 +6,7 @@
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -15,26 +15,24 @@
 namespace Phpass;
 
 /**
- * PHPass Class Loader
+ * Class loader
  *
- * This class provides static methods for loading and autoloading PHPass
- * library classes. The most common use for this class is to simply call
+ * This class provides static methods for loading and autoloading library
+ * classes. The most common use for this class is to simply call
  * \Phpass\Loader::registerAutoloader() before using any library components.
  *
- * <code>
- * <?php
- * require_once 'Phpass/Loader.php';
- * \Phpass\Loader::registerAutoloader();
- *
- * $phpassHash = new \Phpass\Hash;
- * // ...
- * </code>
+ *     <?php
+ *     require_once 'Phpass/Loader.php';
+ *     \Phpass\Loader::registerAutoloader();
+ *     
+ *     $phpassHash = new \Phpass\Hash;
+ *     // ...
  *
  * @package PHPass
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class Loader
 {
