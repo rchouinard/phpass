@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,20 +15,22 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHPass Portable Hash Adapter
+ * PHPass portable hash adapter
+ * 
+ * Implements a hashing algorithm compatible with the original Openwall phpass
+ * portable hash.
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class Portable extends Base
 {
 
     /**
-     * @see \Phpass\Hash\Adapter::crypt()
+     * @see Adapter::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -79,7 +80,7 @@ class Portable extends Base
     }
 
     /**
-     * @see \Phpass\Hash\Adapter::genSalt()
+     * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
     {

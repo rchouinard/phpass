@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,15 +15,18 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHPass Bcrypt Hash Adapter
+ * Bcrypt hash adapter
+ * 
+ * This class has been deprecated in favor of Bcrypt. This is a convenience
+ * class to facilitate migration, and may be removed in future versions.
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  * @deprecated
+ * @see Bcrypt
  */
 class Blowfish extends Bcrypt
 {

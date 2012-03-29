@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -18,18 +17,17 @@ namespace Phpass\Hash\Adapter;
 /**
  * PHPass Extended DES Hash Adapter
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class ExtDes extends Base
 {
 
     /**
-     * @see \Phpass\Hash\Adapter::genSalt()
+     * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
     {

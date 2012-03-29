@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -17,14 +16,13 @@ namespace Phpass\Hash\Adapter;
 use Phpass\Exception\InvalidArgumentException;
 
 /**
- * PHPass Bcrypt Hash Adapter
+ * Bcrypt hash adapter
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class Bcrypt extends Base
 {
@@ -44,22 +42,18 @@ class Bcrypt extends Base
     protected $_iterationCountLog2 = 12;
 
     /**
+     * Alphabet used in itoa64 conversions.
+     *
+     * @var string
+     */
+    protected $_itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    /**
      * List of valid hash identifier strings.
      *
      * @var array
      */
     protected $_validIdentifiers = array ('2a', '2x', '2y');
-
-    /**
-     * Class constructor.
-     *
-     * @see \Phpass\Hash\Base::__construct()
-     */
-    public function __construct(Array $options = array ())
-    {
-        parent::__construct($options);
-        $this->_itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    }
 
     /**
      * Set adapter options.
@@ -78,9 +72,10 @@ class Bcrypt extends Base
      *     Supported identifiers are 2a, 2x, and 2y. Defaults to 2a.</dd>
      * </dl>
      *
-     * @param array $options
+     * @param Array $options
      *   Associative array of adapter options.
-     * @return void
+     * @return Bcrypt
+     * @see Base::setOptions()
      */
     public function setOptions(Array $options)
     {
@@ -106,6 +101,8 @@ class Bcrypt extends Base
                     break;
             }
         }
+        
+        return $this;
     }
 
     /**
@@ -145,7 +142,7 @@ class Bcrypt extends Base
      * two-digit cost factor, and a 22-character encoded salt string using the
      * characters "./0-9A-Za-z", separated by "$".
      *
-     * @see \Phpass\Hash\Adapter::genSalt()
+     * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
     {

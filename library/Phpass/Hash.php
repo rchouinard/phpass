@@ -98,7 +98,7 @@ class Hash
      *     );
      *     $phpassHash = new \Phpass\Hash($options);
      *
-     * @param array|Adapter $options
+     * @param Array|Adapter $options
      *   Either an associative array of options, or an instance of Adapter.
      * @return void
      * @throws InvalidArgumentException
@@ -156,7 +156,7 @@ class Hash
      *     of supported algorithms.</dd>
      * </dl>
      *
-     * @param array $options
+     * @param Array $options
      *   An associative array of options.
      * @return Hash
      * @throws RuntimeException

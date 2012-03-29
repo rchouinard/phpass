@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,37 +15,38 @@
 namespace Phpass\Hash;
 
 /**
- * PHPass Hash Adapter Interface
+ * Hash adapter interface
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 interface Adapter
 {
 
     /**
-     * Generate a hash based on the password string.
+     * Return a hashed string.
      *
      * @param string $password
-     *   The plain-text password string.
+     *   The string to be hashed.
      * @param string $salt
-     *   Optional; The salt or stored hash value used to generate a new hash.
+     *   An optional salt string to base the hashing on. If not provided, the
+     *   adapter will generate a new secure salt value.
      * @return string
-     *   Returns the calculated hash value of the password string.
+     *   Returns the hashed string.
      */
     public function crypt($password, $salt = null);
 
     /**
-     * Generate a salt string suitable for use with the adapter.
+     * Return a salt string suitable for use with the current adapter.
      *
      * @param string $input
-     *   Optional; Random data used to generate the salt.
+     *   Optional random data to be used when generating the salt. Requirements
+     *   for this parameter may very by adapter.
      * @return string
-     *   Returns a generated salt string.
+     *   Returns the generated salt string.
      */
     public function genSalt($input = null);
 

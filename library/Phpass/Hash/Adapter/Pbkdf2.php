@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,14 +15,13 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHPass PBKDF2 Hash Adapter
+ * PBKDF2 hash adapter
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class Pbkdf2 extends Base
 {
@@ -31,25 +29,12 @@ class Pbkdf2 extends Base
     /**
      * Hashing algorithm used by the PBKDF2 implementation.
      *
-     * Defaults to sha256.
-     *
      * @var string
      */
-    protected $_algo;
+    protected $_algo = 'sha256';
 
     /**
-     * @see \Phpass\Hash\Base::__construct()
-     */
-    public function __construct(Array $options = array ())
-    {
-        parent::__construct($options);
-
-        $this->_algo = $this->_algo ?: 'sha256';
-        $this->_iterationCountLog2 = $this->_iterationCountLog2 ?: 12;
-    }
-
-    /**
-     * @see \Phpass\Hash\Base::crypt()
+     * @see Adapter::crypt()
      */
     public function crypt($password, $setting = null)
     {
@@ -88,7 +73,7 @@ class Pbkdf2 extends Base
     }
 
     /**
-     * @see \Phpass\Hash\Adapter::genSalt()
+     * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -119,17 +104,17 @@ class Pbkdf2 extends Base
      * http://stackoverflow.com/questions/5130513 also pass.
      *
      * @param string $password
-     *   The plain-text password string.
+     *   The string to be hashed.
      * @param string $salt
      *   Salt value used by the HMAC function.
      * @param integer $iterationCount
-     *   Optional; Number of iterations for key stretching.
+     *   Number of iterations for key stretching.
      * @param integer $keyLength
-     *   Optional; Length of derived key.
+     *   Length of derived key.
      * @param string $algo
-     *   Optional; Algorithm to use when generating HMAC digest.
+     *   Algorithm to use when generating HMAC digest.
      * @return string
-     *   Returns the raw hash value.
+     *   Returns the raw hash string.
      */
     protected function _pbkdf2($password, $salt, $iterationCount = 1000, $keyLength = 20, $algo = 'sha1')
     {

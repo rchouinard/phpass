@@ -2,29 +2,28 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
  * @namespace
  */
 namespace Phpass\Hash\Adapter;
-use Phpass\Hash\Adapter;
+use Phpass\Hash\Adapter,
+    Phpass\Exception\InvalidArgumentException;
 
 /**
- * PHPass Hash Adapter Base Class
+ * Hash adapter base class
  *
- * @package PHPass
- * @subpackage Hash
+ * @package PHPass\Hashes
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 abstract class Base implements Adapter
 {
@@ -33,8 +32,7 @@ abstract class Base implements Adapter
      * Binary logarithm value used in password stretching.
      *
      * This number determines the cost of calculating hash values for the
-     * various adapters. This value should be between 4 and 30, representing a
-     * total cost of 2^x, or 16 and 1,073,741,824, respectively.
+     * various adapters.
      *
      * Each adapter may treat this number differently. Generally, a calculated
      * value of 256 means that the password string is iteratively hashed 256
@@ -43,14 +41,14 @@ abstract class Base implements Adapter
      *
      * @var integer
      */
-    protected $_iterationCountLog2;
+    protected $_iterationCountLog2 = 12;
 
     /**
-     * String of ASCII characters used in itoa64 operations.
+     * Alphabet used in itoa64 conversions.
      *
      * @var string
      */
-    protected $_itoa64;
+    protected $_itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
     /**
      * Cached random data.
@@ -66,15 +64,12 @@ abstract class Base implements Adapter
     /**
      * Class constructor.
      *
-     * @param array $options
-     *   Optional; Associative array of adapter options.
+     * @param Array $options
+     *   Associative array of adapter options.
      * @return void
      */
     public function __construct(Array $options = array ())
     {
-        $this->_itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $this->_iterationCountLog2 = 12;
-
         $this->_randomState = microtime();
         if (function_exists('getmypid')) {
             $this->_randomState .= getmypid();
@@ -84,7 +79,7 @@ abstract class Base implements Adapter
     }
 
     /**
-     * @see \Phpass\Hash\Adapter::crypt()
+     * @see Adapter::crypt()
      */
     public function crypt($password, $salt = null)
     {
@@ -95,11 +90,11 @@ abstract class Base implements Adapter
     }
 
     /**
-     * Configure the adapter.
+     * Set adapter options.
      *
-     * @param array $options
+     * @param Array $options
      *   Associative array of adapter options.
-     * @return void
+     * @return Base
      */
     public function setOptions(Array $options)
     {
@@ -113,10 +108,15 @@ abstract class Base implements Adapter
                     break;
             }
         }
+        
+        return $this;
     }
 
     /**
-     * Encode binary data.
+     * Encode raw data to alphanumeric characters.
+     * 
+     * Each byte of the raw string is converted to its ASCII ordinal value and
+     * encoded as a series of ASCII characters from the itoa64 character set.
      *
      * @param string $input
      *   Raw binary data to encode.
@@ -153,12 +153,12 @@ abstract class Base implements Adapter
     }
 
     /**
-     * Generate random data.
+     * Generate a string of pseudo-random bytes.
      *
      * @param integer $count
-     *   Number of bytes to generate.
+     *   The length of the desired string of bytes. Must be a positive integer.
      * @return string
-     *   Returns a string containing the requisite number of random bytes.
+     *   Returns the generated string of bytes.
      */
     protected function _getRandomBytes($count)
     {

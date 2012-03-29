@@ -63,7 +63,7 @@ class Strength
      *     );
      *     $phpassStrength = new \Phpass\Strength($options);
      *
-     * @param array|Adapter $options
+     * @param Array|Adapter $options
      *   Either an associative array of options, or an instance of Adapter.
      * @return void
      * @throws InvalidArgumentException
@@ -115,7 +115,7 @@ class Strength
      *     <dd>Instance of a class implementing the Adapter interface.</dd>
      * </dl>
      *
-     * @param array $options
+     * @param Array $options
      *   An associative array of options.
      * @return Strength
      * @throws InvalidArgumentException
