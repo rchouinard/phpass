@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Exceptions
+ * @package PHPass\Exceptions
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -17,14 +16,16 @@ namespace Phpass\Exception;
 use Phpass\Exception;
 
 /**
- * PHPass Invalid Argument Exception
+ * Invalid argument exception
  *
- * @package PHPass
- * @subpackage Exceptions
+ * Exception thrown thrown if an argument does not match with the expected
+ * value.
+ *
+ * @package PHPass\Exceptions
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class InvalidArgumentException extends \InvalidArgumentException implements Exception
 {

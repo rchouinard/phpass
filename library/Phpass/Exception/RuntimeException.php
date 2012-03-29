@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Exceptions
+ * @package PHPass\Exceptions
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -17,14 +16,15 @@ namespace Phpass\Exception;
 use Phpass\Exception;
 
 /**
- * PHPass Runtime Exception
+ * Runtime exception
  *
- * @package PHPass
- * @subpackage Exceptions
+ * Exception thrown if an error which can only be found on runtime occurs.
+ *
+ * @package PHPass\Exceptions
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class RuntimeException extends \RuntimeException implements Exception
 {
