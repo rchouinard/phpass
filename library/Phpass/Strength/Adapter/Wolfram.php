@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,20 +15,19 @@
 namespace Phpass\Strength\Adapter;
 
 /**
- * PHPass Strength Adapter for the Wolfram|Alpha Algorithm
+ * Strength adapter for the Wolfram|Alpha algorithm
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class Wolfram extends Base
 {
 
     /**
-     * @see \Phpass\Strength\Adapter::check()
+     * @see Adapter::check()
      */
     public function check($password)
     {
@@ -60,7 +58,7 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate the base score based on string length.
+     * Return the base score based on string length.
      *
      * @return integer
      */
@@ -70,7 +68,7 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for letter tokens.
+     * Return the score for letter tokens.
      *
      * @return integer
      */
@@ -92,7 +90,7 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for number tokens.
+     * Return the score for numeric tokens.
      *
      * @return integer
      */
@@ -109,7 +107,7 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for symbol tokens.
+     * Return the score for symbol tokens.
      *
      * @return integer
      */
@@ -126,7 +124,7 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for special tokens in the middle of the string.
+     * Return the score for special tokens in the middle of the string.
      *
      * @return integer
      */
@@ -155,7 +153,7 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for repeated characters.
+     * Return the score for repeated characters.
      *
      * @return integer
      */
@@ -178,10 +176,10 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for consectutive tokens of the same class.
+     * Return the score for consectutive tokens of the same class.
      *
      * @param string $class
-     *   The token class to check.
+     *   The token class on which to base the calculation.
      * @return integer
      */
     protected function _calculateConsecutiveTokenScore($class)
@@ -215,10 +213,10 @@ class Wolfram extends Base
     }
 
     /**
-     * Calculate a score for sequential tokens of the same class.
+     * Return the score for sequential tokens of the same class.
      *
      * @param string $class
-     *   The token class to check.
+     *   The token class on which to base the calculation.
      * @return integer
      */
     protected function _calculateSequentialTokenScore($class)

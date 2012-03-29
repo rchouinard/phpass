@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,25 +15,24 @@
 namespace Phpass\Strength;
 
 /**
- * PHPass Strength Adapter Interface
+ * Strength adapter interface
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 interface Adapter
 {
 
     /**
-     * Calculate the strength of a given password.
+     * Return the calculated entropy.
      *
      * @param string $password
-     *   The plain-text password string.
+     *   The string to check.
      * @return integer
-     *   Returns a numeric value representing the calculated password strength.
+     *   Returns the calculated string entropy.
      */
     public function check($password);
 

@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -17,14 +16,13 @@ namespace Phpass\Strength\Adapter;
 use Phpass\Strength\Adapter;
 
 /**
- * PHPass Strength Adapter Base Class
+ * Strength adapter base class
  *
- * @package PHPass
- * @subpackage Strength
+ * @package PHPass\Strength
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 abstract class Base implements Adapter
 {
@@ -36,52 +34,52 @@ abstract class Base implements Adapter
     const CLASS_SYMBOL = 'symbol';
 
     /**
-     * Password string to analyze.
+     * The string to analyze.
      *
      * @var string
      */
     protected $_password;
 
     /**
-     * Calculated strength score.
+     * The calculated entropy.
      *
      * @var integer
      */
     protected $_score;
 
     /**
-     * Password string length in bytes.
+     * The string length in bytes.
      *
      * @var integer
      */
     protected $_length;
 
     /**
-     * Map of the number of times tokens appear in the password string.
+     * Map of the number of times tokens appear in the string.
      *
      * @var array
      */
     protected $_tokens;
 
     /**
-     * Map of indices pointing to token class in the password string.
+     * Map of indices pointing to token classes in the string.
      *
      * @var array
      */
     protected $_tokenIndices;
 
     /**
-     * Map of the number of times a token class occurs in the password string.
+     * Map of the number of times a token class occurs in the string.
      *
      * @var array
      */
     protected $_tokenCounts;
 
     /**
-     * Analyze a password string and store relevant metadata.
+     * Analyze a string and store relevant metadata.
      *
      * @param string $password
-     *   The password string to analyze.
+     *   The string to analyze.
      * @return void
      */
     protected function _analyze($password)
@@ -134,7 +132,7 @@ abstract class Base implements Adapter
             ++$this->_tokenCounts[$tokenClass];
             $this->_tokenIndices[$tokenClass][] = $index;
 
-            // Members of UPPER and LOWER also belong to LETTER...
+            // Members of UPPER and LOWER also belong to LETTER
             if ($tokenClass == self::CLASS_UPPER || $tokenClass == self::CLASS_LOWER) {
                 ++$this->_tokenCounts[self::CLASS_LETTER];
                 $this->_tokenIndices[self::CLASS_LETTER][] = $index;
@@ -150,14 +148,13 @@ abstract class Base implements Adapter
     }
 
     /**
-     * Get an array of token indices within the password string for a given
-     * class.
-     *
+     * Return a map of token indices within the string for a given class.
+     * 
      * @param string $class
-     *   Token class to retrieve indices for.
+     *   Token class to map.
      * @return array
-     *   Returns a numerically indexed array of indicies where characters of a
-     *   given class may be found in the password string.
+     *   Returns a numerically indexed array of indicies where members of a
+     *   given class may be found in the string.
      */
     protected function _getClassIndices($class)
     {
@@ -177,13 +174,13 @@ abstract class Base implements Adapter
     }
 
     /**
-     * Get a token count within the password string for a given class.
+     * Return the number of times members of a token class appear in the string.
      *
      * @param string $class
-     *   Token class to retrieve count for.
+     *   Token class to count.
      * @return integer
-     *   Returns the total number of characters of a given class which are in
-     *   the password string.
+     *   Returns the number of times members of the token class appear in the
+     *   string.
      */
     protected function _getClassCount($class)
     {
