@@ -79,6 +79,15 @@ abstract class Base implements Adapter
     }
 
     /**
+     * Return a hashed string.
+     *
+     * @param string $password
+     *   The string to be hashed.
+     * @param string $salt
+     *   An optional salt string to base the hashing on. If not provided, the
+     *   adapter will generate a new secure salt value.
+     * @return string
+     *   Returns the hashed string.
      * @see Adapter::crypt()
      */
     public function crypt($password, $salt = null)

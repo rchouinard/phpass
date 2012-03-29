@@ -27,7 +27,13 @@ class Nist extends Base
 {
 
     /**
-     * @see \Phpass\Strength\Adapter::check()
+     * Return the calculated entropy.
+     *
+     * @param string $password
+     *   The string to check.
+     * @return integer
+     *   Returns the calculated string entropy.
+     * @see Adapter::check()
      */
     public function check($password)
     {

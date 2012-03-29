@@ -25,7 +25,7 @@ namespace Phpass\Hash\Adapter;
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass Project at GitHub
- * @deprecated
+ * @deprecated Please use the Bcrypt adapter for all new code.
  * @see Bcrypt
  */
 class Blowfish extends Bcrypt

@@ -34,6 +34,15 @@ class Pbkdf2 extends Base
     protected $_algo = 'sha256';
 
     /**
+     * Return a hashed string.
+     *
+     * @param string $password
+     *   The string to be hashed.
+     * @param string $salt
+     *   An optional salt string to base the hashing on. If not provided, the
+     *   adapter will generate a new secure salt value.
+     * @return string
+     *   Returns the hashed string.
      * @see Adapter::crypt()
      */
     public function crypt($password, $setting = null)
@@ -73,6 +82,18 @@ class Pbkdf2 extends Base
     }
 
     /**
+     * Generate a salt string suitable for the crypt() method.
+     *
+     * Pbkdf2::genSalt() generates a 16-character salt string which can be
+     * passed to crypt(). The salt consists of a string beginning with a
+     * compatible hash identifier, one byte of iteration count, and an
+     * 8-byte encoded salt followed by "$".
+     *
+     * @param string $input
+     *   Optional random data to be used when generating the salt. Must contain
+     *   at least 6 bytes of data.
+     * @return string
+     *   Returns the generated salt string.
      * @see Adapter::genSalt()
      */
     public function genSalt($input = null)

@@ -27,6 +27,12 @@ class Wolfram extends Base
 {
 
     /**
+     * Return the calculated entropy.
+     *
+     * @param string $password
+     *   The string to check.
+     * @return integer
+     *   Returns the calculated string entropy.
      * @see Adapter::check()
      */
     public function check($password)

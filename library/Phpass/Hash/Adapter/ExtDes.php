@@ -27,6 +27,20 @@ class ExtDes extends Base
 {
 
     /**
+     * Generate a salt string suitable for the crypt() method.
+     *
+     * ExtDes::genSalt() generates a 9-character salt string which can be
+     * passed to crypt() in order to use the CRYPT_EXT_DES hash type. The salt
+     * consists of a string beginning with an underscore followed by 4-bytes of
+     * iteration count and 4-bytes of salt. Salt data is encoded as printable
+     * characters with 6-bits per character, least significant character
+     * first.
+     *
+     * @param string $input
+     *   Optional random data to be used when generating the salt. Must contain
+     *   at least 16 bytes of data.
+     * @return string
+     *   Returns the generated salt string.
      * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
