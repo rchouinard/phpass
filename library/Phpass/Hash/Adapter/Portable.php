@@ -13,6 +13,7 @@
  * @namespace
  */
 namespace Phpass\Hash\Adapter;
+use Phpass\Exception\InvalidArgumentException;
 
 /**
  * PHPass portable hash adapter
@@ -28,6 +29,71 @@ namespace Phpass\Hash\Adapter;
  */
 class Portable extends Base
 {
+
+    /**
+     * Logarithmic cost value used when generating new hash values.
+     *
+     * @var integer
+     */
+    protected $_iterationCountLog2 = 12;
+
+    /**
+     * Flag indicating if new hashes should use phpBB hash identifiers.
+     *
+     * By default, new hashes will use the $P$ identifier. If this flag is set
+     * to true, new hashes will use the $H$ identifier.
+     *
+     * @var boolean
+     */
+    protected $_phpBBCompat = false;
+
+    /**
+     * Set adapter options.
+     *
+     * Expects an associative array of option keys and values used to configure
+     * the hash adapter instance.
+     *
+     * <dl>
+     *   <dt>iterationCountLog2</dt>
+     *     <dd>A logarithmic value between 7 and 30, inclusive. This value
+     *     used to calculate the cost factor associated with generating a new
+     *     hash value. A higher number means a higher cost, with each increment
+     *     doubling the cost. Defaults to 12.</dd>
+     *   <dt>phpBBCompat</dt>
+     *     <dd>Boolean flag used to determine whether new hash strings should
+     *     use phpBB compatible hash identifiers (true) or the standard phpass
+     *     portable identifier (false). Defaults to false.</dd>
+     * </dl>
+     *
+     * @param Array $options
+     *   Associative array of adapter options.
+     * @return Bcrypt
+     * @see Base::setOptions()
+     */
+    public function setOptions(Array $options)
+    {
+        parent::setOptions($options);
+
+        $options = array_change_key_case($options, CASE_LOWER);
+        foreach ($options as $key => $value) {
+            switch ($key) {
+                case 'iterationcountlog2':
+                    $value = (int) $value;
+                    if ($value < 7 || $value > 30) {
+                        throw new InvalidArgumentException('Iteration count must be a logarithmic value between 7 and 30');
+                    }
+                    $this->_iterationCountLog2 = $value;
+                    break;
+                case 'phpbbcompat':
+                    $this->_phpBBCompat = (bool) $value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $this;
+    }
 
     /**
      * Return a hashed string.
@@ -110,7 +176,7 @@ class Portable extends Base
             $input = $this->_getRandomBytes(6);
         }
 
-        $output = '$P$';
+        $output = $this->_phpBBCompat ? '$H$' : '$P$';
         $output .= $this->_itoa64[min($this->_iterationCountLog2 + 5, 30)];
         $output .= $this->_encode64($input, 6);
 
