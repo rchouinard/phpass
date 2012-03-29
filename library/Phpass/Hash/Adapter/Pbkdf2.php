@@ -45,8 +45,9 @@ class Pbkdf2 extends Base
      *   Returns the hashed string.
      * @see Adapter::crypt()
      */
-    public function crypt($password, $setting = null)
+    public function crypt($password, $salt = null)
     {
+        $setting = $salt;
         if (!$setting) {
             $setting = $this->genSalt();
         }
