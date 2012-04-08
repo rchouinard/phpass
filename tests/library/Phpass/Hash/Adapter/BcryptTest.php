@@ -60,7 +60,7 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '$2a$12$', // Expected
+            '$2y$12$', // Expected
             $salt  // Actual
         );
 

@@ -101,7 +101,7 @@ class Bcrypt extends Base
                     break;
             }
         }
-        
+
         return $this;
     }
 
