@@ -108,13 +108,13 @@ class HashTest extends \PHPUnit_Framework_TestCase
         $hash = new Hash;
 
         $passwordHash = $hash->hashPassword($password);
-        $this->assertEquals('$2a$', substr($passwordHash, 0, 4));
+        $this->assertEquals('$2y$', substr($passwordHash, 0, 4));
         $this->assertTrue($hash->checkPassword($password, $passwordHash));
 
         $oldPasswordHash = $passwordHash;
         $passwordHash = $hash->hashPassword($password);
         $this->assertNotEquals($passwordHash, $oldPasswordHash);
-        $this->assertEquals('$2a$', substr($passwordHash, 0, 4));
+        $this->assertEquals('$2y$', substr($passwordHash, 0, 4));
         $this->assertTrue($hash->checkPassword($password, $passwordHash));
     }
 
