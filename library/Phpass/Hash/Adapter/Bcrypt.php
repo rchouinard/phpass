@@ -32,7 +32,7 @@ class Bcrypt extends Base
      *
      * @var string
      */
-    protected $_identifier = '2a';
+    protected $_identifier = '2y';
 
     /**
      * Logarithmic cost value used when generating new hash values.
