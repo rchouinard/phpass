@@ -13,9 +13,11 @@
         }
     ],
     "require": {
-        "php": ">=5.3.1",
-        "ext-hash": "*"
+        "php": ">=5.3.7"
     },
+    "recommend": {
+        "ext-hash": "*"
+    }
     "autoload": {
         "psr-0" : {
             "Phpass" : "library/"
