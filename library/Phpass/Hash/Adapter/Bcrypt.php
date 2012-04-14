@@ -69,7 +69,7 @@ class Bcrypt extends Base
      *     doubling the cost. Defaults to 12.</dd>
      *   <dt>identifier</dt>
      *     <dd>Hash identifier to use when generating a new hash value.
-     *     Supported identifiers are 2a, 2x, and 2y. Defaults to 2a.</dd>
+     *     Supported identifiers are 2a, 2x, and 2y. Defaults to 2y.</dd>
      * </dl>
      *
      * @param Array $options
