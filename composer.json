@@ -1,7 +1,7 @@
 {
     "name": "rych/phpass",
     "type": "library",
-    "description": "PHPass: Easy, secure password management for PHP",
+    "description": "PHP Password Library: Easy, secure password management for PHP",
     "keywords": ["cryptography", "password"],
     "homepage": "https://www.github.com/rchouinard/phpass",
     "license": "MIT",
