@@ -3,7 +3,7 @@
     "type": "library",
     "description": "PHPass: Easy, secure password management for PHP",
     "keywords": ["cryptography", "password"],
-    "homepage": "https://www.github.com/rchouinard/phpass",
+    "homepage": "http://rchouinard.github.com/phpass",
     "license": "MIT",
     "authors": [
         {
@@ -15,8 +15,8 @@
     "require": {
         "php": ">=5.3.7"
     },
-    "recommend": {
-        "ext-hash": "*"
+    "suggest": {
+        "ext-hash": "Enabling the hash extension allows you to combine the included hash adapters with HMAC for an extra layer of security."
     }
     "autoload": {
         "psr-0" : {
