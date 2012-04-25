@@ -56,6 +56,58 @@ class Bcrypt extends Base
     protected $_validIdentifiers = array ('2a', '2x', '2y');
 
     /**
+     * (non-PHPdoc)
+     * @see \Phpass\Hash\Adapter\Base::crypt()
+     */
+    public function crypt($password, $salt = null)
+    {
+        if (!$salt) {
+            $salt = $this->genSalt();
+        }
+        $hash =  crypt($password, $salt);
+
+        // XXX: Work around https://bugs.php.net/bug.php?id=61852
+        if (!$this->verifyHash($hash)) {
+            $hash = ($salt != '*0') ? '*0' : '*1';
+        }
+
+        return $hash;
+    }
+
+    /**
+     * Generate a salt string suitable for the crypt() method.
+     *
+     * A valid salt string begins with either $2a$, $2x$, or $2y$, a two-digit
+     * cost factor, and a 128-bit salt encoded as 22 characters in the regex
+     * range [./A-Za-z0-9].
+     *
+     * @param string $input
+     *   Optional 128-bits of random data to be used when generating the salt.
+     * @return string
+     *   Returns the generated salt string.
+     * @see Adapter::genSalt()
+     */
+    public function genSalt($input = null)
+    {
+        if (!$input) {
+            $input = $this->_getRandomBytes(16);
+        }
+
+        // Hash identifier
+        $identifier = $this->_identifier;
+
+        // Cost factor - "4" to "04"
+        $costFactor  = chr(ord('0') + $this->_iterationCountLog2 / 10);
+        $costFactor .= chr(ord('0') + $this->_iterationCountLog2 % 10);
+
+        // Salt string
+        $salt = $this->_encode64($input, 16);
+
+        // $II$CC$SSSSSSSSSSSSSSSSSSSSSS
+        return '$' . $identifier . '$' . $costFactor . '$' . $salt;
+    }
+
+    /**
      * Set adapter options.
      *
      * Expects an associative array of option keys and values used to configure
@@ -63,7 +115,7 @@ class Bcrypt extends Base
      *
      * <dl>
      *   <dt>iterationCountLog2</dt>
-     *     <dd>A logarithmic value between 4 and 31, inclusive. This value
+     *     <dd>A logarithmic value between 4 and 31, inclusive. This value is
      *     used to calculate the cost factor associated with generating a new
      *     hash value. A higher number means a higher cost, with each increment
      *     doubling the cost. Defaults to 12.</dd>
@@ -75,6 +127,7 @@ class Bcrypt extends Base
      * @param Array $options
      *   Associative array of adapter options.
      * @return Bcrypt
+     * @throws InvalidArgumentException
      * @see Base::setOptions()
      */
     public function setOptions(Array $options)
@@ -106,16 +159,15 @@ class Bcrypt extends Base
     }
 
     /**
-     * Check if a string contains a valid salt value for this adapter.
+     * check if a string is either a valid hash or salt value for this adapter.
      *
      * @param string $input
-     *   String
      * @return boolean
      */
-    //public function verifySalt($input)
-    //{
-    //    return (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', substr($input, 0, 29)));
-    //}
+    public function verify($input)
+    {
+        return ($this->verifyHash($input) || $this->verifySalt($input));
+    }
 
     /**
      * Check if a string contains a valid hash value for this adapter.
@@ -123,53 +175,36 @@ class Bcrypt extends Base
      * @param string $input
      * @return boolean
      */
-    //public function verifyHash($input)
-    //{
-    //    return ($this->verifySalt($input) && 1 === preg_match('/^[\.\/0-9A-Za-z]{31}$/', substr($input, 29)));
-    //}
-
-    //public function verify($input)
-    //{
-    //    return ($this->verifyHash($input) || $this->verifySalt($input));
-    //}
+    public function verifyHash($input)
+    {
+        return ($this->verifySalt($input) && 1 === preg_match('/^[\.\/0-9A-Za-z]{31}$/', substr($input, 29)));
+    }
 
     /**
-     * Generate a salt string suitable for the crypt() method.
-     *
-     * Bcrypt::genSalt() generates a 29-character salt string which can be
-     * passed to crypt() in order to use the CRYPT_BLOWFISH hash type. The salt
-     * consists of a string beginning with a compatible hash identifier, a
-     * two-digit cost factor, and a 22-character encoded salt string using the
-     * characters "./0-9A-Za-z", separated by "$".
+     * Check if a string contains a valid salt value for this adapter.
      *
      * @param string $input
-     *   Optional random data to be used when generating the salt. Must contain
-     *   at least 16 bytes of data.
-     * @return string
-     *   Returns the generated salt string.
-     * @see Adapter::genSalt()
+     *   String
+     * @return boolean
      */
-    public function genSalt($input = null)
+    public function verifySalt($input)
     {
-        if (!$input) {
-            $input = $this->_getRandomBytes(16);
-        }
+        return (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', substr($input, 0, 29)));
+    }
 
-        // Hash identifier
-        $output = '$' . $this->_identifier . '$';
-
-        // Cost factor
-        $output .= chr(ord('0') + $this->_iterationCountLog2 / 10);
-        $output .= chr(ord('0') + $this->_iterationCountLog2 % 10);
-        $output .= '$';
-
-        // Random salt data
+    /**
+     * (non-PHPdoc)
+     * @see Base::_encode64()
+     */
+    protected function _encode64($input, $count)
+    {
+        $output = '';
         $i = 0;
         do {
             $c1 = ord($input[$i++]);
             $output .= $this->_itoa64[$c1 >> 2];
             $c1 = ($c1 & 0x03) << 4;
-            if ($i >= 16) {
+            if ($i >= $count) {
                 $output .= $this->_itoa64[$c1];
                 break;
             }
@@ -185,7 +220,6 @@ class Bcrypt extends Base
             $output .= $this->_itoa64[$c2 & 0x3f];
         } while (1);
 
-        // $II$CC$SSSSSSSSSSSSSSSSSSSSSS
         return $output;
     }
 
