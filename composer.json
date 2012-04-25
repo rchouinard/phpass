@@ -17,7 +17,7 @@
     },
     "suggest": {
         "ext-hash": "Enabling the hash extension allows you to combine the included hash adapters with HMAC for an extra layer of security."
-    }
+    },
     "autoload": {
         "psr-0" : {
             "Phpass" : "library/"
