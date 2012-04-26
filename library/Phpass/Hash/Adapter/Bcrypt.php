@@ -159,7 +159,7 @@ class Bcrypt extends Base
     }
 
     /**
-     * check if a string is either a valid hash or salt value for this adapter.
+     * Check if a string is either a valid hash or salt value for this adapter.
      *
      * @param string $input
      * @return boolean
@@ -184,7 +184,6 @@ class Bcrypt extends Base
      * Check if a string contains a valid salt value for this adapter.
      *
      * @param string $input
-     *   String
      * @return boolean
      */
     public function verifySalt($input)
