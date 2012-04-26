@@ -177,7 +177,7 @@ class Bcrypt extends Base
      */
     public function verifyHash($input)
     {
-        return ($this->verifySalt($input) && 1 === preg_match('/^[\.\/0-9A-Za-z]{31}$/', substr($input, 29)));
+        return ($this->verifySalt(substr($input, 0, -31)) && 1 === preg_match('/^[\.\/0-9A-Za-z]{31}$/', substr($input, -31)));
     }
 
     /**
@@ -188,7 +188,7 @@ class Bcrypt extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', substr($input, 0, 29)));
+        return (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', $input));
     }
 
     /**
