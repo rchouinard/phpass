@@ -2,12 +2,11 @@
 /**
  * PHP Password Library
  *
- * @package PHPass
- * @subpackage Tests
+ * @package PHPass\Tests
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
 /**
@@ -16,14 +15,13 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHP Password Library
+ * PHPass portable hash adapter tests
  *
- * @package PHPass
- * @subpackage Tests
+ * @package PHPass\Tests
  * @category Cryptography
  * @author Ryan Chouinard <rchouinard at gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
- * @link https://github.com/rchouinard/phpass PHPass project at GitHub.
+ * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 class PortableTest extends \PHPUnit_Framework_TestCase
 {
