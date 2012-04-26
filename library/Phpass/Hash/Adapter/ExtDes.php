@@ -15,7 +15,7 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * PHPass Extended DES Hash Adapter
+ * Extended DES hash adapter
  *
  * @package PHPass\Hashes
  * @category Cryptography
