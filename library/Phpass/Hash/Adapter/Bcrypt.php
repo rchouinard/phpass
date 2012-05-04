@@ -28,14 +28,14 @@ class Bcrypt extends Base
 {
 
     /**
-     * String identifier to use when generating new hash values.
+     * String identifier used to generate new hash values.
      *
      * @var string
      */
     protected $_identifier = '2y';
 
     /**
-     * Logarithmic cost value used when generating new hash values.
+     * Logarithmic cost value used to generate new hash values.
      *
      * @var integer
      */
@@ -56,36 +56,33 @@ class Bcrypt extends Base
     protected $_validIdentifiers = array ('2a', '2x', '2y');
 
     /**
-     * (non-PHPdoc)
-     * @see \Phpass\Hash\Adapter\Base::crypt()
+     * Class constructor.
+     *
+     * @param Array $options
+     *   Associative array of adapter options.
+     * @return void
+     *   Returns nothing; it's a constructor.
+     * @see self::setOptions()
+     * @see Base::__construct()
      */
-    public function crypt($password, $salt = null)
+    public function __construct(Array $options = array ())
     {
-        if (!$salt) {
-            $salt = $this->genSalt();
-        }
-        $hash =  crypt($password, $salt);
-
-        // XXX: Work around https://bugs.php.net/bug.php?id=61852
-        if (!$this->verifyHash($hash)) {
-            $hash = ($salt != '*0') ? '*0' : '*1';
+        // Versions of PHP < 5.3.7 only support the 2a identifier
+        if (version_compare(PHP_VERSION, '5.3.7', '<')) {
+            $this->_identifier = '2a';
+            $this->_validIdentifiers = array ('2a');
         }
 
-        return $hash;
+        parent::__construct($options);
     }
 
     /**
-     * Generate a salt string suitable for the crypt() method.
-     *
-     * A valid salt string begins with either $2a$, $2x$, or $2y$, a two-digit
-     * cost factor, and a 128-bit salt encoded as 22 characters in the regex
-     * range [./A-Za-z0-9].
+     * Generate a salt string compatible with this adapter.
      *
      * @param string $input
-     *   Optional 128-bits of random data to be used when generating the salt.
+     *   Optional random 128-bit string to use when generating the salt.
      * @return string
      *   Returns the generated salt string.
-     * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -111,42 +108,46 @@ class Bcrypt extends Base
      * Set adapter options.
      *
      * Expects an associative array of option keys and values used to configure
-     * the hash adapter instance.
+     * this adapter.
      *
      * <dl>
      *   <dt>iterationCountLog2</dt>
-     *     <dd>A logarithmic value between 4 and 31, inclusive. This value is
-     *     used to calculate the cost factor associated with generating a new
-     *     hash value. A higher number means a higher cost, with each increment
-     *     doubling the cost. Defaults to 12.</dd>
+     *     <dd>Base-2 logarithm of the iteration count for the underlying
+     *     Blowfish-based hashing algorithm. Must be in range 4 - 31.
+     *     Defaults to 12.</dd>
      *   <dt>identifier</dt>
-     *     <dd>Hash identifier to use when generating a new hash value.
-     *     Supported identifiers are 2a, 2x, and 2y. Defaults to 2y.</dd>
+     *     <dd>Hash identifier to use when generating new hash values.
+     *     Supported identifiers are 2a, 2x, and 2y. Defaults to 2y in PHP
+     *     versions 5.3.7 and above, 2a otherwise.</dd>
      * </dl>
      *
      * @param Array $options
      *   Associative array of adapter options.
-     * @return Bcrypt
+     * @return self
+     *   Returns an instance of self to support method chaining.
      * @throws InvalidArgumentException
+     *   Throws an InvalidArgumentException if a provided option key contains
+     *   an invalid value.
      * @see Base::setOptions()
      */
     public function setOptions(Array $options)
     {
         parent::setOptions($options);
-
         $options = array_change_key_case($options, CASE_LOWER);
+
         foreach ($options as $key => $value) {
             switch ($key) {
                 case 'iterationcountlog2':
                     $value = (int) $value;
                     if ($value < 4 || $value > 31) {
-                        throw new InvalidArgumentException('Iteration count must be a logarithmic value between 4 and 31');
+                        throw new InvalidArgumentException('Iteration count must be between 4 and 31');
                     }
                     $this->_iterationCountLog2 = $value;
                     break;
                 case 'identifier':
+                    $value = strtolower($value);
                     if (!in_array($value, $this->_validIdentifiers)) {
-                        throw new InvalidArgumentException('Invalid hash identifier.');
+                        throw new InvalidArgumentException('Invalid hash identifier');
                     }
                     $this->_identifier = $value;
                     break;
@@ -159,21 +160,14 @@ class Bcrypt extends Base
     }
 
     /**
-     * Check if a string is either a valid hash or salt value for this adapter.
+     * Check if a hash string is valid for the current adapter.
      *
+     * @since 2.1.0
      * @param string $input
+     *   Hash string to verify.
      * @return boolean
-     */
-    public function verify($input)
-    {
-        return ($this->verifyHash($input) || $this->verifySalt($input));
-    }
-
-    /**
-     * Check if a string contains a valid hash value for this adapter.
-     *
-     * @param string $input
-     * @return boolean
+     *   Returns true if the input string is a valid hash value, false
+     *   otherwise.
      */
     public function verifyHash($input)
     {
@@ -181,10 +175,14 @@ class Bcrypt extends Base
     }
 
     /**
-     * Check if a string contains a valid salt value for this adapter.
+     * Check if a salt string is valid for the current adapter.
      *
+     * @since 2.1.0
      * @param string $input
+     *   Salt string to verify.
      * @return boolean
+     *   Returns true if the input string is a valid salt value, false
+     *   otherwise.
      */
     public function verifySalt($input)
     {
@@ -192,8 +190,14 @@ class Bcrypt extends Base
     }
 
     /**
-     * (non-PHPdoc)
-     * @see Base::_encode64()
+     * Encode raw data to characters in the itoa64 alphabet.
+     *
+     * @param string $input
+     *   Raw binary data to encode.
+     * @param integer $count
+     *   Number of bytes to encode.
+     * @return string
+     *   Returns the encoded data as a string.
      */
     protected function _encode64($input, $count)
     {

@@ -13,6 +13,7 @@
  * @namespace
  */
 namespace Phpass\Hash\Adapter;
+use Phpass\Exception\InvalidArgumentException;
 
 /**
  * Extended DES hash adapter
@@ -27,21 +28,19 @@ class ExtDes extends Base
 {
 
     /**
-     * Generate a salt string suitable for the crypt() method.
+     * Number of rounds used to generate new hashes.
      *
-     * ExtDes::genSalt() generates a 9-character salt string which can be
-     * passed to crypt() in order to use the CRYPT_EXT_DES hash type. The salt
-     * consists of a string beginning with an underscore followed by 4-bytes of
-     * iteration count and 4-bytes of salt. Salt data is encoded as printable
-     * characters with 6-bits per character, least significant character
-     * first.
+     * @var integer
+     */
+    protected $_iterationCount = 5001;
+
+    /**
+     * Generate a salt string compatible with this adapter.
      *
      * @param string $input
-     *   Optional random data to be used when generating the salt. Must contain
-     *   at least 16 bytes of data.
+     *   Optional random 24-bit string to use when generating the salt.
      * @return string
      *   Returns the generated salt string.
-     * @see Adapter::genSalt()
      */
     public function genSalt($input = null)
     {
@@ -49,20 +48,102 @@ class ExtDes extends Base
             $input = $this->_getRandomBytes(3);
         }
 
-        $countLog2 = min($this->_iterationCountLog2 + 8, 24);
-        // This should be odd to not reveal weak DES keys, and the
-        // maximum valid value is (2**24 - 1) which is odd anyway.
-        $count = (1 << $countLog2) - 1;
+        // Cost must be between 1 and 2^24 - 1
+        $count = min($this->_iterationCount + 1, (1 << 24) - 1);
+        // This should be odd to avoid revealing weak DES keys
+        if ($count % 2) {
+            --$count;
+        }
 
-        $output = '_';
-        $output .= $this->_itoa64[$count & 0x3f];
-        $output .= $this->_itoa64[($count >> 6) & 0x3f];
-        $output .= $this->_itoa64[($count >> 12) & 0x3f];
-        $output .= $this->_itoa64[($count >> 18) & 0x3f];
+        // Hash identifier
+        $identifier = '_';
 
-        $output .= $this->_encode64($input, 3);
+        // Cost factor
+        $costFactor  = $this->_itoa64[$count & 0x3f];
+        $costFactor .= $this->_itoa64[($count >> 0x06) & 0x3f];
+        $costFactor .= $this->_itoa64[($count >> 0x0c) & 0x3f];
+        $costFactor .= $this->_itoa64[($count >> 0x12) & 0x3f];
 
-        return $output;
+        // Salt string
+        $salt = $this->_encode64($input, 3);
+
+        return $identifier . $costFactor . $salt;
+    }
+
+    /**
+     * Set adapter options.
+     *
+     * Expects an associative array of option keys and values used to configure
+     * this adapter.
+     *
+     * <dl>
+     *   <dt>iterationCount</dt>
+     *     <dd>Number of rounds to use when generating new hashes. Must be
+     *     between 1 and 2^24-1. Defaults to 5001.</dd>
+     * </dl>
+     *
+     * @param Array $options
+     *   Associative array of adapter options.
+     * @return self
+     *   Returns an instance of self to support method chaining.
+     * @throws InvalidArgumentException
+     *   Throws an InvalidArgumentException if a provided option key contains
+     *   an invalid value.
+     * @see Base::setOptions()
+     */
+    public function setOptions(Array $options)
+    {
+        parent::setOptions($options);
+        $options = array_change_key_case($options, CASE_LOWER);
+
+        foreach ($options as $key => $value) {
+            switch ($key) {
+                case 'iterationcountlog2':
+                    $value = (1 << (int) $value);
+                    // Fall through
+                case 'iterationcount':
+                    $value = (int) $value;
+                    if ($value < 1 || $value > (1 << 24) - 1) {
+                        throw new InvalidArgumentException('Iteration count must be between 1 and 16777215');
+                    }
+                    $this->_iterationCountLog2 = $value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if a hash string is valid for the current adapter.
+     *
+     * @since 2.1.0
+     * @param string $input
+     *   Hash string to verify.
+     * @return boolean
+     *   Returns true if the input string is a valid hash value, false
+     *   otherwise.
+     */
+    public function verifyHash($input)
+    {
+        return ($this->verifySalt(substr($input, 0, -11)) && 1 === preg_match('/^[\.\/0-9A-Za-z]{11}$/', substr($input, -11)));
+    }
+
+    /**
+     * Check if a salt string is valid for the current adapter.
+     *
+     * @since 2.1.0
+     * @param string $input
+     *   Salt string to verify.
+     * @return boolean
+     *   Returns true if the input string is a valid salt value, false
+     *   otherwise.
+     */
+    public function verifySalt($input)
+    {
+        return (1 === preg_match('/^_[\.\/0-9A-Za-z]{8}$/', $input));
     }
 
 }
