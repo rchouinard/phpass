@@ -60,7 +60,7 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
 
         // Salt begins with correct string
         $this->assertStringStartsWith(
-            '_zzz1', // Expected
+            '_8C/.', // Expected
             $salt  // Actual
         );
 
