@@ -192,7 +192,15 @@ class Portable extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^\$[PH]{1}\$[\.\/0-9A-Za-z]{1}[\.\/0-9A-Za-z]{8}$/', $input));
+        $appearsValid =  (1 === preg_match('/^\$[PH]{1}\$[\.\/0-9A-Za-z]{1}[\.\/0-9A-Za-z]{8}$/', $input));
+        if ($appearsValid) {
+            $costFactor = strpos($this->_itoa64, $input[3]);
+            if ($costFactor < 7 || $costFactor > 30) {
+                $appearsValid = false;
+            }
+        }
+
+        return $appearsValid;
     }
 
 }

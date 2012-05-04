@@ -186,7 +186,15 @@ class Bcrypt extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', $input));
+        $appearsValid = (1 === preg_match('/^\$2[axy]{1}\$\d{2}\$[\.\/0-9A-Za-z]{22}$/', $input));
+        if ($appearsValid) {
+            $costFactor = (int) substr($input, 4, 2);
+            if ($costFactor < 4 || $costFactor > 31) {
+                $appearsValid = false;
+            }
+        }
+
+        return $appearsValid;
     }
 
     /**

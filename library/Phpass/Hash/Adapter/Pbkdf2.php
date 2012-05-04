@@ -141,7 +141,7 @@ class Pbkdf2 extends Base
                 case 'iterationcountlog2':
                     $value = (int) $value;
                     if ($value < 1 || $value > 30) {
-                        throw new InvalidArgumentException('Iteration count must be between 4 and 31');
+                        throw new InvalidArgumentException('Iteration count must be between 1 and 30');
                     }
                     $this->_iterationCountLog2 = $value;
                     break;
@@ -180,7 +180,15 @@ class Pbkdf2 extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^\$p5v2\$[\.\/0-9A-Za-z]{1}[\.\/0-9A-Za-z]{8}\$?$/', $input));
+        $appearsValid = (1 === preg_match('/^\$p5v2\$[\.\/0-9A-Za-z]{1}[\.\/0-9A-Za-z]{8}\$?$/', $input));
+        if ($appearsValid) {
+            $costFactor = strpos($this->_itoa64, $input[6]);
+            if ($costFactor < 1 || $costFactor > 30) {
+                $appearsValid = false;
+            }
+        }
+
+        return $appearsValid;
     }
 
     /**

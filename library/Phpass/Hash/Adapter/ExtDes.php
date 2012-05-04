@@ -48,26 +48,21 @@ class ExtDes extends Base
             $input = $this->_getRandomBytes(3);
         }
 
-        // Cost must be between 1 and 2^24 - 1
-        $count = min($this->_iterationCount + 1, (1 << 24) - 1);
-        // This should be odd to avoid revealing weak DES keys
-        if ($count % 2) {
-            --$count;
-        }
-
         // Hash identifier
         $identifier = '_';
 
-        // Cost factor
-        $costFactor  = $this->_itoa64[$count & 0x3f];
-        $costFactor .= $this->_itoa64[($count >> 0x06) & 0x3f];
-        $costFactor .= $this->_itoa64[($count >> 0x0c) & 0x3f];
-        $costFactor .= $this->_itoa64[($count >> 0x12) & 0x3f];
+        // Cost factor - must be between 1 and 16777215
+        $costFactor = min($this->_iterationCount + 1, 0xffffff);
+        // Should be odd to avoid revealing weak DES keys
+        if ($costFactor % 2) {
+            --$costFactor;
+        }
 
         // Salt string
         $salt = $this->_encode64($input, 3);
 
-        return $identifier . $costFactor . $salt;
+        // _CCCCSSSS
+        return $identifier . $this->_encodeInt24($costFactor) . $salt;
     }
 
     /**
@@ -143,7 +138,66 @@ class ExtDes extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^_[\.\/0-9A-Za-z]{8}$/', $input));
+        $appearsValid = (1 === preg_match('/^_[\.\/0-9A-Za-z]{8}$/', $input));
+        if ($appearsValid) {
+            $costFactor = $this->_decodeInt24(substr($input, 1, 4));
+            if ($costFactor < 1 || $costFactor > (1 << 24) - 1) {
+                $appearsValid = false;
+            }
+        }
+
+        return $appearsValid;
+    }
+
+    /**
+     * Encode a 24-bit integer as a 4-byte string.
+     *
+     * @param integer $integer
+     *   The integer to encode. Must be between 0 and 16777215.
+     * @return string
+     *   Returns the encoded string.
+     * @throws InvalidArgumentException
+     *   Throws an InvalidArgumentException if the integer is outside of the
+     *   range 0 - 16777215.
+     */
+    protected function _encodeInt24($integer)
+    {
+        $integer = (int) $integer;
+        if ($integer < 0 || $integer > 0xffffff) {
+            throw new InvalidArgumentException('Integer is out of range');
+        }
+
+        $string  = $this->_itoa64[$integer & 0x3f];
+        $string .= $this->_itoa64[($integer >> 0x06) & 0x3f];
+        $string .= $this->_itoa64[($integer >> 0x0c) & 0x3f];
+        $string .= $this->_itoa64[($integer >> 0x12) & 0x3f];
+
+        return $string;
+    }
+
+    /**
+     * Decode a 24-bit integer encoded as a 4-byte string.
+     *
+     * @param string $source
+     *   The source string to decode.
+     * @return integer
+     *   Returns the decoded integer.
+     * @throws InvalidArgumentException
+     *   Throws an InvalidArgumentException if the source string is not exactly
+     *   4 bytes.
+     */
+    protected function _decodeInt24($source)
+    {
+        if (strlen($source) != 4) {
+            throw new InvalidArgumentException('Source must be exactly 4 bytes');
+        }
+
+        $integer  = strpos($this->_itoa64, $source{0});
+        $integer += (strpos($this->_itoa64, $source{1}) << 0x06);
+        $integer += (strpos($this->_itoa64, $source{2}) << 0x0c);
+        $integer += (strpos($this->_itoa64, $source{3}) << 0x12);
+
+        return $integer;
     }
 
 }
