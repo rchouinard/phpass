@@ -52,9 +52,9 @@ class ExtDes extends Base
         $identifier = '_';
 
         // Cost factor - must be between 1 and 16777215
-        $costFactor = min($this->_iterationCount + 1, 0xffffff);
+        $costFactor = min(max($this->_iterationCount, 1), 0xffffff);
         // Should be odd to avoid revealing weak DES keys
-        if ($costFactor % 2) {
+        if (($costFactor % 2) == 0) {
             --$costFactor;
         }
 
@@ -74,7 +74,7 @@ class ExtDes extends Base
      * <dl>
      *   <dt>iterationCount</dt>
      *     <dd>Number of rounds to use when generating new hashes. Must be
-     *     between 1 and 2^24-1. Defaults to 5001.</dd>
+     *     between 1 and 16777215. Defaults to 5001.</dd>
      * </dl>
      *
      * @param Array $options
@@ -101,7 +101,7 @@ class ExtDes extends Base
                     if ($value < 1 || $value > (1 << 24) - 1) {
                         throw new InvalidArgumentException('Iteration count must be between 1 and 16777215');
                     }
-                    $this->_iterationCountLog2 = $value;
+                    $this->_iterationCount = $value;
                     break;
                 default:
                     break;
