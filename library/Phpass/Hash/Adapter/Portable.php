@@ -63,7 +63,7 @@ class Portable extends Base
      *   A RuntimeException is thrown on failure if
      *   self::$_throwExceptionOnFailure is true.
      */
-public function crypt($password, $salt = null)
+    public function crypt($password, $salt = null)
     {
         if (!$salt) {
             $salt = $this->genSalt();
