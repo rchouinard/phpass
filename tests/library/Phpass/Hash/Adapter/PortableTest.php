@@ -41,93 +41,111 @@ class PortableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that adapter generates a valid salt
-     *
-     * The portable adapter should generate a 12-character salt string which
-     * begins with $P$ followed by 1 byte of iteration count and 8 bytes of
-     * salt.
-     *
-     * By default, the adapter should use an iteration count of 12, so the salt
-     * string should look like $P$F..., so that's what we test for.
+     * Run a number of standard test vectors through the adapter
      *
      * @test
-     * @return string
+     * @return void
      */
-    public function adapterGeneratesValidSalt()
+    public function knownTestVectorsBehaveAsExpected()
     {
-        $salt = $this->_adapter->genSalt();
+        $adapter = $this->_adapter;
 
-        // Salt begins with correct string
-        $this->assertStringStartsWith(
-            '$P$F', // Expected
-            $salt  // Actual
+        $vectors = array (
+            // Generated using Openwall's PasswordHash class
+            array ("U*U", '$P$8Y50qr/rEJ5LQ0ni8R9WUYUE70TDSu/'),
+            array ("U*U*", '$P$8/LEV9JjUM.FMZ6nsACmgyBkaeD4Ka1'),
+            array ("U*U*U", '$P$8S7UaSkpWYULBOjfjdL7oWoL6bPjrZ/'),
+            array ("", '$P$876GykTPTcUNTbMmjOdVvPrCEM/.W80'),
+            array ("", '$P$8CCCCCCCCprnqtTraJ2.nIjE4ET2Mh/'),
         );
 
-        // Salt has proper length
-        $this->assertEquals(
-            12, // Expected
-            strlen($salt) // Actual
-        );
+        foreach ($vectors as $vector) {
+            $this->assertEquals($adapter->crypt($vector[0], $vector[1]), $vector[1]);
+        }
 
-        return $salt;
+        // Invalid salts
+        $this->assertEquals($adapter->crypt('', '$P$4CCCCCCCC'), '*0');
+        $this->assertEquals($adapter->crypt('', '$P$TCCCCCCCC'), '*0');
+        $this->assertEquals($adapter->crypt('', '$X$8CCCCCCCC'), '*0');
+
+        // Invalid hashes
+        $this->assertEquals($adapter->crypt('', '$P$8CCCCCCCCprnqtTraJ2!nIjE4ET2Mh/'), '*0');
+        $this->assertEquals($adapter->crypt('', '$P{8CCCCCCCCprnqtTraJ2.nIjE4ET2Mh/'), '*0');
+        $this->assertEquals($adapter->crypt('', '*0'), '*1');
+        $this->assertEquals($adapter->crypt('', '*1'), '*0');
+    }
+
+    /**
+     * Test that setOptions() properly sets configuration options
+     *
+     * @test
+     * @return void
+     */
+    public function modifyingOptionsUpdatesAdapterBehavior()
+    {
+        $adapter = $this->_adapter;
+
+        $adapter->setOptions(array ('iterationCountLog2' => 7));
+        $this->assertStringStartsWith('$P$A', $adapter->genSalt());
+
+        $adapter->setOptions(array ('phpBBCompat' => true));
+        $this->assertStringStartsWith('$H$A', $adapter->genSalt());
+
+        $adapter->setOptions(array ('iterationCountLog2' => 10, 'phpBBCompat' => false));
+        $this->assertStringStartsWith('$P$D', $adapter->genSalt());
+
+        try {
+            $adapter->setOptions(array ('iterationCountLog2' => 6));
+        } catch (\Exception $e) {}
+        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
+        unset($e);
+
+        try {
+            $adapter->setOptions(array ('iterationCountLog2' => 31));
+        } catch (\Exception $e) {}
+        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
+        unset($e);
     }
 
     /**
      * Test that the adapter generates a valid hash
      *
-     * The portable adapter should generate a 34-character hash which begins
-     * with the salt.
-     *
-     * This test depends on the salt test, and uses the output of that test.
-     * This way, the test focuses on the hash, and won't be affected by the call
-     * to Phpass\Hash::genSalt().
-     *
      * @test
-     * @depends adapterGeneratesValidSalt
-     * @return string
+     * @return void
      */
-    public function adapterGeneratesValidHash($salt)
+    public function adapterGeneratesValidHashString()
     {
-        $hash = $this->_adapter->crypt('password', $salt);
+        $adapter = $this->_adapter;
+        $password = 'password';
 
-        // Hash string begins with salt
-        $this->assertStringStartsWith(
-            $salt, // Expected
-            $hash // Actual
-        );
+        // Generates a valid salt string
+        $salt = $adapter->genSalt();
+        $this->assertRegExp('/^\$[PH]{1}\$[\.\/0-9A-Za-z]{9}$/', $salt);
 
-        // Hash string has proper length
-        $this->assertEquals(
-            34, // Expected
-            strlen($hash) // Actual
-        );
-
-        return $hash;
+        // Generates a valid hash string
+        $hash = $adapter->crypt($password, $salt);
+        $this->assertRegExp('/^\$[PH]{1}\$[\.\/0-9A-Za-z]{31}$/', $hash);
     }
 
     /**
      * Test that the adapter generates the same hash given the same input
      *
-     * The adapter should be consistent with hash generation given the same
-     * input parameters, otherwise the adapter won't be able to actually
-     * validate a password (making it useless).
-     *
-     * This test uses the output of the hash test in order to be consistent and
-     * focus on validation.
-     *
      * @test
-     * @depends adapterGeneratesValidHash
      * @return void
      */
-    public function adapterGeneratesSameHashGivenOriginalSaltAndPasswordString($storedHash)
+    public function adapterConsistentlyGeneratesHashStrings()
     {
-        $hash = $this->_adapter->crypt('password', $storedHash);
+        $adapter = $this->_adapter;
+        $password = 'password';
 
-        // Generated hash matches stored hash value
-        $this->assertEquals(
-            $storedHash, // Expected
-            $hash // Actual
-        );
+        $salt = $adapter->genSalt();
+        $hash = $adapter->crypt($password, $salt);
+
+        // Generates the same hash for the password given the stored salt
+        $this->assertEquals($hash, $adapter->crypt($password, $salt));
+
+        // Generates the same hash for the password given the stored hash
+        $this->assertEquals($hash, $adapter->crypt($password, $hash));
     }
 
 }

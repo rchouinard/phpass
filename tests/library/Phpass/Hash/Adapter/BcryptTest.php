@@ -46,12 +46,10 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
      * This tests the underlying crypt() method more than anything, but it's
      * a good idea to make sure the adapter doesn't inadvertently interfere.
      *
-     * Case in point, I discovered a bug in crypt() because of these tests. :-)
-     *
      * @test
      * @return void
      */
-    public function testVectorsWorkAsExpected()
+    public function knownTestVectorsBehaveAsExpected()
     {
         $adapter = $this->_adapter;
 
@@ -125,7 +123,7 @@ class BcryptTest extends \PHPUnit_Framework_TestCase
      * @test
      * @return void
      */
-    public function setOptionMethodAffectsConfiguration()
+    public function modifyingOptionsUpdatesAdapterBehavior()
     {
         $adapter = $this->_adapter;
 

@@ -15,7 +15,7 @@
 namespace Phpass\Hash\Adapter;
 
 /**
- * Extended DES hash adapter tests
+ * SHA512 crypt hash adapter tests
  *
  * @package PHPass\Tests
  * @category Cryptography
@@ -23,7 +23,7 @@ namespace Phpass\Hash\Adapter;
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
-class ExtDesTest extends \PHPUnit_Framework_TestCase
+class Sha512CryptTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -37,7 +37,7 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_adapter = new ExtDes;
+        $this->_adapter = new Sha512Crypt;
     }
 
     /**
@@ -51,18 +51,21 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
         $adapter = $this->_adapter;
 
         $vectors = array (
-            array ("U*U", '_zzD.2.nIWzugGxYyy0g'),
-            array ("U*U*", '_zzD.TraJm.5udFKSqzI'),
-            array ("U*U*U", '_zzD.CEM/afcFK40/mw.'),
-            array ("", '_zzD.qtTr73yMBXbDqiI'),
-            array ("", '_zzD.CCCCBeguG7nmIew'),
+            // http://www.akkadia.org/drepper/SHA-crypt.txt
+            array ("Hello world!", '$6$saltstring$svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJuesI68u4OTLiBFdcbYEdFCoEOfaS35inz1'),
+            array ("Hello world!", '$6$rounds=10000$saltstringsaltst$OW1/O6BYHV6BcXZu8QVeXbDWra3Oeqh0sbHbbMCVNSnCM/UrjmM0Dp8vOuZeHBy/YTBmSK6H9qs/y3RnOaw5v.'),
+            array ("This is just a test", '$6$rounds=5000$toolongsaltstrin$lQ8jolhgVRVhY4b5pZKaysCLi0QBxGoNeKQzQ3glMhwllF7oGDZxUhx1yxdYcz/e1JSbq3y6JMxxl8audkUEm0'),
+            array ("a very much longer text to encrypt.  This one even stretches over morethan one line.", '$6$rounds=1400$anotherlongsalts$POfYwTEok97VWcjxIiSOjiykti.o/pQs.wPvMxQ6Fm7I6IoYN3CmLs66x9t0oSwbtEW7o7UmJEiDwGqd8p4ur1'),
+            array ("we have a short salt string but not a short password", '$6$rounds=77777$short$WuQyW2YR.hBNpjjRhpYD/ifIw05xdfeEyQoMxIXbkvr0gge1a1x3yRULJ5CCaUeOxFmtlcGZelFl5CxtgfiAc0'),
+            array ("a short string", '$6$rounds=123456$asaltof16chars..$BtCwjqMJGx5hrJhZywWvt0RLE8uZ4oPwcelCjmw2kSYu.Ec6ycULevoBK25fs2xXgMNrCzIMVcgEJAstJeonj1'),
+            array ("the minimum number is still observed", '$6$rounds=1000$roundstoolow$kUMsbe306n21p9R.FRkW3IGn.S9NPN0x50YhH1xhLsPuWGsUSklZt58jaTfF4ZEQpyUNGc0dqbpBYYBaHHrsX.'),
+            //array ("", ''),
         );
 
         foreach ($vectors as $vector) {
             $this->assertEquals($adapter->crypt($vector[0], $vector[1]), $vector[1]);
         }
 
-        // Invalid hashes
         $this->assertEquals($adapter->crypt('', '*0'), '*1');
         $this->assertEquals($adapter->crypt('', '*1'), '*0');
     }
@@ -77,26 +80,28 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
     {
         $adapter = $this->_adapter;
 
-        // genSalt() will change 100000 to 99999 because it's even
-        $adapter->setOptions(array ('iterationCount' => 100000));
-        $this->assertStringStartsWith('_TOM.', $adapter->genSalt());
+        $adapter->setOptions(array ('iterationCount' => 10000));
+        $this->assertStringStartsWith('$6$rounds=10000', $adapter->genSalt());
 
-        // genSalt() will use 1234567 as-is, since it's already odd
-        $adapter->setOptions(array ('iterationCount' => 1234567));
-        $this->assertStringStartsWith('_5Oh2', $adapter->genSalt());
+        $adapter->setOptions(array ('iterationCount' => 25000));
+        $this->assertStringStartsWith('$6$rounds=25000', $adapter->genSalt());
 
-        // 2^16 => 65536 => 65535
-        $adapter->setOptions(array ('iterationCountLog2' => 16));
-        $this->assertStringStartsWith('_zzD.', $adapter->genSalt());
+        $adapter->setOptions(array ('iterationCount' => 5000));
+        $this->assertStringStartsWith('$6$', $salt = $adapter->genSalt());
+        $this->assertStringStartsNotWith('$6$rounds=', $salt);
+        unset ($salt);
+
+        $adapter->setOptions(array ('iterationCountLog2' => 18));
+        $this->assertStringStartsWith('$6$rounds=262144', $adapter->genSalt());
 
         try {
-            $adapter->setOptions(array ('iterationCount' => 0));
+            $adapter->setOptions(array ('iterationCount' => 999));
         } catch (\Exception $e) {}
         $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
         unset($e);
 
         try {
-            $adapter->setOptions(array ('iterationCount' => 16777216));
+            $adapter->setOptions(array ('iterationCount' => 1000000));
         } catch (\Exception $e) {}
         $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
         unset($e);
@@ -115,11 +120,11 @@ class ExtDesTest extends \PHPUnit_Framework_TestCase
 
         // Generates a valid salt string
         $salt = $adapter->genSalt();
-        $this->assertRegExp('/^_[\.\/0-9A-Za-z]{8}$/', $salt);
+        $this->assertRegExp('/^\$6\$(?:rounds=\d{4,9}\$)?[\.\/0-9A-Za-z]{0,16}\$?$/', $salt);
 
         // Generates a valid hash string
         $hash = $adapter->crypt($password, $salt);
-        $this->assertRegExp('/^_[\.\/0-9A-Za-z]{19}$/', $hash);
+        $this->assertRegExp('/^\$6\$(?:rounds=\d{4,9}\$)?[\.\/0-9A-Za-z]{0,16}\$?[\.\/0-9A-Za-z]{86}$/', $hash);
     }
 
     /**
