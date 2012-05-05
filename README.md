@@ -23,7 +23,7 @@ Installing via PEAR is a simple matter of including the [PEAR channel](http://rc
 
 ```bash
 pear channel-discover rchouinard.github.com/pear
-pear install rych/PHPass-2.0.2
+pear install rych/PHPass-2.1.0-alpha
 ```
 
 ### Composer
@@ -35,7 +35,7 @@ After installing Composer into your project, the PHP Password Library can be ins
 ```json
 {
   "require": {
-    "rych/phpass": "2.0.2"
+    "rych/phpass": "2.1.0-dev"
   }
 }
 ```
