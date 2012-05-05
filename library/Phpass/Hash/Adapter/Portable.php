@@ -63,7 +63,7 @@ class Portable extends Base
      *   A RuntimeException is thrown on failure if
      *   self::$_throwExceptionOnFailure is true.
      */
-    public function crypt($password, $salt = null)
+public function crypt($password, $salt = null)
     {
         if (!$salt) {
             $salt = $this->genSalt();
@@ -74,7 +74,7 @@ class Portable extends Base
             $count = 1 << strpos($this->_itoa64, $salt[3]);
             $checksum = md5(substr($salt, 4, 8) . $password, true);
             do {
-                $hash = md5($checksum . $password, true);
+                $checksum = md5($checksum . $password, true);
             } while (--$count);
             $hash = substr($salt, 0, 12) . $this->_encode64($checksum, 16);
         }
