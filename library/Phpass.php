@@ -11,5 +11,7 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
+use Phpass\Loader;
+
 require_once 'Phpass/Loader.php';
-\Phpass\Loader::registerAutoloader();
+Loader::registerAutoloader();

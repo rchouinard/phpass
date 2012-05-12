@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" verbose="true" bootstrap="bootstrap.php">
-
+<phpunit colors="true" verbose="true" bootstrap="../library/Phpass.php">
     <php>
         <includePath>../library</includePath>
     </php>
-
     <testsuites>
         <testsuite name="PHPass Tests">
-            <directory suffix="Test.php" phpVersion="5.3.3" phpVersionOperator=">=">./library</directory>
+            <directory suffix="Test.php" phpVersion="5.3.8" phpVersionOperator=">=">./library</directory>
         </testsuite>
     </testsuites>
-
     <filter>
         <whitelist>
             <directory suffix=".php">../library</directory>
         </whitelist>
     </filter>
-
     <logging>
         <log type="coverage-html" target="./logs/report" charset="UTF-8" yui="true" highlight="false" lowUpperBound="35" highLowerBound="70" />
         <log type="testdox-html" target="./logs/testdox.html" />
     </logging>
-
 </phpunit>
