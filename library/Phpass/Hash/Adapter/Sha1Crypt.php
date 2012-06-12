@@ -181,7 +181,9 @@ class Sha1Crypt extends Base
      */
     public function verifyHash($input)
     {
-        return (1 === preg_match('/\$sha1\$\d+\$[\.\/0-9A-Za-z]{0,64}\$[\.\/0-9A-Za-z]{28}$/', $input));
+        $salt = substr($input, 0, strrpos($input, '$') + 1);
+        $checksum = substr($input, strrpos($input, '$') + 1);
+        return ($this->verifySalt($salt) && 1 === preg_match('/^[\.\/0-9A-Za-z]{28}$/', $checksum));
     }
 
     /**
@@ -196,7 +198,20 @@ class Sha1Crypt extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^\$sha1\$\d+\$[\.\/0-9A-Za-z]{0,64}\$?/', $input));
+        $regex = '/^\$sha1\$(\d{1,10})\$([\.\/0-9A-Za-z]{0,64})\$?$/';
+        $matches = array ();
+
+        $appearsValid = (1 === preg_match($regex, $input, $matches));
+        if ($appearsValid) {
+            $rounds = (int) $matches[1];
+            $salt = $matches[2];
+
+            if (!empty ($matches[1]) && ($rounds < 1 || $rounds > 4294967295)) {
+                $appearsValid = false;
+            }
+        }
+
+        return $appearsValid;
     }
 
     /**

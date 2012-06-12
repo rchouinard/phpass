@@ -33,7 +33,7 @@ class Sha256Crypt extends Base
      *
      * @var integer
      */
-    protected $_iterationCount = 40000;
+    protected $_iterationCount = 80000;
 
     /**
      * String identifier used to generate new hash values.
@@ -139,7 +139,7 @@ class Sha256Crypt extends Base
      */
     public function verifySalt($input)
     {
-        $regex = '/^\$' . $this->_identifier . '\$(?:rounds=(\d{4,9})\$)?(.{0,16})\$?$/';
+        $regex = '/^\$' . $this->_identifier . '\$(?:rounds=(\d{4,9})\$)?([\.\/0-9A-Za-z]{0,16})\$?$/';
         $matches = array ();
 
         $appearsValid = (1 === preg_match($regex, $input, $matches));

@@ -28,6 +28,13 @@ class Sha512Crypt extends Sha256Crypt
 {
 
     /**
+     * Number of rounds used to generate new hashes.
+     *
+     * @var integer
+     */
+    protected $_iterationCount = 60000;
+
+    /**
      * String identifier used to generate new hash values.
      *
      * @var string
