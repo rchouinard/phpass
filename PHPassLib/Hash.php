@@ -14,15 +14,15 @@ namespace PHPassLib;
 /**
  *
  */
-abstract class Hash
+interface Hash
 {
 
-    abstract public static function genConfig(Array $config);
+    public static function genConfig(Array $config);
 
-    abstract public static function genHash($password, $config);
+    public static function genHash($password, $config);
 
-    abstract public static function hash($password, $config);
+    public static function hash($password, $config);
 
-    abstract public static function verify($password, $hash);
+    public static function verify($password, $hash);
 
 }

@@ -17,7 +17,7 @@ use PHPassLib\Hash,
 /**
  *
  */
-class PBKDF2 extends Hash
+class PBKDF2 implements Hash
 {
 
     /**
@@ -98,9 +98,10 @@ class PBKDF2 extends Hash
                 'salt' => $matches[3],
             );
 
+            // Hackish way to validate the $config array
             try {
-                $config = static::genConfig($config);
-            } catch (\InvalidArgumentException $e) {
+                static::genConfig($config);
+            } catch (InvalidArgumentException $e) {
                 return '*0';
             }
 

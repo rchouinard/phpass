@@ -17,7 +17,7 @@ use PHPassLib\Hash,
 /**
  *
  */
-class BCrypt extends Hash
+class BCrypt implements Hash
 {
 
     /**
