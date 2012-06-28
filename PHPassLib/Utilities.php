@@ -111,4 +111,43 @@ class Utilities
         }
     }
 
+    /**
+     * Encode a string.
+     *
+     * @param string $bytes String to encode.
+     * @param string $charset Optional character set used when encoding.
+     * @return string Encoded string.
+     */
+    public static function encode64($bytes, $charset = null)
+    {
+        $count = strlen($bytes);
+        if (!$charset) {
+            $charset = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        }
+
+        $output = '';
+        $i = 0;
+        do {
+            $value = ord($bytes[$i++]);
+            $output .= $this->_itoa64[$value & 0x3f];
+            if ($i < $count) {
+                $value |= ord($bytes[$i]) << 0x08;
+            }
+            $output .= $this->_itoa64[($value >> 0x06) & 0x3f];
+            if ($i++ >= $count) {
+                break;
+            }
+            if ($i < $count) {
+                $value |= ord($bytes[$i]) << 0x10;
+            }
+            $output .= $this->_itoa64[($value >> 0x0c) & 0x3f];
+            if ($i++ >= $count) {
+                break;
+            }
+            $output .= $this->_itoa64[($value >> 0x12) & 0x3f];
+        } while ($i < $count);
+
+        return $output;
+    }
+
 }
