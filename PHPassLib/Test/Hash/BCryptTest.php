@@ -19,9 +19,11 @@ class BCryptTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @test
+     * Provide valid test vectors.
+     *
+     * @return array
      */
-    public function knownTestVectorsBehaveAsExpected()
+    public function validTestVectorProvider()
     {
         $vectors = array (
             // John the Ripper 1.7.9
@@ -68,63 +70,63 @@ class BCryptTest extends \PHPUnit_Framework_TestCase
             array ("", '$2a$05$CCCCCCCCCCCCCCCCCCCCC.7uG0VCzI2bS7j6ymqJi9CdcdxiRTWNy'),
         );
 
-        foreach ($vectors as $vector) {
-            $this->assertEquals(BCrypt::hash($vector[0], $vector[1]), $vector[1]);
-        }
-
-        // Invalid hashes from Openwall's crypt v1.2
-        $this->assertEquals(BCrypt::hash('', '$2a$03$CCCCCCCCCCCCCCCCCCCCC.'), '*0');
-        $this->assertEquals(BCrypt::hash('', '$2a$32$CCCCCCCCCCCCCCCCCCCCC.'), '*0');
-        $this->assertEquals(BCrypt::hash('', '$2z$05$CCCCCCCCCCCCCCCCCCCCC.'), '*0');
-
-        // PHP's crypt actually fails the following tests, so the adapter
-        // works around them.
-        //
-        // See https://bugs.php.net/bug.php?id=61852
-        $this->assertEquals(BCrypt::hash('', '$2`$05$CCCCCCCCCCCCCCCCCCCCC.'), '*0');
-        $this->assertEquals(BCrypt::hash('', '$2{$05$CCCCCCCCCCCCCCCCCCCCC.'), '*0');
-        $this->assertEquals(BCrypt::hash('', '*0'), '*1');
-        $this->assertEquals(BCrypt::hash('', '*1'), '*0');
+        return $vectors;
     }
 
     /**
-     * @test
+     * Provide invalid test vectors.
+     *
+     * @return array
      */
-    public function hashGeneratesAValidHashBasedOnInput()
+    public function invalidTestVectorProvider()
     {
-        $this->assertRegExp(
-            '/^\$2a\$12\$[\.\/0-9A-Za-z]{53}$/',
-            BCrypt::hash('password')
+        $vectors = array (
+            // Openwall's crypt v1.2
+            array ("", '$2a$03$CCCCCCCCCCCCCCCCCCCCC.', '*0'),
+            array ("", '$2a$32$CCCCCCCCCCCCCCCCCCCCC.', '*0'),
+            array ("", '$2z$05$CCCCCCCCCCCCCCCCCCCCC.', '*0'),
+
+            // PHP's crypt actually fails the following tests, so the adapter
+            // works around them.
+            //
+            // See https://bugs.php.net/bug.php?id=61852
+            array ("", '$2`$05$CCCCCCCCCCCCCCCCCCCCC.', '*0'),
+            array ("", '$2{$05$CCCCCCCCCCCCCCCCCCCCC.', '*0'),
+            array ("", '*0', '*1'),
+            array ("", '*1', '*0'),
         );
 
-        $this->assertEquals(
-            '$2a$12$saltSALTsaltSALTsaltS.Nzx2lC23KwaadwZ/.FJSLXE9ledPIK6',
-            BCrypt::hash('password', array ('salt' => 'saltSALTsaltSALTsaltSA'))
-        );
-
-        $this->assertRegExp(
-            '/^\$2y\$12\$[\.\/0-9A-Za-z]{53}$/',
-            BCrypt::hash('password', array ('ident' => '2y'))
-        );
-
-        $this->assertRegExp(
-            '/^\$2a\$04\$[\.\/0-9A-Za-z]{53}$/',
-            BCrypt::hash('password', array ('rounds' => 4))
-        );
+        return $vectors;
     }
 
     /**
+     * Verify that the class produces correct results with valid test vectors.
+     *
      * @test
+     * @dataProvider validTestVectorProvider
+     * @param string $password
+     * @param string $hash
      */
-    public function verifyProperlyVerifiesPasswordHashes()
+    public function validTestVectorsProduceExpectedResults($password, $hash)
     {
-        $this->assertTrue(
-            BCrypt::verify('password', '$2a$12$saltSALTsaltSALTsaltS.Nzx2lC23KwaadwZ/.FJSLXE9ledPIK6')
-        );
+        $config = substr($hash, 0, 29);
+        $this->assertEquals($hash, BCrypt::hash($password, $config));
+        $this->assertTrue(BCrypt::verify($password, $hash));
+    }
 
-        $this->assertFalse(
-            BCrypt::verify('wordpass', '$2a$12$saltSALTsaltSALTsaltS.Nzx2lC23KwaadwZ/.FJSLXE9ledPIK6')
-        );
+    /**
+     * Verify that the class produces correct results with invalid test vectors.
+     *
+     * @test
+     * @dataProvider invalidTestVectorProvider
+     * @param string $password
+     * @param string $hash
+     */
+    public function invalidTestVectorsProduceExpectedResults($password, $hash, $errorString)
+    {
+        $config = substr($hash, 0, 29);
+        $this->assertEquals($errorString, BCrypt::hash($password, $config));
+        $this->assertFalse(BCrypt::verify($password, $hash));
     }
 
 }

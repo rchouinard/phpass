@@ -19,9 +19,11 @@ class PBKDF2Test extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @test
+     * Provide valid test vectors.
+     *
+     * @return array
      */
-    public function knownTestVectorsBehaveAsExpected()
+    public function validTestVectorProvider()
     {
         $vectors = array (
             array ("password", '$pbkdf2$1212$OB.dtnSEXZK8U5cgxU/GYQ$y5LKPOplRmok7CZp/aqVDVg8zGI'),
@@ -29,57 +31,51 @@ class PBKDF2Test extends \PHPUnit_Framework_TestCase
             array ("password", '$pbkdf2-sha512$1212$RHY0Fr3IDMSVO/RSZyb5ow$eNLfBK.eVozomMr.1gYa17k9B7KIK25NOEshvhrSX.esqY3s.FvWZViXz4KoLlQI.BzY/YTNJOiKc5gBYFYGww'),
         );
 
-        foreach ($vectors as $vector) {
-            $this->assertEquals(PBKDF2::hash($vector[0], $vector[1]), $vector[1]);
-        }
-
-        $this->assertEquals(PBKDF2::hash('', '$pbkdf2$01212$THDqatpidANpadlLeTeOEg$HV3oi1k5C5LQCgG1BMOL.BX4YZc'), '*0');
-
-        $this->assertEquals(PBKDF2::hash('', '*0'), '*1');
-        $this->assertEquals(PBKDF2::hash('', '*1'), '*0');
+        return $vectors;
     }
 
     /**
+     * Provide invalid test vectors.
      *
+     * @return array
      */
-    public function hashGeneratesAValidHashBasedOnInput()
+    public function invalidTestVectorProvider()
     {
-        $this->assertRegExp(
-            '/^\$2a\$12\$[\.\/0-9A-Za-z]{53}$/',
-            PBKDF2::hash('password'),
-            strlen(PBKDF2::hash('password'))
-        );
-/*
-        $this->assertEquals(
-            '$2a$12$saltSALTsaltSALTsaltS.Nzx2lC23KwaadwZ/.FJSLXE9ledPIK6',
-            PBKDF2::hash('password', array ('salt' => 'saltSALTsaltSALTsaltSA'))
+        $vectors = array (
+            array ("", '$pbkdf2$01212$THDqatpidANpadlLeTeOEg$HV3oi1k5C5LQCgG1BMOL.BX4YZc', '*0'),
+            array ("", '*0', '*1'),
+            array ("", '*1', '*0'),
         );
 
-        $this->assertRegExp(
-            '/^\$2y\$12\$[\.\/0-9A-Za-z]{53}$/',
-            PBKDF2::hash('password', array ('ident' => '2y'))
-        );
-
-        $this->assertRegExp(
-            '/^\$2a\$04\$[\.\/0-9A-Za-z]{53}$/',
-            PBKDF2::hash('password', array ('rounds' => 4))
-        );
-*/
+        return $vectors;
     }
 
     /**
+     * Verify that the class produces correct results with valid test vectors.
+     *
      * @test
+     * @dataProvider validTestVectorProvider
+     * @param string $password
+     * @param string $hash
      */
-    public function verifyProperlyVerifiesPasswordHashes()
+    public function validTestVectorsProduceExpectedResults($password, $hash)
     {
-        $this->assertTrue(
-            PBKDF2::verify('password', '$pbkdf2-sha256$6400$.6UI/S.nXIk8jcbdHx3Fhg$98jZicV16ODfEsEZeYPGHU3kbrUrvUEXOPimVSQDD44'),
-            PBKDF2::hash('password', '$pbkdf2-sha256$6400$.6UI/S.nXIk8jcbdHx3Fhg$98jZicV16ODfEsEZeYPGHU3kbrUrvUEXOPimVSQDD44')
-        );
+        $this->assertEquals($hash, PBKDF2::hash($password, $hash));
+        $this->assertTrue(PBKDF2::verify($password, $hash));
+    }
 
-        $this->assertFalse(
-            PBKDF2::verify('wordpass', '$pbkdf2-sha256$6400$.6UI/S.nXIk8jcbdHx3Fhg$98jZicV16ODfEsEZeYPGHU3kbrUrvUEXOPimVSQDD44')
-        );
+    /**
+     * Verify that the class produces correct results with invalid test vectors.
+     *
+     * @test
+     * @dataProvider invalidTestVectorProvider
+     * @param string $password
+     * @param string $hash
+     */
+    public function invalidTestVectorsProduceExpectedResults($password, $hash, $errorString)
+    {
+        $this->assertEquals($errorString, PBKDF2::hash($password, $hash));
+        $this->assertFalse(PBKDF2::verify($password, $hash));
     }
 
 }
