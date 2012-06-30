@@ -13,10 +13,10 @@
             "homepage": "http://ryanchouinard.com"
         }
     ],
-    "project": [
+    "project": {
         "issues": "https://github.com/rchouinard/phpass/issues",
         "wiki": "https://github.com/rchouinard/phpass/wiki"
-    ],
+    },
     "require": {
         "php": ">=5.3.7"
     },
