@@ -15,7 +15,32 @@ use PHPassLib\Hash,
     PHPassLib\Exception\InvalidArgumentException;
 
 /**
+ * BCrypt Module
  *
+ * BCrypt is an adaptive cryptographic hash function designed to be used for
+ * passwords. It is based on Blowfish.
+ *
+ * This hash function incorporates a salt to defeat rainbow tables, and uses a
+ * configurable cost factor which can be used to great effect in slowing
+ * brute-force attacks.
+ *
+ * It is recommended that bcrypt be used in new applications.
+ *
+ * <code>
+ * <?php
+ * use PHPassLib\Hash\BCrypt;
+ *
+ * $hash = BCrypt::hash($password);
+ * if (BCrypt::verify($password, $hash)) {
+ *     // Password matches, user is authenticated
+ * }
+ * </code>
+ *
+ * @link http://static.usenix.org/event/usenix99/provos.html BCrypt
+ *     specification from USENIX 99
+ * @link http://en.wikipedia.org/wiki/Bcrypt BCrypt at Wikipedia
+ * @link http://en.wikipedia.org/wiki/Crypt_(Unix)#Blowfish-based_scheme BCrypt
+ *     implementation in UNIX crypt() at Wikipedia
  */
 class BCrypt implements Hash
 {
@@ -24,7 +49,7 @@ class BCrypt implements Hash
      * Generate a config string suitable for use with bcrypt hashes.
      *
      * Available options:
-     *  - ident: Hash identifier to use. PHP versions <5.3.8 must use 2a,
+     *  - ident: Hash identifier to use. PHP versions <5.3.7 must use 2a,
      *      while versions >=5.3.8 may use 2a, 2y, or 2x. Defaults to 2a.
      *  - rounds: Cost parameter which will be encoded as a zero-padded
      *      two-digit number. This value is logarithmic, so the number of
@@ -77,11 +102,9 @@ class BCrypt implements Hash
     /**
      * Generate a hash using either a pre-defined config string or an array.
      *
-     * @see genConfig()
-     * @see genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
-     * @return string
+     * @return string Encoded password hash.
      */
     public static function hash($password, $config = array ())
     {
