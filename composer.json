@@ -1,10 +1,9 @@
 {
     "name": "rych/phpass",
-    "version": "2.1.0-dev",
     "type": "library",
     "description": "PHP Password Library: Easy, secure password management for PHP",
     "keywords": ["cryptography", "password"],
-    "homepage": "http://rchouinard.github.com/phpass",
+    "homepage": "https://github.com/rchouinard/phpass",
     "license": "MIT",
     "authors": [
         {
@@ -13,6 +12,10 @@
             "homepage": "http://ryanchouinard.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/rchouinard/phpass/issues",
+        "wiki": "https://github.com/rchouinard/phpass/wiki"
+    },
     "require": {
         "php": ">=5.3.7"
     },
