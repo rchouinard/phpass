@@ -12,7 +12,8 @@
 namespace PHPassLib\Hash;
 use PHPassLib\Hash,
     PHPassLib\Utilities,
-    PHPassLib\Exception\InvalidArgumentException;
+    PHPassLib\Exception\InvalidArgumentException,
+    PHPassLib\Exception\RuntimeException;;
 
 /**
  * PBKDF2-<digest> Module
@@ -47,6 +48,10 @@ use PHPassLib\Hash,
 class PBKDF2 implements Hash
 {
 
+    const DIGEST_SHA1 = 'sha1';
+    const DIGEST_SHA256 = 'sha256';
+    const DIGEST_SHA512 = 'sha512';
+
     /**
      * Generate a config string suitable for use with pbkdf2 hashes.
      *
@@ -70,21 +75,23 @@ class PBKDF2 implements Hash
     public static function genConfig(Array $config = array ())
     {
         $defaults = array (
-            'digest' => 'sha512',
+            'digest' => self::DIGEST_SHA512,
             'rounds' => 12000,
             'salt' => null,
             'saltsize' => 16,
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
-        // Generate a salt value if we need one
-        if (!$config['salt'] && (int) $config['saltsize'] > 0) {
-            $config['salt'] = static::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
-        }
-
         if (static::validateOptions($config)) {
+            // Generate a salt value if we need one
+            if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
+                $config['salt'] = static::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
+            }
+
             // pbkdf2-sha1 doesn't include the digest in the hash identifier
-            return str_replace('-sha1', '', sprintf('$pbkdf2-%s$%d$%s$', $config['digest'], (int) $config['rounds'], $config['salt']));
+            // We also have to treat the rounds parameter as a float, otherwise
+            // values above 2147483647 will wrap on 32-bit systems.
+            return str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s$', $config['digest'], $config['rounds'], $config['salt']));
         } else {
             return '*1';
         }
@@ -121,9 +128,9 @@ class PBKDF2 implements Hash
             }
 
             $keysize = 64;
-            if ($config['digest'] == 'sha256') {
+            if ($config['digest'] == self::DIGEST_SHA256) {
                 $keysize = 32;
-            } else if ($config['digest'] == 'sha1') {
+            } else if ($config['digest'] == self::DIGEST_SHA1) {
                 $keysize = 20;
             }
 
@@ -189,6 +196,10 @@ class PBKDF2 implements Hash
      */
     protected static function hashPbkdf2($password, $salt, $rounds = 12000, $keyLength = 64, $digest = 'sha512')
     {
+        if (!extension_loaded('hash')) {
+            throw new RuntimeException('Required extension "hash" not loaded: PBKDF2 requires the HASH Message Digest Framework.');
+        }
+
         $hashLength = strlen(hash($digest, null, true));
         $keyBlocks = ceil($keyLength / $hashLength);
         $derivedKey = '';
@@ -220,20 +231,26 @@ class PBKDF2 implements Hash
         foreach ($options as $option => $value) switch ($option) {
 
             case 'digest':
-                if (!in_array($value, array ('sha1', 'sha256', 'sha512'))) {
-                    throw new InvalidArgumentException('Digest must be one of sha1, sha256, or sha512');
+                if (!in_array($value, array (self::DIGEST_SHA1, self::DIGEST_SHA256, self::DIGEST_SHA512))) {
+                    throw new InvalidArgumentException('Digest must be one of sha1, sha256, or sha512.');
                 }
                 break;
 
             case 'rounds':
-                if (substr($value, 0, 1) == 0 || $value < 1 || (int) $value > 4294967296) {
-                    throw new InvalidArgumentException('Rounds must be a number between 1 and 4294967296');
+                if (substr($value, 0, 1) == 0 || $value < 1 || $value > 4294967296) {
+                    throw new InvalidArgumentException('Rounds must be a number in the range 1 - 4294967296.');
+                }
+                break;
+
+            case 'saltsize':
+                if ($value > 1024) {
+                    throw new InvalidArgumentException('Salt size must be a number in the range 0 - 1024.');
                 }
                 break;
 
             case 'salt':
-                if (!preg_match('/^[\.\/0-9A-Za-z]{0,1024}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string containing only the characters ./0-9A-Za-z');
+                if (!preg_match('/^[\.\/0-9A-Za-z]{0,1366}$/', $value)) {
+                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{0,1366}/.');
                 }
                 break;
 
