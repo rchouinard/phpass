@@ -131,7 +131,7 @@ class MD5Crypt implements Hash
             $input = Utilities::genRandomBytes(6);
         }
 
-        return Utilities::encode64($input, 6);
+        return Utilities::encode64($input);
     }
 
     /**
@@ -147,11 +147,9 @@ class MD5Crypt implements Hash
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {
 
-            // Salt must be between 0 and 8 characters in length (inclusive)
-            // and contain only characters in the range [./0-9A-Za-z].
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{0,8}$/', $value)) {
-                    throw new InvalidArgumentException("Salt parameter must be a string 0-8 characters in length containing only characters in the range ./0-9A-Za-z.");
+                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{0,8}/.');
                 }
                 break;
 

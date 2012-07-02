@@ -179,29 +179,24 @@ class BCrypt implements Hash
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {
 
-            // Ident must be one of 2a, 2y, or 2x. If PHP version is < 5.3.7,
-            // only 2a is valid.
             case 'ident':
                 $idents = (version_compare('5.3.7', PHP_VERSION) === 1)
-                ? array ('2a') // < 5.3.7
-                : array ('2a', '2y', '2x'); // >= 5.3.7
+                    ? array ('2a') // <= 5.3.6
+                    : array ('2a', '2y', '2x'); // >= 5.3.7
                 if (!in_array($value, $idents)) {
-                    throw new InvalidArgumentException("Ident parameter must be one of 2a, 2y, or 2x. A value of \"$value\" was given.");
+                    throw new InvalidArgumentException('Identifier must be 2a if PHP <= 5.3.6 or one of 2a, 2y, or 2x if PHP >= 5.3.7.');
                 }
                 break;
 
-            // Rounds must be between 4 and 31.
             case 'rounds':
                 if ($value < 4 || $value > 31) {
-                    throw new InvalidArgumentException("Rounds parameter must be a number between 4 and 31 inclusive. A value of \"$value\" was given.");
+                    throw new InvalidArgumentException('Rounds must be a number in the range 4 - 31.');
                 }
                 break;
 
-            // Any salt must be 22 characters in length and contain only
-            // characters in the range [./0-9A-Za-z].
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{22}$/', $value)) {
-                    throw new InvalidArgumentException("Salt parameter must be a 22 character string containing only characters in the range ./0-9A-Za-z.");
+                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{22}/.');
                 }
                 break;
 
