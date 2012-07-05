@@ -20,11 +20,17 @@
         "php": ">=5.3.7"
     },
     "suggest": {
-        "ext-hash": "Enabling the hash extension allows you to combine the included hash adapters with HMAC for an extra layer of security."
+        "ext-hash": "Some modules and features may require the HASH Message Digest Framework extension in order to work.",
+        "ext-openssl": "The OpenSSL extension is used as a secure source of random data."
     },
     "autoload": {
         "psr-0" : {
             "Phpass" : "library/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.1-dev"
         }
     }
 }
