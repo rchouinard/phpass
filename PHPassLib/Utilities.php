@@ -18,6 +18,8 @@ use PHPassLib\Exception\InvalidArgumentException;
 class Utilities
 {
 
+    const CHARS_H64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
     /**
      * Generate a random string of raw bytes.
      *
@@ -122,7 +124,7 @@ class Utilities
     {
         $count = strlen($bytes);
         if (!$charset) {
-            $charset = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            $charset = self::CHARS_H64;
         }
 
         $output = '';
@@ -148,6 +150,39 @@ class Utilities
         } while ($i < $count);
 
         return $output;
+    }
+
+    public static function encodeInt24($integer)
+    {
+        $integer = (int) $integer;
+        $chars = self::CHARS_H64;
+
+        if ($integer < 0 || $integer > 0xffffff) {
+            throw new InvalidArgumentException('Integer out of range');
+        }
+
+        $string  = $chars[$integer & 0x3f];
+        $string .= $chars[($integer >> 0x06) & 0x3f];
+        $string .= $chars[($integer >> 0x0c) & 0x3f];
+        $string .= $chars[($integer >> 0x12) & 0x3f];
+
+        return $string;
+    }
+
+    public static function decodeInt24($string)
+    {
+        $chars = self::CHARS_H64;
+
+        if (!preg_match('/^[\.\/0-9A-Za-z]{4}$/', $string)) {
+            throw new InvalidArgumentException('Invalid encoded string');
+        }
+
+        $integer  = strpos($chars, $string[0]);
+        $integer += (strpos($chars, $string[1]) << 0x06);
+        $integer += (strpos($chars, $string[2]) << 0x0c);
+        $integer += (strpos($chars, $string[3]) << 0x12);
+
+        return $integer;
     }
 
 }
