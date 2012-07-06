@@ -184,6 +184,7 @@ class Pbkdf2 extends Base
                         throw new InvalidArgumentException('Digest must be one of sha1, sha256, or sha512');
                     }
                     $this->_algo = $value;
+                    break;
                 case 'iterationcount':
                     if ($value < 1 || $value > 4294967296) {
                         throw new InvalidArgumentException('Iteration count must be between 1 and 4294967296');

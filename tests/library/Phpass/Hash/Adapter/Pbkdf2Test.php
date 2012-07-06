@@ -207,7 +207,7 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($adapter->verifySalt($adapter->genSalt()));
 
         // Generates a valid hash string
-        $this->assertTrue($adapter->verifyHash($adapter->crypt($password, $salt)));
+        $this->assertTrue($adapter->verifyHash($adapter->crypt($password)));
     }
 
     /**
