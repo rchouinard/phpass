@@ -28,19 +28,23 @@ use Phpass\Exception\InvalidArgumentException,
 class Pbkdf2 extends Base
 {
 
+    const DIGEST_SHA1 = 'sha1';
+    const DIGEST_SHA256 = 'sha256';
+    const DIGEST_SHA512 = 'sha512';
+
     /**
      * Hashing algorithm used by the PBKDF2 implementation.
      *
      * @var string
      */
-    protected $_algo = 'sha256';
+    protected $_algo = self::DIGEST_SHA512;
 
     /**
-     * Logarithmic cost value used to generate new hash values.
+     * Cost value used to generate new hash values.
      *
      * @var integer
      */
-    protected $_iterationCountLog2 = 12;
+    protected $_iterationCount = 12000;
 
     /**
      * Return a hashed string.
@@ -65,9 +69,45 @@ class Pbkdf2 extends Base
 
         $hash = '*0';
         if ($this->verify($salt)) {
-            $count = 1 << strpos($this->_itoa64, $salt[6]);
-            $checksum = $this->_pbkdf2($password, substr($salt, 7, 8), $count, 24, $this->_algo);
-            $hash = rtrim(substr($salt, 0, 16), '$') . '$' . $this->_encode64($checksum, 24);
+            $matches = array ();
+            preg_match('/^\$pbkdf2(?:-(?P<digest>sha256|sha512))?\$(?P<rounds>\d+)\$(?P<salt>[\.\/0-9A-Za-z]{0,1366})\$?/', $salt, $matches);
+            if ($matches['digest'] == '') {
+                $matches['digest'] = $matches[1] = self::DIGEST_SHA1;
+            }
+
+            $keySize = 64;
+            if ($matches['digest'] == self::DIGEST_SHA256) {
+                $keySize = 32;
+            } else if ($matches['digest'] == self::DIGEST_SHA1) {
+                $keySize = 20;
+            }
+
+            $salt = '';
+            if ($matches['salt'] != '') {
+                $salt = str_replace('.', '+', $matches['salt']);
+                switch (strlen($salt) & 0x03) {
+                    case 0:
+                        $salt = base64_decode($salt);
+                        break;
+                    case 2:
+                        $salt = base64_decode($salt . '==');
+                        break;
+                    case 3:
+                        $salt = base64_decode($salt . '=');
+                        break;
+                    default:
+                        return $hash;
+                }
+            }
+
+            $checksum = $this->_pbkdf2($password, $salt, $matches['rounds'], $keySize, $matches['digest']);
+            $hash = '$pbkdf2';
+            if ($matches['digest'] != self::DIGEST_SHA1) {
+                $hash .= '-' . $matches['digest'];
+            }
+            $hash .= '$' . $matches['rounds'] . '$' .
+                str_replace(array ('+', '=', "\n"), array ('.', '', ''), base64_encode($salt)) . '$' .
+                str_replace(array ('+', '=', "\n"), array ('.', '', ''), base64_encode($checksum));
         }
 
         if (!$this->verifyHash($hash)) {
@@ -91,22 +131,20 @@ class Pbkdf2 extends Base
     public function genSalt($input = null)
     {
         if (!$input) {
-            $input = $this->_getRandomBytes(6);
+            $input = $this->_getRandomBytes(16);
         }
 
-        // PKCS #5, version 2
-        // Python implementation uses $p5k2$, but we're not using a compatible
-        // string. https://www.dlitz.net/software/python-pbkdf2/
-        $identifier = 'p5v2';
+        $identifier = 'pbkdf2';
+        if ($this->_algo === self::DIGEST_SHA256 || $this->_algo === self::DIGEST_SHA512) {
+            $identifier .= '-' . $this->_algo;
+        }
 
-        // Iteration count between 1 and 1,073,741,824
-        $count = $this->_itoa64[min(max($this->_iterationCountLog2, 1), 30)];
+        $count = min(max($this->_iterationCount, 1), 4294967296);
 
-        // 8-byte (64-bit) salt value, as recommended by the standard
-        $salt = $this->_encode64($input, 6);
+        $salt = str_replace(array ('+', '=', "\n"), array ('.', '', ''), base64_encode($input));
 
-        // $p5v2$CSSSSSSSS$
-        return '$' . $identifier . '$' . $count . $salt . '$';
+        // $pbkdf2-<digest>$<rounds>$<salt>$
+        return '$' . $identifier . '$' . $count . '$' . $salt . '$';
     }
 
     /**
@@ -116,10 +154,12 @@ class Pbkdf2 extends Base
      * this adapter.
      *
      * <dl>
-     *   <dt>iterationCountLog2</dt>
-     *     <dd>Base-2 logarithm of the iteration count for the underlying
-     *     PBKDF2 hashing algorithm. Must be in range 1 - 30. Defaults to
-     *     12.</dd>
+     *   <dt>digest</dt>
+     *     <dd>Hash digest to use when calculating the checksum. Must be one
+     *     of sha1, sha256, or sha512. Defaults to sha512.</dd>
+     *   <dt>iterationCount</dt>
+     *     <dd>Iteration count for the underlying PBKDF2 hashing algorithm.
+     *     Must be in range 1 - 4294967296. Defaults to 12000.</dd>
      * </dl>
      *
      * @param Array $options
@@ -138,12 +178,17 @@ class Pbkdf2 extends Base
 
         foreach ($options as $key => $value) {
             switch ($key) {
-                case 'iterationcountlog2':
-                    $value = (int) $value;
-                    if ($value < 1 || $value > 30) {
-                        throw new InvalidArgumentException('Iteration count must be between 1 and 30');
+                case 'digest':
+                    $value = strtolower($value);
+                    if (!in_array($value, array (self::DIGEST_SHA1, self::DIGEST_SHA256, self::DIGEST_SHA512))) {
+                        throw new InvalidArgumentException('Digest must be one of sha1, sha256, or sha512');
                     }
-                    $this->_iterationCountLog2 = $value;
+                    $this->_algo = $value;
+                case 'iterationcount':
+                    if ($value < 1 || $value > 4294967296) {
+                        throw new InvalidArgumentException('Iteration count must be between 1 and 4294967296');
+                    }
+                    $this->_iterationCount = $value;
                     break;
                 default:
                     break;
@@ -165,7 +210,7 @@ class Pbkdf2 extends Base
      */
     public function verifyHash($input)
     {
-        return ($this->verifySalt(substr($input, 0, -32)) && 1 === preg_match('/^[\.\/0-9A-Za-z]{32}$/', substr($input, -32)));
+        return ($this->verifySalt($input) && 1 === preg_match('/^\$pbkdf2(?:-(?P<digest>sha256|sha512))?\$(?P<rounds>\d+)\$(?P<salt>[\.\/0-9A-Za-z]{0,1366})\$(?P<checksum>[\.\/0-9A-Za-z]{27,86})$/', $input));
     }
 
     /**
@@ -180,15 +225,29 @@ class Pbkdf2 extends Base
      */
     public function verifySalt($input)
     {
-        $appearsValid = (1 === preg_match('/^\$p5v2\$[\.\/0-9A-Za-z]{1}[\.\/0-9A-Za-z]{8}\$?$/', $input));
-        if ($appearsValid) {
-            $costFactor = strpos($this->_itoa64, $input[6]);
-            if ($costFactor < 1 || $costFactor > 30) {
-                $appearsValid = false;
+        $valid = false;
+        $matches = array ();
+        if (1 === preg_match('/^\$pbkdf2(?:-(?P<digest>sha256|sha512))?\$(?P<rounds>\d+)\$(?P<salt>[\.\/0-9A-Za-z]{0,1366})\$?/', $input, $matches)) {
+            $digest = $matches['digest'] ?: self::DIGEST_SHA1;
+            $rounds = $matches['rounds'];
+            $salt = $matches['salt'];
+
+            $digestValid = false;
+            if (in_array($digest, array (self::DIGEST_SHA1, self::DIGEST_SHA256, self::DIGEST_SHA512))) {
+                $digestValid = true;
+            }
+
+            $roundsValid = false;
+            if ($rounds >= 1 && $rounds <= 4294967296) {
+                $roundsValid = true;
+            }
+
+            if ($digestValid && $roundsValid) {
+                $valid = true;
             }
         }
 
-        return $appearsValid;
+        return $valid;
     }
 
     /**

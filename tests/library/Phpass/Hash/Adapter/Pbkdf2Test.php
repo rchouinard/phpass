@@ -128,93 +128,107 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that adapter generates a valid salt
+     * Run a number of standard test vectors through the adapter
      *
-     * The portable adapter should generate a 16-character salt string which
-     * begins with $p5v2$ followed by 1 byte of iteration count and 8 bytes of
-     * salt.
-     *
-     * By default, the adapter should use an iteration count of 12, so the salt
-     * string should look like $p5v2$A..., so that's what we test for.
+     * This tests the underlying crypt() method more than anything, but it's
+     * a good idea to make sure the adapter doesn't inadvertently interfere.
      *
      * @test
-     * @return string
+     * @return void
      */
-    public function adapterGeneratesValidSalt()
+    public function knownTestVectorsBehaveAsExpected()
     {
-        $salt = $this->_adapter->genSalt();
+        $adapter = $this->_adapter;
 
-        // Salt begins with correct string
-        $this->assertStringStartsWith(
-            '$p5v2$A', // Expected
-            $salt  // Actual
+        $vectors = array (
+            array ("password", '$pbkdf2$1212$OB.dtnSEXZK8U5cgxU/GYQ$y5LKPOplRmok7CZp/aqVDVg8zGI'),
+            array ("password", '$pbkdf2-sha256$1212$4vjV83LKPjQzk31VI4E0Vw$hsYF68OiOUPdDZ1Fg.fJPeq1h/gXXY7acBp9/6c.tmQ'),
+            array ("password", '$pbkdf2-sha512$1212$RHY0Fr3IDMSVO/RSZyb5ow$eNLfBK.eVozomMr.1gYa17k9B7KIK25NOEshvhrSX.esqY3s.FvWZViXz4KoLlQI.BzY/YTNJOiKc5gBYFYGww'),
         );
 
-        // Salt has proper length
-        $this->assertEquals(
-            16, // Expected
-            strlen($salt) // Actual
-        );
+        foreach ($vectors as $vector) {
+            $this->assertEquals($vector[1], $adapter->crypt($vector[0], $vector[1]));
+        }
 
-        return $salt;
+        $this->assertEquals($adapter->crypt('', '*0'), '*1');
+        $this->assertEquals($adapter->crypt('', '*1'), '*0');
+    }
+
+    /**
+     * Test that setOptions() properly sets configuration options
+     *
+     * @test
+     * @return void
+     */
+    public function modifyingOptionsUpdatesAdapterBehavior()
+    {
+        $adapter = $this->_adapter;
+
+        $adapter->setOptions(array ('digest' => 'sha1'));
+        $this->assertStringStartsWith('$pbkdf2$', $adapter->genSalt());
+
+        $adapter->setOptions(array ('digest' => 'sha256'));
+        $this->assertStringStartsWith('$pbkdf2-sha256$', $adapter->genSalt());
+
+        $adapter->setOptions(array ('digest' => 'sha512'));
+        $this->assertStringStartsWith('$pbkdf2-sha512$', $adapter->genSalt());
+
+        $adapter->setOptions(array ('iterationCount' => 1212));
+        $this->assertStringStartsWith('$pbkdf2-sha512$1212$', $adapter->genSalt());
+
+        $adapter->setOptions(array ('digest' => 'sha256', 'iterationCount' => 5000));
+        $this->assertStringStartsWith('$pbkdf2-sha256$5000$', $adapter->genSalt());
+
+        try {
+            $adapter->setOptions(array ('digest' => 'invalid'));
+        } catch (\Exception $e) {}
+        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
+        unset($e);
+
+        try {
+            $adapter->setOptions(array ('iterationCount' => '0'));
+        } catch (\Exception $e) {}
+        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
+        unset($e);
     }
 
     /**
      * Test that the adapter generates a valid hash
      *
-     * The pbkdf2 adapter should generate a 48-character hash which begins
-     * with the salt.
-     *
-     * This test depends on the salt test, and uses the output of that test.
-     * This way, the test focuses on the hash, and won't be affected by the call
-     * to Phpass\Hash::genSalt().
-     *
      * @test
-     * @depends adapterGeneratesValidSalt
-     * @return string
+     * @return void
      */
-    public function adapterGeneratesValidHash($salt)
+    public function adapterGeneratesValidHashString()
     {
-        $hash = $this->_adapter->crypt('password', $salt);
+        $adapter = $this->_adapter;
+        $password = 'password';
 
-        // Hash string begins with salt
-        $this->assertStringStartsWith(
-            $salt, // Expected
-            $hash // Actual
-        );
+        // Generates a valid salt string
+        $this->assertTrue($adapter->verifySalt($adapter->genSalt()));
 
-        // Hash string has proper length
-        $this->assertEquals(
-            48, // Expected
-            strlen($hash) // Actual
-        );
-
-        return $hash;
+        // Generates a valid hash string
+        $this->assertTrue($adapter->verifyHash($adapter->crypt($password, $salt)));
     }
 
     /**
      * Test that the adapter generates the same hash given the same input
      *
-     * The adapter should be consistent with hash generation given the same
-     * input parameters, otherwise the adapter won't be able to actually
-     * validate a password (making it useless).
-     *
-     * This test uses the output of the hash test in order to be consistent and
-     * focus on validation.
-     *
      * @test
-     * @depends adapterGeneratesValidHash
      * @return void
      */
-    public function adapterGeneratesSameHashGivenOriginalSaltAndPasswordString($storedHash)
+    public function adapterConsistentlyGeneratesHashStrings()
     {
-        $hash = $this->_adapter->crypt('password', $storedHash);
+        $adapter = $this->_adapter;
+        $password = 'password';
 
-        // Generated hash matches stored hash value
-        $this->assertEquals(
-            $storedHash, // Expected
-            $hash // Actual
-        );
+        $salt = $adapter->genSalt();
+        $hash = $adapter->crypt($password, $salt);
+
+        // Generates the same hash for the password given the stored salt
+        $this->assertEquals($hash, $adapter->crypt($password, $salt));
+
+        // Generates the same hash for the password given the stored hash
+        $this->assertEquals($hash, $adapter->crypt($password, $hash));
     }
 
 }
