@@ -25,7 +25,7 @@ use PHPassLib\Hash,
  *
  * This method uses a fixed number of rounds and is no longer as
  * computationally expensive as it once was. It is not recommended to use
- * MD5 crypt for new projects. consider using BCrypt or PBKDF2-SHA512 instead.
+ * MD5 crypt for new projects. Consider using BCrypt or PBKDF2-SHA512 instead.
  *
  * <code>
  * <?php
