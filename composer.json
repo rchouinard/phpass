@@ -21,8 +21,8 @@
         "php": ">=5.3.7"
     },
     "suggest": {
-        "ext-openssl": "The OpenSSL extension is used as a secure source of random data in the absence of ext-mcrypt.",
-        "ext-mcrypt": "The Mcrypt extension is used as a secure source of random data in the absence of ext-openssl.",
+        "ext-openssl": "The OpenSSL extension is used as the default source of cryptographically strong random data.",
+        "ext-mcrypt": "The Mcrypt extension is used as a source of cryptographically strong random data in the absence of ext-openssl.",
         "ext-hash": "Some modules may require the HASH Message Digest Framework extension to be loaded in order to work.",
     },
     "autoload": {
