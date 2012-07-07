@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" verbose="true" bootstrap="PHPassLib.php">
+<phpunit colors="true" verbose="true" bootstrap="./src/PHPassLib.php">
     <php>
-        <includePath>./</includePath>
+        <includePath>./src</includePath>
     </php>
     <testsuites>
         <testsuite name="PHPassLib Tests">
-            <directory suffix="Test.php" phpVersion="5.3.8" phpVersionOperator=">=">./</directory>
+            <directory suffix="Test.php" phpVersion="5.3.8" phpVersionOperator=">=">./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">../library</directory>
+            <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
     <logging>
