@@ -11,10 +11,21 @@ is to make working with passwords as simple as possible. To that end the
 library eases the creation and verification of multiple password formats,
 including but not limited to bcrypt and pbkdf2.
 
+### Supoorted Hashes ###
+
+The library supports the following hash schemes:
+
+ - BCrypt
+ - BSDi / Extended DES Crypt
+ - DES Crypt
+ - MD5 Crypt
+ - PBKDF2-SHA1/256/512 (compatible with [Python's PassLib](http://packages.python.org/passlib/))
+ - Plus more on the way!
+
 Quick Start
 -----------
 
-=== Hashing Passwords ===
+### Hashing Passwords ###
 
 The latest version of this library has been revamped based on user feedback.
 The hashing adapters are now far easier to use.
