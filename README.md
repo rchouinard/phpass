@@ -11,7 +11,7 @@ is to make working with passwords as simple as possible. To that end the
 library eases the creation and verification of multiple password formats,
 including but not limited to bcrypt and pbkdf2.
 
-### Supoorted Hashes ###
+### Supported Hashes ###
 
 The library supports the following hash schemes:
 
