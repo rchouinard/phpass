@@ -82,10 +82,10 @@ class PBKDF2 implements Hash
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
-        if (static::validateOptions($config)) {
+        if (self::validateOptions($config)) {
             // Generate a salt value if we need one
             if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
-                $config['salt'] = static::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
+                $config['salt'] = self::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
             }
 
             // pbkdf2-sha1 doesn't include the digest in the hash identifier
@@ -122,7 +122,7 @@ class PBKDF2 implements Hash
 
             // Hackish way to validate the $config array
             try {
-                static::genConfig($config);
+                self::genConfig($config);
             } catch (InvalidArgumentException $e) {
                 return '*0';
             }
@@ -134,8 +134,8 @@ class PBKDF2 implements Hash
                 $keysize = 20;
             }
 
-            $checksum = static::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
-            $hash = static::genConfig($config) . Utilities::altBase64Encode($checksum);
+            $checksum = self::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
+            $hash = self::genConfig($config) . Utilities::altBase64Encode($checksum);
         }
 
         return $hash;
@@ -151,10 +151,10 @@ class PBKDF2 implements Hash
     public static function hash($password, $config = array ())
     {
         if (is_array($config)) {
-            $config = static::genConfig($config);
+            $config = self::genConfig($config);
         }
 
-        return static::genHash($password, $config);
+        return self::genHash($password, $config);
     }
 
     /**
@@ -166,7 +166,7 @@ class PBKDF2 implements Hash
      */
     public static function verify($password, $hash)
     {
-        return ($hash === static::hash($password, $hash));
+        return ($hash === self::hash($password, $hash));
     }
 
     /**

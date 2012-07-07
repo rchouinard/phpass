@@ -59,7 +59,7 @@ class DESCrypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $value = '*1';
-        if (static::validateOptions($config)) {
+        if (self::validateOptions($config)) {
             $value = $config['salt'];
         }
 
@@ -94,10 +94,10 @@ class DESCrypt implements Hash
     public static function hash($password, $config = array ())
     {
         if (is_array($config)) {
-            $config = static::genConfig($config);
+            $config = self::genConfig($config);
         }
 
-        return static::genHash($password, $config);
+        return self::genHash($password, $config);
     }
 
     /**
@@ -109,7 +109,7 @@ class DESCrypt implements Hash
      */
     public static function verify($password, $hash)
     {
-        return ($hash === static::hash($password, $hash));
+        return ($hash === self::hash($password, $hash));
     }
 
     /**

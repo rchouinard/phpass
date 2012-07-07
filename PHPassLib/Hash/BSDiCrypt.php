@@ -60,7 +60,7 @@ class BSDiCrypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        if (static::validateOptions($config)) {
+        if (self::validateOptions($config)) {
             // Rounds needs to be odd in order to avoid exposing wek DES keys
             if (($config['rounds'] % 2) == 0) {
                 --$config['rounds'];
@@ -100,10 +100,10 @@ class BSDiCrypt implements Hash
     public static function hash($password, $config = array ())
     {
         if (is_array($config)) {
-            $config = static::genConfig($config);
+            $config = self::genConfig($config);
         }
 
-        return static::genHash($password, $config);
+        return self::genHash($password, $config);
     }
 
     /**
@@ -115,7 +115,7 @@ class BSDiCrypt implements Hash
      */
     public static function verify($password, $hash)
     {
-        return ($hash === static::hash($password, $hash));
+        return ($hash === self::hash($password, $hash));
     }
 
     /**

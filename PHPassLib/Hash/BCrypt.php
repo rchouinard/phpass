@@ -70,11 +70,11 @@ class BCrypt implements Hash
         $defaults = array (
             'ident' => '2a',
             'rounds' => 12,
-            'salt' => static::genSalt(),
+            'salt' => self::genSalt(),
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
-        if (static::validateOptions($config)) {
+        if (self::validateOptions($config)) {
             return sprintf('$%s$%02d$%s', $config['ident'], (int) $config['rounds'], $config['salt']);
         } else {
             return '*1';
@@ -109,10 +109,10 @@ class BCrypt implements Hash
     public static function hash($password, $config = array ())
     {
         if (is_array($config)) {
-            $config = static::genConfig($config);
+            $config = self::genConfig($config);
         }
 
-        return static::genHash($password, $config);
+        return self::genHash($password, $config);
     }
 
     /**
@@ -124,7 +124,7 @@ class BCrypt implements Hash
      */
     public static function verify($password, $hash)
     {
-        return ($hash === static::hash($password, $hash));
+        return ($hash === self::hash($password, $hash));
     }
 
     /**

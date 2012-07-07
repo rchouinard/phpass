@@ -62,11 +62,11 @@ class MD5Crypt implements Hash
     public static function genConfig(Array $config = array ())
     {
         $defaults = array (
-            'salt' => static::genSalt(),
+            'salt' => self::genSalt(),
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
-        if (static::validateOptions($config)) {
+        if (self::validateOptions($config)) {
             return sprintf('$1$%s$', $config['salt']);
         } else {
             return '*1';
@@ -101,10 +101,10 @@ class MD5Crypt implements Hash
     public static function hash($password, $config = array ())
     {
         if (is_array($config)) {
-            $config = static::genConfig($config);
+            $config = self::genConfig($config);
         }
 
-        return static::genHash($password, $config);
+        return self::genHash($password, $config);
     }
 
     /**
@@ -116,7 +116,7 @@ class MD5Crypt implements Hash
      */
     public static function verify($password, $hash)
     {
-        return ($hash === static::hash($password, $hash));
+        return ($hash === self::hash($password, $hash));
     }
 
     /**
