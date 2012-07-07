@@ -13,7 +13,10 @@ namespace PHPassLib;
 use PHPassLib\Exception\InvalidArgumentException;
 
 /**
+ * Misc. Utilities
  *
+ * This class provides a number of methods common to other classes. The most
+ * common use if encoding and decoding various types of data.
  */
 class Utilities
 {
