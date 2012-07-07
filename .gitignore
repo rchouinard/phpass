@@ -1,0 +1,12 @@
+# Eclipse
+.settings/
+.buildpath
+.project
+
+# PHPUnit
+logs/
+phpunit.xml
+
+# PHPDoc2
+docs/
+phpdoc.xml
