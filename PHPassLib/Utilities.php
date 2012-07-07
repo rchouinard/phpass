@@ -152,12 +152,20 @@ class Utilities
         return $output;
     }
 
+    /**
+     * Encode a 24-bit integer into a 4-byte string.
+     *
+     * @param integer $integer The integer to encode.
+     * @return string Returns the encoded string.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     the supplied argument is not a 24-bit integer.
+     */
     public static function encodeInt24($integer)
     {
         $integer = (int) $integer;
         $chars = self::CHARS_H64;
 
-        if ($integer < 0 || $integer > 0xffffff) {
+        if ($integer < 0x00 || $integer > 0xffffff) {
             throw new InvalidArgumentException('Integer out of range');
         }
 
@@ -169,6 +177,14 @@ class Utilities
         return $string;
     }
 
+    /**
+     * Decodes a 4-byte string into a 24-bit integer.
+     *
+     * @param string $string The string to decode.
+     * @return integer returns the decoded integer.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     the supplied argument is not a valid encoded integer.
+     */
     public static function decodeInt24($string)
     {
         $chars = self::CHARS_H64;
