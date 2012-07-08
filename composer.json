@@ -3,7 +3,7 @@
     "version": "3.0.0-dev",
     "type": "library",
     "description": "PHP Password Library: Easy, secure password management for PHP",
-    "keywords": ["cryptography", "password"],
+    "keywords": ["cryptography", "security", "password"],
     "homepage": "https://github.com/rchouinard/phpass",
     "license": "MIT",
     "authors": [
