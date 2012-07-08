@@ -12,7 +12,29 @@
 namespace PHPassLib;
 
 /**
+ * Class Loader
  *
+ * This class provides methods for loading library resources conforming to
+ * PSR-0 standards. Only classes in the PHPassLib namespace will be loaded by
+ * Loader::load().
+ *
+ * <code>
+ * <?php
+ * // "Import" the classes
+ * use PHPassLib\Loader;
+ * use PHPass\Hash\BCrypt;
+ *
+ * // Register the PHPassLib autoloader
+ * Loader::registerAutoloader();
+ *
+ * // Now we can use PHPassLib classes without require()
+ * $hash = BCrypt::hash($password);
+ * </code>
+ *
+ * @package PHPassLib\Loaders
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class Loader
 {

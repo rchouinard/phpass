@@ -39,11 +39,10 @@ use PHPassLib\Hash,
  * }
  * </code>
  *
- * @link http://tools.ietf.org/html/rfc2898#section-5.2 PBKDF2 specification
- *     in RFC2898
- * @link http://en.wikipedia.org/wiki/PBKDF2 PBKDF2 at Wikipedia
- * @link http://packages.python.org/passlib/lib/passlib.hash.pbkdf2_digest.html
- *     PBKDF2-<digest> documentation from Python's PassLib
+ * @package PHPassLib\Hashes
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class PBKDF2 implements Hash
 {
@@ -72,7 +71,7 @@ class PBKDF2 implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(Array $config = array ())
+    public static function genConfig(array $config = array ())
     {
         $defaults = array (
             'digest' => self::DIGEST_SHA512,
@@ -225,7 +224,7 @@ class PBKDF2 implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException
      *     if an invalid option value is encountered.
      */
-    protected static function validateOptions(Array $options)
+    protected static function validateOptions(array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {

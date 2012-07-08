@@ -32,6 +32,10 @@ use PHPassLib\Hash,
  * }
  * </code>
  *
+ * @package PHPassLib\Hashes
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class BSDiCrypt implements Hash
 {
@@ -51,7 +55,7 @@ class BSDiCrypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(Array $config = array ())
+    public static function genConfig(array $config = array ())
     {
         $defaults = array (
             'rounds' => 5001,
@@ -126,7 +130,7 @@ class BSDiCrypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException
      *     if an invalid option value is encountered.
      */
-    protected static function validateOptions(Array $options)
+    protected static function validateOptions(array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {

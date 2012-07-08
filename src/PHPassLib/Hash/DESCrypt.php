@@ -31,8 +31,10 @@ use PHPassLib\Hash,
  * }
  * </code>
  *
- * @link http://en.wikipedia.org/wiki/Crypt_(Unix)#Traditional_DES-based_scheme
- *     DES Crypt implementation in UNIX crypt() at Wikipedia
+ * @package PHPassLib\Hashes
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class DESCrypt implements Hash
 {
@@ -51,7 +53,7 @@ class DESCrypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(Array $config = array ())
+    public static function genConfig(array $config = array ())
     {
         $defaults = array (
             'salt' => Utilities::encode64(Utilities::genRandomBytes(1)),
@@ -120,7 +122,7 @@ class DESCrypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException
      *     if an invalid option value is encountered.
      */
-    protected static function validateOptions(Array $options)
+    protected static function validateOptions(array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {

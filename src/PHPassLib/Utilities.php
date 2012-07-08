@@ -17,6 +17,11 @@ use PHPassLib\Exception\InvalidArgumentException;
  *
  * This class provides a number of methods common to other classes. The most
  * common use if encoding and decoding various types of data.
+ *
+ * @package PHPassLib\Utilities
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class Utilities
 {

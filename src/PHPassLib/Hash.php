@@ -17,6 +17,11 @@ namespace PHPassLib;
  * This interface defines the methods the hashing modules are required to
  * expose publically. The defined API is designed to be simple and clear, using
  * static methods which are hopefully clearly named.
+ *
+ * @package PHPassLib\Hashes
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 interface Hash
 {
@@ -29,7 +34,7 @@ interface Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(Array $config);
+    public static function genConfig(array $config);
 
     /**
      * Generate a hash using a pre-defined config string.

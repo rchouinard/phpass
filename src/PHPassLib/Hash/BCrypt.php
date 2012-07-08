@@ -36,11 +36,10 @@ use PHPassLib\Hash,
  * }
  * </code>
  *
- * @link http://static.usenix.org/event/usenix99/provos.html BCrypt
- *     specification from USENIX 99
- * @link http://en.wikipedia.org/wiki/Bcrypt BCrypt at Wikipedia
- * @link http://en.wikipedia.org/wiki/Crypt_(Unix)#Blowfish-based_scheme BCrypt
- *     implementation in UNIX crypt() at Wikipedia
+ * @package PHPassLib\Hashes
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class BCrypt implements Hash
 {
@@ -65,7 +64,7 @@ class BCrypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(Array $config = array ())
+    public static function genConfig(array $config = array ())
     {
         $defaults = array (
             'ident' => '2a',
@@ -174,7 +173,7 @@ class BCrypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException
      *     if an invalid option value is encountered.
      */
-    protected static function validateOptions(Array $options)
+    protected static function validateOptions(array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {

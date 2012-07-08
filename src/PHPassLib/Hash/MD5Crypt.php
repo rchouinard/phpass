@@ -37,10 +37,10 @@ use PHPassLib\Hash,
  * }
  * </code>
  *
- * @link http://www.freebsd.org/cgi/cvsweb.cgi/~checkout~/src/lib/libcrypt/crypt.c?rev=1.2
- *     Poul-Henning Kamp's authoritative FreeBSD implementation
- * @link http://en.wikipedia.org/wiki/Crypt_(Unix)#MD5-based_scheme MD5 crypt
- *     implementation in UNIX crypt() at Wikipedia
+ * @package PHPassLib\Hashes
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class MD5Crypt implements Hash
 {
@@ -59,7 +59,7 @@ class MD5Crypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(Array $config = array ())
+    public static function genConfig(array $config = array ())
     {
         $defaults = array (
             'salt' => self::genSalt(),
@@ -142,7 +142,7 @@ class MD5Crypt implements Hash
      * @throws InvalidArgumentException Throws an InvalidArgumentException
      *     if an invalid option value is encountered.
      */
-    protected static function validateOptions(Array $options)
+    protected static function validateOptions(array $options)
     {
         $options = array_change_key_case($options, CASE_LOWER);
         foreach ($options as $option => $value) switch ($option) {
