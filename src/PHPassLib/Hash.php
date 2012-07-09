@@ -19,7 +19,7 @@ namespace PHPassLib;
  * static methods which are hopefully clearly named.
  *
  * <code>
- * &lt;php
+ * &lt;?php
  * // This example uses BCrypt, but all the modules use the same API.
  * use PHPassLib\Hash\BCrypt;
  *
@@ -39,7 +39,7 @@ namespace PHPassLib;
  * echo $hash;
  *
  * // hash() can be used as a shortcut for the above. This method will
- * // create a new configuration string, and is equivelant to running
+ * // create a new configuration string, and is equivalent to running
  * // BCrypt::genHash('password', BCrypt::genConfig());
  * $hash = BCrypt::hash('password');
  *
@@ -65,6 +65,21 @@ interface Hash
     /**
      * Generate a config string suitable for use with module hashes.
      *
+     * <code>
+     * &lt;?php
+     * use PHPassLib\Hash\BCrypt;
+     *
+     * // Generate a config string using the default settings.
+     * $config = BCrypt::genConfig();
+     *
+     * // Generate a config string with custom options.
+     * $config = BCrypt::genConfig(array (
+     *     'rounds' => 16, // Use 16 rounds instead of the default 12.
+     * ));
+     * </code>
+     *
+     * @see Hash::genHash()
+     * @see Hash::hash()
      * @param array $config Array of configuration options.
      * @return string Generated config string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
@@ -75,6 +90,17 @@ interface Hash
     /**
      * Generate a hash using a pre-defined config string.
      *
+     * <code>
+     * &lt;?php
+     * use PHPassLib\Hash\BCrypt;
+     *
+     * // Calculate the hash value of the string "password."
+     * $config = BCrypt::genConfig();
+     * $hash = BCrypt::genHash('password', $config);
+     * </code>
+     *
+     * @see Hash::genConfig()
+     * @see Hash::hash()
      * @param string $password Password string.
      * @param string $config Configuration string.
      * @return string Returns a hashed string on success, otherwise an error
@@ -85,6 +111,25 @@ interface Hash
     /**
      * Generate a hash using either a pre-defined config string or an array.
      *
+     * <code>
+     * &lt;?php
+     * use PHPassLib\Hash\BCrypt;
+     *
+     * // Calculate a hash using the default options.
+     * $hash = BCrypt::hash('password');
+     *
+     * // Calculate a hash using custom options.
+     * $hash = BCrypt::hash('password', array (
+     *     'rounds' => 16, // Use 16 rounds instead of the default 12.
+     * ));
+     *
+     * // Calculate a hash using a pre-defined config string.
+     * $config = BCrypt::genconfig();
+     * $hash = BCrypt::hash('password', $config);
+     * </code>
+     *
+     * @see Hash::genConfig()
+     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Encoded password hash.
@@ -93,6 +138,24 @@ interface Hash
 
     /**
      * Verify a password against a hash string.
+     *
+     * <code>
+     * &lt;?php
+     * use PHPassLib\Hash\BCrypt;
+     *
+     * // Assume password comes from a login form.
+     * $password = $_POST['password'];
+     *
+     * // Hash should really come from your persistent storage.
+     * $hash = BCrypt::hash('password');
+     *
+     * // Check if the user's password matches the stored hash.
+     * if (BCrypt::verify($password, $hash)) {
+     *     // Password matches! Authenticate the user...
+     * } else {
+     *     // Password is wrong! Log the attempt and continue...
+     * }
+     * </code>
      *
      * @param string $password Password string.
      * @param string $hash Hash string.
