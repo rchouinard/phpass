@@ -10,6 +10,7 @@
  */
 
 namespace PHPassLib\Exception;
+
 use PHPassLib\Exception;
 
 /**

@@ -10,9 +10,10 @@
  */
 
 namespace PHPassLib\Hash;
-use PHPassLib\Hash,
-    PHPassLib\Utilities,
-    PHPassLib\Exception\InvalidArgumentException;
+
+use PHPassLib\Hash;
+use PHPassLib\Utilities;
+use PHPassLib\Exception\InvalidArgumentException;
 
 /**
  * DES Crypt Module

@@ -10,10 +10,11 @@
  */
 
 namespace PHPassLib\Hash;
-use PHPassLib\Hash,
-    PHPassLib\Utilities,
-    PHPassLib\Exception\InvalidArgumentException,
-    PHPassLib\Exception\RuntimeException;;
+
+use PHPassLib\Hash;
+use PHPassLib\Utilities;
+use PHPassLib\Exception\InvalidArgumentException;
+use PHPassLib\Exception\RuntimeException;
 
 /**
  * PBKDF2-<digest> Module
@@ -129,7 +130,7 @@ class PBKDF2 implements Hash
             $keysize = 64;
             if ($config['digest'] == self::DIGEST_SHA256) {
                 $keysize = 32;
-            } else if ($config['digest'] == self::DIGEST_SHA1) {
+            } elseif ($config['digest'] == self::DIGEST_SHA1) {
                 $keysize = 20;
             }
 

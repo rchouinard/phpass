@@ -81,11 +81,11 @@ interface Hash
      * @see Hash::genHash()
      * @see Hash::hash()
      * @param array $config Array of configuration options.
-     * @return string Generated config string.
+     * @return string Configuration string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
-    public static function genConfig(array $config);
+    public static function genConfig(array $config = array ());
 
     /**
      * Generate a hash using a pre-defined config string.
@@ -132,9 +132,10 @@ interface Hash
      * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
-     * @return string Encoded password hash.
+     * @return string Returns a hashed string on success, otherwise an error
+     *     string (either *0 or *1) is returned.
      */
-    public static function hash($password, $config);
+    public static function hash($password, $config = array ());
 
     /**
      * Verify a password against a hash string.

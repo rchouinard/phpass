@@ -10,6 +10,7 @@
  */
 
 namespace PHPassLib;
+
 use PHPassLib\Exception\InvalidArgumentException;
 
 /**
