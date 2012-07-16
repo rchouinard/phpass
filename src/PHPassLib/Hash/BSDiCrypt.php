@@ -23,8 +23,8 @@ use PHPassLib\Exception\InvalidArgumentException;
  * weak by modern standards and should not be used for new applications. It is
  * only provided here for completeness.
  *
- *<code>
- * <?php
+ * <code>
+ * &lt;?php
  * use PHPassLib\Hash\BSDiCrypt;
  *
  * $hash = BSDiCrypt::hash($password);

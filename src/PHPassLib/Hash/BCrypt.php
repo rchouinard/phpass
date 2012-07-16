@@ -28,7 +28,7 @@ use PHPassLib\Exception\InvalidArgumentException;
  * It is recommended that bcrypt be used in new applications.
  *
  * <code>
- * <?php
+ * &lt;?php
  * use PHPassLib\Hash\BCrypt;
  *
  * $hash = BCrypt::hash($password);

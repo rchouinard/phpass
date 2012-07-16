@@ -14,7 +14,7 @@ namespace PHPassLib\Exception;
 use PHPassLib\Exception;
 
 /**
- * Runtim Exception
+ * Runtime Exception
  *
  * @package PHPassLib\Exceptions
  * @author Ryan Chouinard <rchouinard@gmail.com>

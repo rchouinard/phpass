@@ -29,7 +29,7 @@ use PHPassLib\Exception\InvalidArgumentException;
  * MD5 crypt for new projects. Consider using BCrypt or PBKDF2-SHA512 instead.
  *
  * <code>
- * <?php
+ * &lt;?php
  * use PHPassLib\Hash\MD5Crypt;
  *
  * $hash = MD5Crypt::hash($password);

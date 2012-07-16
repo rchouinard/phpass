@@ -22,8 +22,8 @@ use PHPassLib\Exception\InvalidArgumentException;
  * The algorithm is considered weak by modern standards and should not be used
  * for new applications. It is only provided here for completeness.
  *
- *<code>
- * <?php
+ * <code>
+ * &lt;?php
  * use PHPassLib\Hash\DESCrypt;
  *
  * $hash = DESCrypt::hash($password);

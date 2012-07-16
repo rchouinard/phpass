@@ -30,8 +30,8 @@ use PHPassLib\Exception\RuntimeException;
  *
  * It is recommended that pbkdf2-sha512 be used in new applications.
  *
- *<code>
- * <?php
+ * <code>
+ * &lt;?php
  * use PHPassLib\Hash\PBKDF2;
  *
  * $hash = PBKDF2::hash($password);

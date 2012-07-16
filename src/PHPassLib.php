@@ -5,7 +5,7 @@
  * This file provides a stub for registering the library autoloader.
  *
  * <code>
- * <?php
+ * &lt;?php
  * require 'PHPassLib.php';
  * $hash = PHPassLib\Hash\BCrypt::hash($password);
  * </code>
