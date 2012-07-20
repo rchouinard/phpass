@@ -44,15 +44,8 @@ class BSDiCrypt implements Hash
     /**
      * Generate a config string suitable for use with module hashes.
      *
-     * Available options:
-     *  - rounds: Must be between 1 and 16777215. Defaults to 5001.
-     *  - salt: If provided, must be a 2-character string containing only
-     *      characters from ./0-9A-Za-z. It is recommended to omit this option
-     *      and let the class generate one for you.
-     *
      * @param array $config Array of configuration options.
-     * @return string Configuration string in the format
-     *     "_<rounds><salt><checksum>".
+     * @return string Configuration string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
@@ -65,13 +58,16 @@ class BSDiCrypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        if (self::validateOptions($config)) {
+        try {
+            self::validateOptions($config);
             // Rounds needs to be odd in order to avoid exposing wek DES keys
             if (($config['rounds'] % 2) == 0) {
                 --$config['rounds'];
             }
 
             $string = sprintf('_%s%s', Utilities::encodeInt24($config['rounds']), $config['salt']);
+        } catch (InvalidArgumentException $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
         }
 
         return $string;
@@ -98,9 +94,12 @@ class BSDiCrypt implements Hash
     /**
      * Generate a hash using either a pre-defined config string or an array.
      *
+     * @see Hash::genConfig()
+     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
-     * @return string Encoded password hash.
+     * @return string Returns the hash string on success. On failure, one of
+     *     *0 or *1 is returned.
      */
     public static function hash($password, $config = array ())
     {

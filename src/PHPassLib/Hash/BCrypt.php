@@ -46,22 +46,10 @@ class BCrypt implements Hash
 {
 
     /**
-     * Generate a config string suitable for use with bcrypt hashes.
-     *
-     * Available options:
-     *  - ident: Hash identifier to use. PHP versions <5.3.7 must use 2a,
-     *      while versions >=5.3.8 may use 2a, 2y, or 2x. Defaults to 2a.
-     *  - rounds: Cost parameter which will be encoded as a zero-padded
-     *      two-digit number. This value is logarithmic, so the number of
-     *      iterations will be determined as 2^<rounds>. Must be between 4 and
-     *      31, defaults to 12.
-     *  - salt: If provided, must be a 22-character string containing only
-     *      characters from ./0-9A-Za-z. It is recommended to omit this option
-     *      and let the class generate one for you.
+     * Generate a config string suitable for use with module hashes.
      *
      * @param array $config Array of configuration options.
-     * @return string Configuration string in the format
-     *     "$<ident>$<rounds>$<salt>".
+     * @return string Configuration string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
@@ -102,9 +90,12 @@ class BCrypt implements Hash
     /**
      * Generate a hash using either a pre-defined config string or an array.
      *
+     * @see Hash::genConfig()
+     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
-     * @return string Encoded password hash.
+     * @return string Returns the hash string on success. On failure, one of
+     *     *0 or *1 is returned.
      */
     public static function hash($password, $config = array ())
     {

@@ -47,16 +47,10 @@ class MD5Crypt implements Hash
 {
 
     /**
-     * Generate a config string suitable for use with md5crypt hashes.
-     *
-     * Available options:
-     *  - salt: Salt string which must be between 0 and 8 characters
-     *      in length, using characters in the range ./0-9A-Za-z. If none is
-     *      given, a valid salt value will be generated.
+     * Generate a config string suitable for use with module hashes.
      *
      * @param array $config Array of configuration options.
-     * @return string Configuration string in the format
-     *     "$1$<salt>$".
+     * @return string Configuration string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
@@ -67,11 +61,15 @@ class MD5Crypt implements Hash
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
-        if (self::validateOptions($config)) {
-            return sprintf('$1$%s$', $config['salt']);
-        } else {
-            return '*1';
+        $string = '*1';
+        try {
+            self::validateOptions($config);
+            $string = sprintf('$1$%s$', $config['salt']);
+        } catch (InvalidArgumentException $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
         }
+
+        return $string;
     }
 
     /**
@@ -95,9 +93,12 @@ class MD5Crypt implements Hash
     /**
      * Generate a hash using either a pre-defined config string or an array.
      *
+     * @see Hash::genConfig()
+     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
-     * @return string Encoded password hash.
+     * @return string Returns the hash string on success. On failure, one of
+     *     *0 or *1 is returned.
      */
     public static function hash($password, $config = array ())
     {

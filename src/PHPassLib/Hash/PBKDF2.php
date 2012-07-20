@@ -53,22 +53,10 @@ class PBKDF2 implements Hash
     const DIGEST_SHA512 = 'sha512';
 
     /**
-     * Generate a config string suitable for use with pbkdf2 hashes.
-     *
-     * Available options:
-     *  - digest: The underlying digest to use. Can be one of sha1, sha256, or
-     *      sha512. Defaults to sha512.
-     *  - rounds: Number of rounds to use when generating the hash. This number
-     *      must be between 1 and 4294967296 inclusive. Default is 12000.
-     *  - salt: If provided, should be a raw string between 1 and 1024 bytes.
-     *      It is recommended to leave this blank and let the class generate
-     *      a salt for you.
-     *  - saltSize: The number of bytes to use when generating a salt string.
-     *      Must be a number between 0 and 1024 inclusive. Defaults to 16.
+     * Generate a config string suitable for use with module hashes.
      *
      * @param array $config Array of configuration options.
-     * @return string Configuration string in the format
-     *     "$pbkdf2-<digest>$<rounds>$<salt>$".
+     * @return string Configuration string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     any passed-in configuration options are invalid.
      */
@@ -82,7 +70,9 @@ class PBKDF2 implements Hash
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
-        if (self::validateOptions($config)) {
+        $string = '*1';
+        try {
+            self::validateOptions($config);
             // Generate a salt value if we need one
             if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
                 $config['salt'] = self::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
@@ -91,10 +81,14 @@ class PBKDF2 implements Hash
             // pbkdf2-sha1 doesn't include the digest in the hash identifier
             // We also have to treat the rounds parameter as a float, otherwise
             // values above 2147483647 will wrap on 32-bit systems.
-            return str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s$', $config['digest'], $config['rounds'], $config['salt']));
-        } else {
-            return '*1';
+            $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s$', $config['digest'], $config['rounds'], $config['salt']));
+        } catch (InvalidArgumentException $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        } catch (RuntimeException $e) {
+            trigger_error($e->getMessage(), E_USER_ERROR);
         }
+
+        return $string;
     }
 
     /**
@@ -111,32 +105,42 @@ class PBKDF2 implements Hash
         // for internal testing only.
         $config = str_replace('$pbkdf2$', '$pbkdf2-sha1$', $config);
 
-        $matches = array ();
+        // Set default hash value to an error string
         $hash = ($config == '*0') ? '*1' : '*0';
+
+        // Extract options from config string
+        $matches = array ();
         if (preg_match('/^\$pbkdf2-(sha1|sha256|sha512)\$(\d+)\$([\.\/0-9A-Za-z]*)\$?/', $config, $matches)) {
             $config = array (
                 'digest' => $matches[1],
                 'rounds' => $matches[2],
                 'salt' => $matches[3],
             );
-
-            // Hackish way to validate the $config array
-            try {
-                self::genConfig($config);
-            } catch (InvalidArgumentException $e) {
-                return '*0';
-            }
-
-            $keysize = 64;
-            if ($config['digest'] == self::DIGEST_SHA256) {
-                $keysize = 32;
-            } elseif ($config['digest'] == self::DIGEST_SHA1) {
-                $keysize = 20;
-            }
-
-            $checksum = self::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
-            $hash = self::genConfig($config) . Utilities::altBase64Encode($checksum);
         }
+
+        // If the configuration array isn't populated, return the error string
+        if (!is_array($config)) {
+            return $hash;
+        }
+
+        // Validate config string
+        try {
+            self::validateOptions($config);
+        } catch (InvalidArgumentException $e) {
+            return $hash;
+        }
+
+        // Determine the required key size
+        $keysize = 64;
+        if ($config['digest'] == self::DIGEST_SHA256) {
+            $keysize = 32;
+        } elseif ($config['digest'] == self::DIGEST_SHA1) {
+            $keysize = 20;
+        }
+
+        // Calculate the checksum and encode the hash string
+        $checksum = self::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
+        $hash = self::genConfig($config) . Utilities::altBase64Encode($checksum);
 
         return $hash;
     }
@@ -144,9 +148,12 @@ class PBKDF2 implements Hash
     /**
      * Generate a hash using either a pre-defined config string or an array.
      *
+     * @see Hash::genConfig()
+     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
-     * @return string Encoded password hash.
+     * @return string Returns the hash string on success. On failure, one of
+     *     *0 or *1 is returned.
      */
     public static function hash($password, $config = array ())
     {
