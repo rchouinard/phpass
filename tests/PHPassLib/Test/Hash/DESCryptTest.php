@@ -10,10 +10,16 @@
  */
 
 namespace PHPassLib\Test\Hash;
+
 use PHPassLib\Hash\DESCrypt;
 
 /**
+ * DES Crypt Module Tests
  *
+ * @package PHPassLib\Tests
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class DESCryptTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,14 +38,6 @@ class DESCryptTest extends \PHPUnit_Framework_TestCase
             array ("U*U***U*", 'CC4rMpbg9AMZ.'),
             array ("*U*U*U*U", 'XXxzOu6maQKqQ'),
             array ("", 'SDbsugeBiC58A'),
-
-            // From PassLib 1.6
-            array ("", 'OgAwTx2l6NADI'),
-            array (" ", '/Hk.VPuwQTXbc'),
-            array ("test", 'N1tQbOFcM5fpg'),
-            array ("Compl3X AlphaNu3meric", 'um.Wguz3eVCx2'),
-            array ("4lpHa N|_|M3r1K W/ Cur5Es: #$%(*)(*%#", 'sNYqfOyauIyic'),
-            array ("AlOtBsOl", 'cEpWz5IUCShqM'),
         );
 
         return $vectors;

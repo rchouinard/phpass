@@ -10,10 +10,16 @@
  */
 
 namespace PHPassLib\Test\Hash;
+
 use PHPassLib\Hash\BSDiCrypt;
 
 /**
+ * BSDi / Extended DES Crypt Module Tests
  *
+ * @package PHPassLib\Tests
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class BSDiCryptTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,13 +45,6 @@ class BSDiCryptTest extends \PHPUnit_Framework_TestCase
             array ("zxyDPWgydbQjgq", '_J9..SDizxmRI1GjnQuE'),
             array ("726 even", '_K9..SaltNrQgIYUAeoY'),
             array ("", '_J9..SDSD5YGyRCr4W4c'),
-
-            // From PassLib 1.6
-            array (" ", '_K1..crsmZxOLzfJH8iw'),
-            array ("my", '_KR/.crsmykRplHbAvwA'),
-            array ("my socra", '_K1..crsmf/9NzZr1fLM'),
-            array ("my socrates", '_K1..crsmOv1rbde9A9o'),
-            array ("my socrates note", '_K1..crsm/2qeAhdISMA'),
         );
 
         return $vectors;

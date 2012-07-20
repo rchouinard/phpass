@@ -10,10 +10,16 @@
  */
 
 namespace PHPassLib\Test\Hash;
+
 use PHPassLib\Hash\PBKDF2;
 
 /**
+ * PBKDF2-<digest> Module Tests
  *
+ * @package PHPassLib\Tests
+ * @author Ryan Chouinard <rchouinard@gmail.com>
+ * @copyright Copyright (c) 2012, Ryan Chouinard
+ * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
 class PBKDF2Test extends \PHPUnit_Framework_TestCase
 {
@@ -26,6 +32,7 @@ class PBKDF2Test extends \PHPUnit_Framework_TestCase
     public function validTestVectorProvider()
     {
         $vectors = array (
+            // Generated using the Python PassLib
             array ("password", '$pbkdf2$1212$OB.dtnSEXZK8U5cgxU/GYQ$y5LKPOplRmok7CZp/aqVDVg8zGI'),
             array ("password", '$pbkdf2-sha256$1212$4vjV83LKPjQzk31VI4E0Vw$hsYF68OiOUPdDZ1Fg.fJPeq1h/gXXY7acBp9/6c.tmQ'),
             array ("password", '$pbkdf2-sha512$1212$RHY0Fr3IDMSVO/RSZyb5ow$eNLfBK.eVozomMr.1gYa17k9B7KIK25NOEshvhrSX.esqY3s.FvWZViXz4KoLlQI.BzY/YTNJOiKc5gBYFYGww'),
