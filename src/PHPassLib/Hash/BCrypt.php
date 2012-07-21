@@ -85,6 +85,10 @@ class BCrypt implements Hash
                 'rounds' => (int) $matches[2],
                 'salt' => $matches[3],
             );
+
+            if ($options['rounds'] < 4 || $options['rounds'] > 31) {
+                $options = false;
+            }
         }
 
         return $options;

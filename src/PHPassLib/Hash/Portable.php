@@ -74,6 +74,10 @@ class Portable implements Hash
                 'rounds' => strpos(Utilities::CHARS_H64, $config[3]),
                 'salt' => $matches[3],
             );
+
+            if ($options['rounds'] < 7 || $options['rounds'] > 30) {
+                $options = false;
+            }
         }
 
         return $options;

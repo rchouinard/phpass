@@ -88,6 +88,10 @@ class BSDiCrypt implements Hash
                 'rounds' => (int) Utilities::decodeInt24($matches[1]),
                 'salt' => $matches[2],
             );
+
+            if ($options['rounds'] < 1 || $options['rounds'] > 0xffffff) {
+                $options = false;
+            }
         }
 
         return $options;

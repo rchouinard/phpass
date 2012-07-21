@@ -101,13 +101,21 @@ class PBKDF2 implements Hash
     {
         $options = false;
         $matches = array ();
-        if (preg_match('/^\$pbkdf2-?(sha256|sha512)?\$(\d+)\$([\.\/0-9A-Za-z]{0,1366})\$?/', $config, $matches)) {
-            $options = array (
-                'digest' => $matches[1] ?: 'sha1',
-                'rounds' => $matches[2],
-                'salt' => $matches[3],
-                'saltSize' => $matches[3] ? strlen(Utilities::altBase64Decode($matches[3])) : 0,
-            );
+        if (preg_match('/^\$pbkdf2(?:-(sha256|sha512))?\$(\d+)\$([\.\/0-9A-Za-z]{0,1366})\$?/', $config, $matches)) {
+            try {
+                $options = array (
+                    'digest' => $matches[1] ?: 'sha1',
+                    'rounds' => $matches[2],
+                    'salt' => $matches[3],
+                    'saltSize' => $matches[3] ? strlen(Utilities::altBase64Decode($matches[3])) : 0,
+                );
+
+                if ($options['rounds'] < 1 || $options['rounds'] > 4294967296) {
+                    $options = false;
+                }
+            } catch (InvalidArgumentException $e) {
+                $options = false;
+            }
         }
 
         return $options;

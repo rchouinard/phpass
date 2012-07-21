@@ -78,6 +78,10 @@ class SHA256Crypt implements Hash
                 'rounds' => (int) $matches[1],
                 'salt' => $matches[2],
             );
+
+            if ($options['rounds'] < 1000 || $options['rounds'] > 999999999) {
+                $options = false;
+            }
         }
 
         return $options;

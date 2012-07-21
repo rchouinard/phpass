@@ -68,6 +68,10 @@ class SHA1Crypt implements Hash
                 'rounds' => (int) $matches[1],
                 'salt' => $matches[2],
             );
+
+            if ($options['rounds'] < 1 || $options['rounds'] > 4294967295) {
+                $options = false;
+            }
         }
 
         return $options;

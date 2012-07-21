@@ -75,9 +75,13 @@ class SHA512Crypt implements Hash
         $matches = array ();
         if (preg_match('/^\$6\$rounds=(\d{4,9})\$([\.\/0-9A-Za-z]{0,16})\$?/', $config, $matches)) {
             $options = array (
-            'rounds' => (int) $matches[1],
-            'salt' => $matches[2],
+                'rounds' => (int) $matches[1],
+                'salt' => $matches[2],
             );
+
+            if ($options['rounds'] < 1000 || $options['rounds'] > 999999999) {
+                $options = false;
+            }
         }
 
         return $options;
