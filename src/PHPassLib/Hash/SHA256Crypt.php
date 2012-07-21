@@ -46,7 +46,7 @@ class SHA256Crypt implements Hash
         try {
             self::validateOptions($config);
             $rounds = '';
-            if ($rounds != 5000) {
+            if ($config['rounds'] != 5000) {
                 $rounds = sprintf('rounds=%d$', $config['rounds']);
             }
 

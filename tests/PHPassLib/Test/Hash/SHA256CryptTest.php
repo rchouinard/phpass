@@ -94,6 +94,15 @@ class SHA256CryptTest extends \PHPUnit_Framework_TestCase
     public function genconfigAndParseconfigProduceMatchingResults()
     {
         $options = array (
+            'rounds' => 5000,
+            'salt' => 'CCCCCCC.',
+        );
+        $config = SHA256Crypt::genConfig($options);
+
+        $this->assertEquals('$5$CCCCCCC.', $config, $config);
+        $this->assertSame($options, SHA256Crypt::parseConfig($config));
+
+        $options = array (
             'rounds' => 8000,
             'salt' => 'CCCCCCC.',
         );

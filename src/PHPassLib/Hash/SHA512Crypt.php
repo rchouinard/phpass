@@ -46,7 +46,7 @@ class SHA512Crypt implements Hash
         try {
             self::validateOptions($config);
             $rounds = '';
-            if ($rounds != 5000) {
+            if ($config['rounds'] != 5000) {
                 $rounds = sprintf('rounds=%d$', $config['rounds']);
             }
 
@@ -68,7 +68,7 @@ class SHA512Crypt implements Hash
     {
         // Cheat because regex is hard :-)
         if (strpos($config, 'rounds=') === false) {
-            $config = str_replace('$5$', '$5$rounds=5000$', $config);
+            $config = str_replace('$6$', '$6$rounds=5000$', $config);
         }
 
         $options = false;
