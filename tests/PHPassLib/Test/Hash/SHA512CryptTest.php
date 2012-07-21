@@ -88,4 +88,19 @@ class SHA512CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(SHA512Crypt::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'rounds' => 8000,
+            'salt' => 'CCCCCCC.',
+        );
+        $config = SHA512Crypt::genConfig($options);
+
+        $this->assertEquals('$6$rounds=8000$CCCCCCC.', $config, $config);
+        $this->assertSame($options, SHA512Crypt::parseConfig($config));
+    }
+
 }

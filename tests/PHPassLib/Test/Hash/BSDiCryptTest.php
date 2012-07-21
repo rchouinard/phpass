@@ -96,4 +96,30 @@ class BSDiCryptTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(BSDiCrypt::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'rounds' => 5001,
+            'salt' => 'CCC.',
+        );
+        $config = BSDiCrypt::genConfig($options);
+
+        $this->assertEquals('_7C/.CCC.', $config);
+        $this->assertSame($options, BSDiCrypt::parseConfig($config));
+
+        $options = array (
+            'rounds' => 5000,
+            'salt' => 'CCC.',
+        );
+        $config = BSDiCrypt::genConfig($options);
+        $options['rounds'] = 4999; // Module subtracts 1 from even rounds
+                                   // when generating the config string.
+
+        $this->assertEquals('_5C/.CCC.', $config, $config);
+        $this->assertSame($options, BSDiCrypt::parseConfig($config));
+    }
+
 }

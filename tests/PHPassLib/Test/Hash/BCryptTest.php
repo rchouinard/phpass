@@ -107,4 +107,20 @@ class BCryptTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(BCrypt::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'ident' => '2x',
+            'rounds' => 8,
+            'salt' => 'CCCCCCCCCCCCCCCCCCCCC.',
+        );
+        $config = BCrypt::genConfig($options);
+
+        $this->assertEquals('$2x$08$CCCCCCCCCCCCCCCCCCCCC.', $config);
+        $this->assertSame($options, BCrypt::parseConfig($config));
+    }
+
 }

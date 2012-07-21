@@ -60,7 +60,7 @@ class BSDiCrypt implements Hash
         $string = '*1';
         try {
             self::validateOptions($config);
-            // Rounds needs to be odd in order to avoid exposing wek DES keys
+            // Rounds needs to be odd in order to avoid exposing weak DES keys
             if (($config['rounds'] % 2) == 0) {
                 --$config['rounds'];
             }
@@ -71,6 +71,26 @@ class BSDiCrypt implements Hash
         }
 
         return $string;
+    }
+
+    /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^_([\.\/0-9A-Za-z]{4})([\.\/0-9A-Za-z]{4})/', $config, $matches)) {
+            $options = array (
+                'rounds' => (int) Utilities::decodeInt24($matches[1]),
+                'salt' => $matches[2],
+            );
+        }
+
+        return $options;
     }
 
     /**
@@ -136,7 +156,7 @@ class BSDiCrypt implements Hash
         foreach ($options as $option => $value) switch ($option) {
 
             case 'rounds':
-                if ($value < 0 || $value > 0xffffff) {
+                if ($value < 1 || $value > 0xffffff) {
                     throw new InvalidArgumentException('Rounds must be in the range 1 - 16777215.');
                 }
                 break;

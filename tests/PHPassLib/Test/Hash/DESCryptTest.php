@@ -89,4 +89,18 @@ class DESCryptTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(DESCrypt::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'salt' => 'C.',
+        );
+        $config = DESCrypt::genConfig($options);
+
+        $this->assertEquals('C.', $config);
+        $this->assertSame($options, DESCrypt::parseConfig($config));
+    }
+
 }

@@ -84,4 +84,19 @@ class SHA1CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(SHA1Crypt::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'rounds' => 5000,
+            'salt' => 'CCCCCCC.',
+        );
+        $config = SHA1Crypt::genConfig($options);
+
+        $this->assertEquals('$sha1$5000$CCCCCCC.', $config);
+        $this->assertSame($options, SHA1Crypt::parseConfig($config));
+    }
+
 }

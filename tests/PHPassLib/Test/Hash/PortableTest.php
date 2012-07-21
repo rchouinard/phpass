@@ -90,4 +90,20 @@ class PortableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(Portable::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'ident' => 'H',
+            'rounds' => 15,
+            'salt' => 'CCCCCCC.',
+        );
+        $config = Portable::genConfig($options);
+
+        $this->assertEquals('$H$DCCCCCCC.', $config, $config);
+        $this->assertSame($options, Portable::parseConfig($config));
+    }
+
 }

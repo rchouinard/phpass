@@ -81,7 +81,7 @@ class PBKDF2 implements Hash
             // pbkdf2-sha1 doesn't include the digest in the hash identifier
             // We also have to treat the rounds parameter as a float, otherwise
             // values above 2147483647 will wrap on 32-bit systems.
-            $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s$', $config['digest'], $config['rounds'], $config['salt']));
+            $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s', $config['digest'], $config['rounds'], $config['salt']));
         } catch (InvalidArgumentException $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
         } catch (RuntimeException $e) {
@@ -89,6 +89,28 @@ class PBKDF2 implements Hash
         }
 
         return $string;
+    }
+
+    /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^\$pbkdf2-?(sha256|sha512)?\$(\d+)\$([\.\/0-9A-Za-z]{0,1366})\$?/', $config, $matches)) {
+            $options = array (
+                'digest' => $matches[1] ?: 'sha1',
+                'rounds' => $matches[2],
+                'salt' => $matches[3],
+                'saltSize' => $matches[3] ? strlen(Utilities::altBase64Decode($matches[3])) : 0,
+            );
+        }
+
+        return $options;
     }
 
     /**
@@ -140,7 +162,7 @@ class PBKDF2 implements Hash
 
         // Calculate the checksum and encode the hash string
         $checksum = self::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
-        $hash = self::genConfig($config) . Utilities::altBase64Encode($checksum);
+        $hash = self::genConfig($config) . '$' . Utilities::altBase64Encode($checksum);
 
         return $hash;
     }

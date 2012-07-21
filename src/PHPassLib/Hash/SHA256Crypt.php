@@ -59,6 +59,31 @@ class SHA256Crypt implements Hash
     }
 
     /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        // Cheat because regex is hard :-)
+        if (strpos($config, 'rounds=') === false) {
+            $config = str_replace('$5$', '$5$rounds=5000$', $config);
+        }
+
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^\$5\$rounds=(\d{4,9})\$([\.\/0-9A-Za-z]{0,16})\$?/', $config, $matches)) {
+            $options = array (
+                'rounds' => (int) $matches[1],
+                'salt' => $matches[2],
+            );
+        }
+
+        return $options;
+    }
+
+    /**
      * Generate a hash using a pre-defined config string.
      *
      * @param string $password Password string.

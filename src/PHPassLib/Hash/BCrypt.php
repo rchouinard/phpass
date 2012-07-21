@@ -70,6 +70,27 @@ class BCrypt implements Hash
     }
 
     /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^\$(2a|2y|2x)\$(\d{2})\$([\.\/0-9A-Za-z]{22})/', $config, $matches)) {
+            $options = array (
+                'ident' => $matches[1],
+                'rounds' => (int) $matches[2],
+                'salt' => $matches[3],
+            );
+        }
+
+        return $options;
+    }
+
+    /**
      * Generate a hash using a pre-defined config string.
      *
      * @param string $password Password string.

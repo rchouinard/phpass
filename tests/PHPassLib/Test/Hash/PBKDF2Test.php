@@ -85,4 +85,21 @@ class PBKDF2Test extends \PHPUnit_Framework_TestCase
         $this->assertFalse(PBKDF2::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'digest' => 'sha256',
+            'rounds' => '1212',
+            'salt' => '4vjV83LKPjQzk31VI4E0Vw.',
+        );
+        $config = PBKDF2::genConfig($options);
+        $options['saltSize'] = 17;
+
+        $this->assertEquals('$pbkdf2-sha256$1212$4vjV83LKPjQzk31VI4E0Vw.', $config);
+        $this->assertSame($options, PBKDF2::parseConfig($config));
+    }
+
 }

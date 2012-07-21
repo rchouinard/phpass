@@ -54,6 +54,26 @@ class SHA1Crypt implements Hash
     }
 
     /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^\$sha1\$(\d+)\$([\.\/0-9A-Za-z]{0,64})\$?/', $config, $matches)) {
+            $options = array (
+                'rounds' => (int) $matches[1],
+                'salt' => $matches[2],
+            );
+        }
+
+        return $options;
+    }
+
+    /**
      * Generate a hash using a pre-defined config string.
      *
      * @param string $password Password string.

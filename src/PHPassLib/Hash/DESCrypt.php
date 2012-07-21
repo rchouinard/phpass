@@ -67,6 +67,25 @@ class DESCrypt implements Hash
     }
 
     /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^([\.\/0-9A-Za-z]{2})/', $config, $matches)) {
+            $options = array (
+                'salt' => $matches[1],
+            );
+        }
+
+        return $options;
+    }
+
+    /**
      * Generate a hash using a pre-defined config string.
      *
      * @param string $password Password string.

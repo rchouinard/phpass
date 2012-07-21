@@ -73,6 +73,14 @@ interface Hash
     public static function genConfig(array $config = array ());
 
     /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config);
+
+    /**
      * Generate a hash using a pre-defined config string.
      *
      * @param string $password Password string.

@@ -89,4 +89,18 @@ class MD5CryptTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(MD5Crypt::verify($password, $hash));
     }
 
+    /**
+     * @test
+     */
+    public function genconfigAndParseconfigProduceMatchingResults()
+    {
+        $options = array (
+            'salt' => 'CCCCC.',
+        );
+        $config = MD5Crypt::genConfig($options);
+
+        $this->assertEquals('$1$CCCCC.', $config);
+        $this->assertSame($options, MD5Crypt::parseConfig($config));
+    }
+
 }

@@ -59,6 +59,27 @@ class Portable implements Hash
     }
 
     /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^\$(P|H)\$([5-9A-S]{1})([\.\/0-9A-Za-z]{8})/', $config, $matches)) {
+            $options = array (
+                'ident' => $matches[1],
+                'rounds' => strpos(Utilities::CHARS_H64, $config[3]),
+                'salt' => $matches[3],
+            );
+        }
+
+        return $options;
+    }
+
+    /**
      * Generate a hash using a pre-defined config string.
      *
      * @param string $password Password string.

@@ -64,12 +64,31 @@ class MD5Crypt implements Hash
         $string = '*1';
         try {
             self::validateOptions($config);
-            $string = sprintf('$1$%s$', $config['salt']);
+            $string = sprintf('$1$%s', $config['salt']);
         } catch (InvalidArgumentException $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
 
         return $string;
+    }
+
+    /**
+     * Parse a config string and extract the options used to build it.
+     *
+     * @param string $config Configuration string.
+     * @return array Options array or false on failure.
+     */
+    public static function parseConfig($config)
+    {
+        $options = false;
+        $matches = array ();
+        if (preg_match('/^\$1\$([\.\/0-9A-Za-z]{0,8})\$?/', $config, $matches)) {
+            $options = array (
+                'salt' => $matches[1],
+            );
+        }
+
+        return $options;
     }
 
     /**
