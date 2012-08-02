@@ -10,3 +10,6 @@ phpunit.xml
 # PHPDoc2
 docs/
 phpdoc.xml
+
+# Composer
+composer.phar
