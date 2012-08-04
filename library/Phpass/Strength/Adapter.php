@@ -9,9 +9,6 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Strength;
 
 /**

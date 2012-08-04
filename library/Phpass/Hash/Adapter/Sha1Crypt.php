@@ -9,12 +9,10 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
-use Phpass\Exception\InvalidArgumentException,
-    Phpass\Exception\RuntimeException;
+
+use Phpass\Exception\InvalidArgumentException;
+use Phpass\Exception\RuntimeException;
 
 /**
  * SHA-1 crypt hash adapter
@@ -183,6 +181,7 @@ class Sha1Crypt extends Base
     {
         $salt = substr($input, 0, strrpos($input, '$') + 1);
         $checksum = substr($input, strrpos($input, '$') + 1);
+
         return ($this->verifySalt($salt) && 1 === preg_match('/^[\.\/0-9A-Za-z]{28}$/', $checksum));
     }
 
@@ -228,6 +227,7 @@ class Sha1Crypt extends Base
             $parts['salt'] = $matches[2];
             $parts['checksum'] = $matches[3] ?: null;
         }
+
         return $parts;
     }
 

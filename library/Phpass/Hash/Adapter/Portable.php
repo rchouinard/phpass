@@ -9,12 +9,10 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
-use Phpass\Exception\InvalidArgumentException,
-    Phpass\Exception\RuntimeException;
+
+use Phpass\Exception\InvalidArgumentException;
+use Phpass\Exception\RuntimeException;
 
 /**
  * PHPass portable hash adapter

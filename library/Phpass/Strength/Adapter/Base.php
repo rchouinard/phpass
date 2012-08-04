@@ -9,9 +9,6 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Strength\Adapter;
 use Phpass\Strength\Adapter;
 
@@ -120,9 +117,9 @@ abstract class Base implements Adapter
 
             if ($tokenAsciiValue >= 48 && $tokenAsciiValue <= 57) {
                 $tokenClass = self::CLASS_NUMBER;
-            } else if ($tokenAsciiValue >= 65 && $tokenAsciiValue <= 90) {
+            } elseif ($tokenAsciiValue >= 65 && $tokenAsciiValue <= 90) {
                 $tokenClass = self::CLASS_UPPER;
-            } else if ($tokenAsciiValue >= 97 && $tokenAsciiValue <= 122) {
+            } elseif ($tokenAsciiValue >= 97 && $tokenAsciiValue <= 122) {
                 $tokenClass = self::CLASS_LOWER;
             } else {
                 $tokenClass = self::CLASS_SYMBOL;
@@ -149,7 +146,7 @@ abstract class Base implements Adapter
 
     /**
      * Return a map of token indices within the string for a given class.
-     * 
+     *
      * @param string $class
      *   Token class to map.
      * @return array
@@ -170,6 +167,7 @@ abstract class Base implements Adapter
                 $indices = $this->_tokenIndices[$class];
             }
         }
+
         return $indices;
     }
 
@@ -193,6 +191,7 @@ abstract class Base implements Adapter
                 $count = $this->_tokenCounts[$class];
             }
         }
+
         return $count;
     }
 

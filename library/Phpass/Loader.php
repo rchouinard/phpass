@@ -9,9 +9,6 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass;
 
 /**
@@ -24,7 +21,7 @@ namespace Phpass;
  *     <?php
  *     require_once 'Phpass/Loader.php';
  *     \Phpass\Loader::registerAutoloader();
- *     
+ *
  *     $phpassHash = new \Phpass\Hash;
  *     // ...
  *
@@ -47,7 +44,7 @@ class Loader
      *   The fully qualified class name to load.
      * @return void
      */
-    static public function load($class)
+    public static function load($class)
     {
         if (substr($class, 0, 6) !== 'Phpass') {
             return;
@@ -69,7 +66,7 @@ class Loader
      * @return boolean
      *   Returns true on success, false on failure.
      */
-    static public function registerAutoloader()
+    public static function registerAutoloader()
     {
         return spl_autoload_register(array ('Phpass\\Loader', 'load'));
     }

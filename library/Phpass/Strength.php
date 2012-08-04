@@ -9,13 +9,11 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass;
-use Phpass\Strength\Adapter,
-    Phpass\Strength\Adapter\Nist,
-    Phpass\Exception\InvalidArgumentException;
+
+use Phpass\Strength\Adapter;
+use Phpass\Strength\Adapter\Nist;
+use Phpass\Exception\InvalidArgumentException;
 
 /**
  * Strength class
@@ -23,10 +21,10 @@ use Phpass\Strength\Adapter,
  * Provides a simple API for working with the various strength calculator
  * adapters. If the class is constructed with no arguments, it will construct
  * an NIST adapter with default settings for use internally.
- * 
+ *
  *     <?php
  *     $phpassStrength = new \Phpass\Strength;
- *     
+ *
  *     // Calculate password string entropy
  *     $passwordStrength = $phpassStrength->calculate($password);
  *
@@ -52,11 +50,11 @@ class Strength
      *     <?php
      *     // Just use the default NIST adapter
      *     $phpassStrength = new \Phpass\Strength;
-     *     
+     *
      *     // Customize the adapter
      *     $adapter = new \Phpass\Strength\Adapter\Wolfram;
      *     $phpassStrength = new \Phpass\Strength($adapter);
-     *     
+     *
      *     // Customize the adapter via options array
      *     $options = array (
      *         'adapter' => new \Phpass\Strength\Adapter\Wolfram
@@ -94,6 +92,7 @@ class Strength
     public function setAdapter(Adapter $adapter)
     {
         $this->_adapter = $adapter;
+
         return $this;
     }
 

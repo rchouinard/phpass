@@ -9,12 +9,10 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
-use Phpass\Exception\InvalidArgumentException,
-    Phpass\Exception\RuntimeException;
+
+use Phpass\Exception\InvalidArgumentException;
+use Phpass\Exception\RuntimeException;
 
 /**
  * PBKDF2 hash adapter
@@ -78,7 +76,7 @@ class Pbkdf2 extends Base
             $keySize = 64;
             if ($matches['digest'] == self::DIGEST_SHA256) {
                 $keySize = 32;
-            } else if ($matches['digest'] == self::DIGEST_SHA1) {
+            } elseif ($matches['digest'] == self::DIGEST_SHA1) {
                 $keySize = 20;
             }
 

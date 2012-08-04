@@ -1,0 +1,7 @@
+# Eclipse
+.settings/
+.buildpath
+.project
+
+# Composer
+composer.phar

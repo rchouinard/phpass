@@ -9,10 +9,8 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
+
 use Phpass\Exception\InvalidArgumentException;
 
 /**

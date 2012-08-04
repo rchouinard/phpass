@@ -9,14 +9,12 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass;
-use Phpass\Hash\Adapter,
-    Phpass\Hash\Adapter\Bcrypt,
-    Phpass\Exception\InvalidArgumentException,
-    Phpass\Exception\RuntimeException;
+
+use Phpass\Hash\Adapter;
+use Phpass\Hash\Adapter\Bcrypt;
+use Phpass\Exception\InvalidArgumentException;
+use Phpass\Exception\RuntimeException;
 
 /**
  * Hash class
@@ -24,7 +22,7 @@ use Phpass\Hash\Adapter,
  * Provides a simple API for working with the various hash adapters. If the
  * class is constructed with no arguments, it will construct a bcrypt
  * adapter with default settings for use internally.
- * 
+ *
  * If an optional HMAC key is provided, password strings will be hashed using
  * the chosen HMAC algorithm and the supplied key before being passed to the
  * adapter. HMAC-SHA256 is used by default.
@@ -32,10 +30,10 @@ use Phpass\Hash\Adapter,
  *     <?php
  *     // Just use the defaults (works well in most cases)
  *     $phpassHash = new \Phpass\Hash;
- *     
+ *
  *     // Generate a password hash
  *     $passwordHash = $phpassHash->hashPassword($password);
- *     
+ *
  *     // Check a password
  *     if ($phpassHash->checkPassword($password, $passwordHash)) {
  *         // Passwords match!
@@ -84,13 +82,13 @@ class Hash
      *     <?php
      *     // Just use the defaults (works for most cases)
      *     $phpassHash = new \Phpass\Hash;
-     *     
+     *
      *     // Customize the adapter
      *     $adapter = new \Phpass\Hash\Adapter\Pbkdf2(array (
      *         'iterationCountLog2' => 12 // 2^12 iterations
      *     ));
      *     $phpassHash = new \Phpass\Hash($adapter);
-     *     
+     *
      *     // Customize the adapter as well as use additional HMAC hashing
      *     $options = array (
      *         'adapter' => new \Phpass\Hash\Adapter\ExtDes,
@@ -110,7 +108,7 @@ class Hash
         $this->_adapter = new Bcrypt;
         if ($options instanceof Adapter) {
             $options = array ('adapter' => $options);
-        } 
+        }
 
         if (!is_array($options)) {
             throw new InvalidArgumentException('Expected an instance of Phpass\\Hash\\Adapter or an associative array of options.');
@@ -129,6 +127,7 @@ class Hash
     public function setAdapter(Adapter $adapter)
     {
         $this->_adapter = $adapter;
+
         return $this;
     }
 
@@ -214,6 +213,7 @@ class Hash
     public function checkPassword($password, $storedHash)
     {
         $hash = $this->_crypt($password, $storedHash);
+
         return ($hash == $storedHash);
     }
 
