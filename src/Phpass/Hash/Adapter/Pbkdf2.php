@@ -237,7 +237,7 @@ class Pbkdf2 extends Base
             }
 
             $roundsValid = false;
-            if ($rounds >= 1 && $rounds <= 4294967296) {
+            if ($rounds[0] != '0' && $rounds >= 1 && $rounds <= 4294967296) {
                 $roundsValid = true;
             }
 

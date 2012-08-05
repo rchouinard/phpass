@@ -71,7 +71,7 @@ class Md5Crypt extends Base
      */
     public function verifySalt($input)
     {
-        return (1 === preg_match('/^\$1\$.{0,8}\$?$/', $input));
+        return (1 === preg_match('/^\$1\$[\.\/0-9A-Za-z]{0,8}\$?$/', $input));
     }
 
 }

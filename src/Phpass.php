@@ -2,7 +2,7 @@
 /**
  * PHP Password Library
  *
- * Convenience file for bootstrapping the PHPass library.
+ * Convenience file for bootstrapping the library.
  *
  * @package PHPass
  * @category Cryptography
