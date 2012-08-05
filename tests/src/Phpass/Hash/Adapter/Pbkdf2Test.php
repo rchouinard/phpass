@@ -9,13 +9,12 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
 
+use \PHPUnit_Framework_TestCase as TestCase;
+
 /**
- * PBKDF2 hash adapter tests
+ * PHP Password Library
  *
  * @package PHPass\Tests
  * @category Cryptography
@@ -23,7 +22,7 @@ namespace Phpass\Hash\Adapter;
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
-class Pbkdf2Test extends \PHPUnit_Framework_TestCase
+class Pbkdf2Test extends TestCase
 {
 
     /**
@@ -105,17 +104,41 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test PBKDF2 implementation
-     *
-     * Uses test vectors from RFC 6070
-     *
+     * @return array
+     */
+    public function validTestVectorProvider()
+    {
+        $vectors = array (
+            // Generated using the Python PassLib
+            array ("password", '$pbkdf2$1212$OB.dtnSEXZK8U5cgxU/GYQ$y5LKPOplRmok7CZp/aqVDVg8zGI'),
+            array ("password", '$pbkdf2-sha256$1212$4vjV83LKPjQzk31VI4E0Vw$hsYF68OiOUPdDZ1Fg.fJPeq1h/gXXY7acBp9/6c.tmQ'),
+            array ("password", '$pbkdf2-sha512$1212$RHY0Fr3IDMSVO/RSZyb5ow$eNLfBK.eVozomMr.1gYa17k9B7KIK25NOEshvhrSX.esqY3s.FvWZViXz4KoLlQI.BzY/YTNJOiKc5gBYFYGww'),
+        );
+
+        return $vectors;
+    }
+
+    /**
+     * @return array
+     */
+    public function invalidTestVectorProvider()
+    {
+        $vectors = array (
+            array ("", '$pbkdf2$01212$THDqatpidANpadlLeTeOEg$HV3oi1k5C5LQCgG1BMOL.BX4YZc', '*0'),
+            array ("", '*0', '*1'),
+            array ("", '*1', '*0'),
+        );
+
+        return $vectors;
+    }
+
+    /**
      * @test
      * @dataProvider rfc6070TestVectorProvider
-     * @return void
      */
     public function pbkdf2MethodPassesUsingRfc6070TestVectors($input, $output)
     {
-        $class = new \ReflectionClass('Phpass\Hash\Adapter\Pbkdf2');
+        $class = new \ReflectionClass('Phpass\\Hash\\Adapter\\Pbkdf2');
         $method = $class->getMethod('_pbkdf2');
         $method->setAccessible(true);
 
@@ -128,107 +151,21 @@ class Pbkdf2Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Run a number of standard test vectors through the adapter
-     *
-     * This tests the underlying crypt() method more than anything, but it's
-     * a good idea to make sure the adapter doesn't inadvertently interfere.
-     *
      * @test
-     * @return void
+     * @dataProvider validTestVectorProvider
      */
-    public function knownTestVectorsBehaveAsExpected()
+    public function validTestVectorsProduceExpectedResults($password, $hash)
     {
-        $adapter = $this->_adapter;
-
-        $vectors = array (
-            array ("password", '$pbkdf2$1212$OB.dtnSEXZK8U5cgxU/GYQ$y5LKPOplRmok7CZp/aqVDVg8zGI'),
-            array ("password", '$pbkdf2-sha256$1212$4vjV83LKPjQzk31VI4E0Vw$hsYF68OiOUPdDZ1Fg.fJPeq1h/gXXY7acBp9/6c.tmQ'),
-            array ("password", '$pbkdf2-sha512$1212$RHY0Fr3IDMSVO/RSZyb5ow$eNLfBK.eVozomMr.1gYa17k9B7KIK25NOEshvhrSX.esqY3s.FvWZViXz4KoLlQI.BzY/YTNJOiKc5gBYFYGww'),
-        );
-
-        foreach ($vectors as $vector) {
-            $this->assertEquals($vector[1], $adapter->crypt($vector[0], $vector[1]));
-        }
-
-        $this->assertEquals($adapter->crypt('', '*0'), '*1');
-        $this->assertEquals($adapter->crypt('', '*1'), '*0');
+        $this->assertEquals($hash, $this->_adapter->crypt($password, $hash));
     }
 
     /**
-     * Test that setOptions() properly sets configuration options
-     *
      * @test
-     * @return void
+     * @dataProvider invalidTestVectorProvider
      */
-    public function modifyingOptionsUpdatesAdapterBehavior()
+    public function invalidTestVectorsProduceExpectedResults($password, $hash, $errorString)
     {
-        $adapter = $this->_adapter;
-
-        $adapter->setOptions(array ('digest' => 'sha1'));
-        $this->assertStringStartsWith('$pbkdf2$', $adapter->genSalt());
-
-        $adapter->setOptions(array ('digest' => 'sha256'));
-        $this->assertStringStartsWith('$pbkdf2-sha256$', $adapter->genSalt());
-
-        $adapter->setOptions(array ('digest' => 'sha512'));
-        $this->assertStringStartsWith('$pbkdf2-sha512$', $adapter->genSalt());
-
-        $adapter->setOptions(array ('iterationCount' => 1212));
-        $this->assertStringStartsWith('$pbkdf2-sha512$1212$', $adapter->genSalt());
-
-        $adapter->setOptions(array ('digest' => 'sha256', 'iterationCount' => 5000));
-        $this->assertStringStartsWith('$pbkdf2-sha256$5000$', $adapter->genSalt());
-
-        try {
-            $adapter->setOptions(array ('digest' => 'invalid'));
-        } catch (\Exception $e) {}
-        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
-        unset($e);
-
-        try {
-            $adapter->setOptions(array ('iterationCount' => '0'));
-        } catch (\Exception $e) {}
-        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
-        unset($e);
-    }
-
-    /**
-     * Test that the adapter generates a valid hash
-     *
-     * @test
-     * @return void
-     */
-    public function adapterGeneratesValidHashString()
-    {
-        $adapter = $this->_adapter;
-        $password = 'password';
-
-        // Generates a valid salt string
-        $this->assertTrue($adapter->verifySalt($adapter->genSalt()));
-
-        // Generates a valid hash string
-        $this->assertTrue($adapter->verifyHash($adapter->crypt($password)));
-    }
-
-    /**
-     * Test that the adapter generates the same hash given the same input
-     *
-     * @test
-     * @return void
-     */
-    public function adapterConsistentlyGeneratesHashStrings()
-    {
-        $adapter = $this->_adapter;
-        $password = 'password';
-
-        $salt = $adapter->genSalt();
-        $hash = $adapter->crypt($password, $salt);
-
-        // Generates the same hash for the password given the stored salt
-        $this->assertEquals($hash, $adapter->crypt($password, $salt));
-
-        // Generates the same hash for the password given the stored hash
-        $this->assertEquals($hash, $adapter->crypt($password, $hash));
+        $this->assertEquals($errorString, $this->_adapter->crypt($password, $hash));
     }
 
 }

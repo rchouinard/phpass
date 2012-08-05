@@ -9,13 +9,12 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
 
+use \PHPUnit_Framework_TestCase as TestCase;
+
 /**
- * MD5 crypt hash adapter tests
+ * PHP Password Library
  *
  * @package PHPass\Tests
  * @category Cryptography
@@ -23,7 +22,7 @@ namespace Phpass\Hash\Adapter;
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
-class Md5CryptTest extends \PHPUnit_Framework_TestCase
+class Md5CryptTest extends TestCase
 {
 
     /**
@@ -41,66 +40,54 @@ class Md5CryptTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Run a number of standard test vectors through the adapter
-     *
-     * @test
-     * @return void
+     * @return array
      */
-    public function knownTestVectorsBehaveAsExpected()
+    public function validTestVectorProvider()
     {
-        $adapter = $this->_adapter;
-
-        // TODO: Find a good source of test vectors
         $vectors = array (
+            // From John the Ripper 1.7.9
+            array ("0123456789ABCDE", '$1$12345678$aIccj83HRDBo6ux1bVx7D1'),
+            array ("12345678", '$1$12345678$f8QoJuo0DpBRfQSD0vglc1'),
+            array ("", '$1$$qRPK7m23GJusamGpoGLby/'),
+            array ("no salt", '$1$$AuJCr07mI7DSew03TmBIv/'),
+            array ("", '$1$12345678$xek.CpjQUVgdf/P2N9KQf/'),
+            array ("1234", '$1$1234$BdIMOAWFOV2AQlLsrN/Sw.'),
         );
 
-        foreach ($vectors as $vector) {
-            $this->assertEquals($adapter->crypt($vector[0], $vector[1]), $vector[1]);
-        }
-
-        $this->assertEquals($adapter->crypt('', '*0'), '*1');
-        $this->assertEquals($adapter->crypt('', '*1'), '*0');
+        return $vectors;
     }
 
     /**
-     * Test that the adapter generates a valid hash
-     *
-     * @test
-     * @return void
+     * @return array
      */
-    public function adapterGeneratesValidHashString()
+    public function invalidTestVectorProvider()
     {
-        $adapter = $this->_adapter;
-        $password = 'password';
+        // TODO: Find a good source of test vectors
+        $vectors = array (
+            array ("invalid salt", '$1$`!@#%^&*$E6hD76/pKTS8qToBCkux30', '*0'),
+            array ("", '*0', '*1'),
+            array ("", '*1', '*0'),
+        );
 
-        // Generates a valid salt string
-        $salt = $adapter->genSalt();
-        $this->assertRegExp('/^\$1\$[\.\/0-9A-Za-z]{0,8}\$?$/', $salt);
-
-        // Generates a valid hash string
-        $hash = $adapter->crypt($password, $salt);
-        $this->assertRegExp('/^\$1\$[\.\/0-9A-Za-z]{0,8}\$?[\.\/0-9A-Za-z]{22}$/', $hash);
+        return $vectors;
     }
 
     /**
-     * Test that the adapter generates the same hash given the same input
-     *
      * @test
-     * @return void
+     * @dataProvider validTestVectorProvider
      */
-    public function adapterConsistentlyGeneratesHashStrings()
+    public function validTestVectorsProduceExpectedResults($password, $hash)
     {
-        $adapter = $this->_adapter;
-        $password = 'password';
+        $this->assertEquals($hash, $this->_adapter->crypt($password, $hash));
+    }
 
-        $salt = $adapter->genSalt();
-        $hash = $adapter->crypt($password, $salt);
-
-        // Generates the same hash for the password given the stored salt
-        $this->assertEquals($hash, $adapter->crypt($password, $salt));
-
-        // Generates the same hash for the password given the stored hash
-        $this->assertEquals($hash, $adapter->crypt($password, $hash));
+    /**
+     * @test
+     * @dataProvider invalidTestVectorProvider
+     */
+    public function invalidTestVectorsProduceExpectedResults($password, $hash, $errorString)
+    {
+        $this->assertEquals($errorString, $this->_adapter->crypt($password, $hash));
     }
 
 }

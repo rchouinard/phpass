@@ -9,13 +9,12 @@
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
 
-/**
- * @namespace
- */
 namespace Phpass\Hash\Adapter;
 
+use \PHPUnit_Framework_TestCase as TestCase;
+
 /**
- * PHPass portable hash adapter tests
+ * PHP Password Library
  *
  * @package PHPass\Tests
  * @category Cryptography
@@ -23,7 +22,7 @@ namespace Phpass\Hash\Adapter;
  * @license http://www.opensource.org/licenses/mit-license.html MIT License
  * @link https://github.com/rchouinard/phpass Project at GitHub
  */
-class PortableTest extends \PHPUnit_Framework_TestCase
+class PortableTest extends TestCase
 {
 
     /**
@@ -41,111 +40,55 @@ class PortableTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Run a number of standard test vectors through the adapter
-     *
-     * @test
-     * @return void
+     * @return array
      */
-    public function knownTestVectorsBehaveAsExpected()
+    public function validTestVectorProvider()
     {
-        $adapter = $this->_adapter;
-
         $vectors = array (
-            // Generated using Openwall's PasswordHash class
-            array ("U*U", '$P$8Y50qr/rEJ5LQ0ni8R9WUYUE70TDSu/'),
-            array ("U*U*", '$P$8/LEV9JjUM.FMZ6nsACmgyBkaeD4Ka1'),
-            array ("U*U*U", '$P$8S7UaSkpWYULBOjfjdL7oWoL6bPjrZ/'),
-            array ("", '$P$876GykTPTcUNTbMmjOdVvPrCEM/.W80'),
-            array ("", '$P$8CCCCCCCCprnqtTraJ2.nIjE4ET2Mh/'),
+                // From John the Ripper 1.7.9
+                array ("test1", '$H$9aaaaaSXBjgypwqm.JsMssPLiS8YQ00'),
+                array ("123456", '$H$9PE8jEklgZhgLmZl5.HYJAzfGCQtzi1'),
+                array ("123456", '$H$9pdx7dbOW3Nnt32sikrjAxYFjX8XoK1'),
+                array ("thisisalongertestPW", '$P$912345678LIjjb6PhecupozNBmDndU0'),
+                array ("JohnRipper", '$P$612345678si5M0DDyPpmRCmcltU/YW/'),
+                array ("JohnRipper", '$H$712345678WhEyvy1YWzT4647jzeOmo0'),
+                array ("JohnRipper", '$P$B12345678L6Lpt4BxNotVIMILOa9u81'),
         );
 
-        foreach ($vectors as $vector) {
-            $this->assertEquals($adapter->crypt($vector[0], $vector[1]), $vector[1]);
-        }
-
-        // Invalid salts
-        $this->assertEquals($adapter->crypt('', '$P$4CCCCCCCC'), '*0');
-        $this->assertEquals($adapter->crypt('', '$P$TCCCCCCCC'), '*0');
-        $this->assertEquals($adapter->crypt('', '$X$8CCCCCCCC'), '*0');
-
-        // Invalid hashes
-        $this->assertEquals($adapter->crypt('', '$P$8CCCCCCCCprnqtTraJ2!nIjE4ET2Mh/'), '*0');
-        $this->assertEquals($adapter->crypt('', '$P{8CCCCCCCCprnqtTraJ2.nIjE4ET2Mh/'), '*0');
-        $this->assertEquals($adapter->crypt('', '*0'), '*1');
-        $this->assertEquals($adapter->crypt('', '*1'), '*0');
+        return $vectors;
     }
 
     /**
-     * Test that setOptions() properly sets configuration options
-     *
-     * @test
-     * @return void
+     * @return array
      */
-    public function modifyingOptionsUpdatesAdapterBehavior()
+    public function invalidTestVectorProvider()
     {
-        $adapter = $this->_adapter;
+        $vectors = array (
+                array ("", '*0', '*1'),
+                array ("", '*1', '*0'),
+        );
 
-        $adapter->setOptions(array ('iterationCountLog2' => 7));
-        $this->assertStringStartsWith('$P$A', $adapter->genSalt());
-
-        $adapter->setOptions(array ('phpBBCompat' => true));
-        $this->assertStringStartsWith('$H$A', $adapter->genSalt());
-
-        $adapter->setOptions(array ('iterationCountLog2' => 10, 'phpBBCompat' => false));
-        $this->assertStringStartsWith('$P$D', $adapter->genSalt());
-
-        try {
-            $adapter->setOptions(array ('iterationCountLog2' => 6));
-        } catch (\Exception $e) {}
-        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
-        unset($e);
-
-        try {
-            $adapter->setOptions(array ('iterationCountLog2' => 31));
-        } catch (\Exception $e) {}
-        $this->assertInstanceOf('Phpass\\Exception\\InvalidArgumentException', $e);
-        unset($e);
+        return $vectors;
     }
 
     /**
-     * Test that the adapter generates a valid hash
-     *
      * @test
-     * @return void
+     * @dataProvider validTestVectorProvider
      */
-    public function adapterGeneratesValidHashString()
+    public function validTestVectorsProduceExpectedResults($password, $hash)
     {
-        $adapter = $this->_adapter;
-        $password = 'password';
-
-        // Generates a valid salt string
-        $salt = $adapter->genSalt();
-        $this->assertRegExp('/^\$[PH]{1}\$[\.\/0-9A-Za-z]{9}$/', $salt);
-
-        // Generates a valid hash string
-        $hash = $adapter->crypt($password, $salt);
-        $this->assertRegExp('/^\$[PH]{1}\$[\.\/0-9A-Za-z]{31}$/', $hash);
+        $config = substr($hash, 0, 12);
+        $this->assertEquals($hash, $this->_adapter->crypt($password, $config));
     }
 
     /**
-     * Test that the adapter generates the same hash given the same input
-     *
      * @test
-     * @return void
+     * @dataProvider invalidTestVectorProvider
      */
-    public function adapterConsistentlyGeneratesHashStrings()
+    public function invalidTestVectorsProduceExpectedResults($password, $hash, $errorString)
     {
-        $adapter = $this->_adapter;
-        $password = 'password';
-
-        $salt = $adapter->genSalt();
-        $hash = $adapter->crypt($password, $salt);
-
-        // Generates the same hash for the password given the stored salt
-        $this->assertEquals($hash, $adapter->crypt($password, $salt));
-
-        // Generates the same hash for the password given the stored hash
-        $this->assertEquals($hash, $adapter->crypt($password, $hash));
+        $config = substr($hash, 0, 12);
+        $this->assertEquals($errorString, $this->_adapter->crypt($password, $config));
     }
 
 }
