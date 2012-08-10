@@ -18,21 +18,6 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * BSDi / Extended DES Crypt Module
  *
- * Also known as extended DES, BSDi Crypt is based on DES Crypt but adds a
- * configurable number of rounds and a larger salt. The algorithm is considered
- * weak by modern standards and should not be used for new applications. It is
- * only provided here for completeness.
- *
- * <code>
- * &lt;?php
- * use PHPassLib\Hash\BSDiCrypt;
- *
- * $hash = BSDiCrypt::hash($password);
- * if (BSDiCrypt::verify($password, $hash)) {
- *     // Password matches, user is authenticated
- * }
- * </code>
- *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
@@ -42,7 +27,7 @@ class BSDiCrypt implements Hash
 {
 
     /**
-     * Generate a config string suitable for use with module hashes.
+     * Generate a config string from an array.
      *
      * @param array $config Array of configuration options.
      * @return string Configuration string.
@@ -58,26 +43,22 @@ class BSDiCrypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        try {
-            self::validateOptions($config);
-            // Rounds needs to be odd in order to avoid exposing weak DES keys
-            if (($config['rounds'] % 2) == 0) {
-                --$config['rounds'];
-            }
-
-            $string = sprintf('_%s%s', Utilities::encodeInt24($config['rounds']), $config['salt']);
-        } catch (InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
+        self::validateOptions($config);
+        // Rounds needs to be odd in order to avoid exposing weak DES keys
+        if (($config['rounds'] % 2) == 0) {
+            --$config['rounds'];
         }
+
+        $string = sprintf('_%s%s', Utilities::encodeInt24($config['rounds']), $config['salt']);
 
         return $string;
     }
 
     /**
-     * Parse a config string and extract the options used to build it.
+     * Parse a config string into an array.
      *
      * @param string $config Configuration string.
-     * @return array Options array or false on failure.
+     * @return array Array of configuration options or false on failure.
      */
     public static function parseConfig($config)
     {
@@ -98,7 +79,7 @@ class BSDiCrypt implements Hash
     }
 
     /**
-     * Generate a hash using a pre-defined config string.
+     * Generate a password hash using a config string.
      *
      * @param string $password Password string.
      * @param string $config Configuration string.
@@ -116,10 +97,8 @@ class BSDiCrypt implements Hash
     }
 
     /**
-     * Generate a hash using either a pre-defined config string or an array.
+     * Generate a password hash using a config string or array.
      *
-     * @see Hash::genConfig()
-     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
@@ -147,12 +126,9 @@ class BSDiCrypt implements Hash
     }
 
     /**
-     * Validate a set of module options.
-     *
-     * @param array $options Associative array of options.
-     * @return boolean Returns true if all options are valid.
-     * @throws InvalidArgumentException Throws an InvalidArgumentException
-     *     if an invalid option value is encountered.
+     * @param array $options
+     * @return boolean
+     * @throws InvalidArgumentException
      */
     protected static function validateOptions(array $options)
     {

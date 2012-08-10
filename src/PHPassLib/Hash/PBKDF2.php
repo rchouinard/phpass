@@ -19,27 +19,6 @@ use PHPassLib\Exception\RuntimeException;
 /**
  * PBKDF2-<digest> Module
  *
- * PBKDF2 is the Password-Based Key Derivation function, v2. PBKDF2 uses a
- * configurable number of rounds in order to adjust its computational cost and
- * discourage brute-force attacks. It also uses a salt value in order to defeat
- * rainbow tables.
- *
- * This module is capable of generating PBKDF2 keys using the HMAC SHA-1,
- * SHA-256, or SHA-512. the SHA-1 variant is not vulnerable to any known SHA-1
- * weakness and may be used safely.
- *
- * It is recommended that pbkdf2-sha512 be used in new applications.
- *
- * <code>
- * &lt;?php
- * use PHPassLib\Hash\PBKDF2;
- *
- * $hash = PBKDF2::hash($password);
- * if (PBKDF2::verify($password, $hash)) {
- *     // Password matches, user is authenticated
- * }
- * </code>
- *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
@@ -53,7 +32,7 @@ class PBKDF2 implements Hash
     const DIGEST_SHA512 = 'sha512';
 
     /**
-     * Generate a config string suitable for use with module hashes.
+     * Generate a config string from an array.
      *
      * @param array $config Array of configuration options.
      * @return string Configuration string.
@@ -71,48 +50,40 @@ class PBKDF2 implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        try {
-            self::validateOptions($config);
-            // Generate a salt value if we need one
-            if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
-                $config['salt'] = self::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
-            }
-
-            // pbkdf2-sha1 doesn't include the digest in the hash identifier
-            // We also have to treat the rounds parameter as a float, otherwise
-            // values above 2147483647 will wrap on 32-bit systems.
-            $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s', $config['digest'], $config['rounds'], $config['salt']));
-        } catch (InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        } catch (RuntimeException $e) {
-            trigger_error($e->getMessage(), E_USER_ERROR);
+        self::validateOptions($config);
+        // Generate a salt value if we need one
+        if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
+            $config['salt'] = self::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
         }
+
+        // pbkdf2-sha1 doesn't include the digest in the hash identifier
+        // We also have to treat the rounds parameter as a float, otherwise
+        // values above 2147483647 will wrap on 32-bit systems.
+        $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s', $config['digest'], $config['rounds'], $config['salt']));
 
         return $string;
     }
 
     /**
-     * Parse a config string and extract the options used to build it.
+     * Parse a config string into an array.
      *
      * @param string $config Configuration string.
-     * @return array Options array or false on failure.
+     * @return array Array of configuration options or false on failure.
      */
     public static function parseConfig($config)
     {
         $options = false;
         $matches = array ();
         if (preg_match('/^\$pbkdf2(?:-(sha256|sha512))?\$(\d+)\$([\.\/0-9A-Za-z]{0,1366})\$?/', $config, $matches)) {
-            try {
-                $options = array (
-                    'digest' => $matches[1] ?: 'sha1',
-                    'rounds' => $matches[2],
-                    'salt' => $matches[3],
-                    'saltSize' => $matches[3] ? strlen(Utilities::altBase64Decode($matches[3])) : 0,
-                );
+            $options = array (
+                'digest' => $matches[1] ?: 'sha1',
+                'rounds' => $matches[2],
+                'salt' => $matches[3],
+                'saltSize' => $matches[3] ? strlen(Utilities::altBase64Decode($matches[3])) : 0,
+            );
 
-                if ($options['rounds'] < 1 || $options['rounds'] > 4294967296) {
-                    $options = false;
-                }
+            try {
+                self::validateOptions($options);
             } catch (InvalidArgumentException $e) {
                 $options = false;
             }
@@ -122,7 +93,7 @@ class PBKDF2 implements Hash
     }
 
     /**
-     * Generate a hash using a pre-defined config string.
+     * Generate a password hash using a config string.
      *
      * @param string $password Password string.
      * @param string $config Configuration string.
@@ -176,10 +147,8 @@ class PBKDF2 implements Hash
     }
 
     /**
-     * Generate a hash using either a pre-defined config string or an array.
+     * Generate a password hash using a config string or array.
      *
-     * @see Hash::genConfig()
-     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
@@ -207,10 +176,8 @@ class PBKDF2 implements Hash
     }
 
     /**
-     * Generate a valid salt string.
-     *
-     * @param string $input Optional random string of raw bytes.
-     * @return string Encoded salt string.
+     * @param string $input
+     * @return string
      */
     protected static function genSalt($input = null)
     {
@@ -255,12 +222,9 @@ class PBKDF2 implements Hash
 
 
     /**
-     * Validate a set of module options.
-     *
-     * @param array $options Associative array of options.
-     * @return boolean Returns true if all options are valid.
-     * @throws InvalidArgumentException Throws an InvalidArgumentException
-     *     if an invalid option value is encountered.
+     * @param array $options
+     * @return boolean
+     * @throws InvalidArgumentException
      */
     protected static function validateOptions(array $options)
     {

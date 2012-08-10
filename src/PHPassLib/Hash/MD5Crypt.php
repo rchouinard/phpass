@@ -18,26 +18,6 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * MD5 Crypt Module
  *
- * MD5 crypt is a cryptographic hash function which uses an algorithm based on
- * MD5 in combination with a salt value. The resulting function is more
- * computationally expensive, and therefore slower to calculate, than straigh
- * MD5. the slower speed helps to discourage brute-force attacks while the salt
- * value defeats rainbow tables.
- *
- * This method uses a fixed number of rounds and is no longer as
- * computationally expensive as it once was. It is not recommended to use
- * MD5 crypt for new projects. Consider using BCrypt or PBKDF2-SHA512 instead.
- *
- * <code>
- * &lt;?php
- * use PHPassLib\Hash\MD5Crypt;
- *
- * $hash = MD5Crypt::hash($password);
- * if (MD5Crypt::verify($password, $hash)) {
- *     // Password matches, user is authenticated
- * }
- * </code>
- *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
@@ -47,7 +27,7 @@ class MD5Crypt implements Hash
 {
 
     /**
-     * Generate a config string suitable for use with module hashes.
+     * Generate a config string from an array.
      *
      * @param array $config Array of configuration options.
      * @return string Configuration string.
@@ -62,21 +42,17 @@ class MD5Crypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        try {
-            self::validateOptions($config);
-            $string = sprintf('$1$%s', $config['salt']);
-        } catch (InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        }
+        self::validateOptions($config);
+        $string = sprintf('$1$%s', $config['salt']);
 
         return $string;
     }
 
     /**
-     * Parse a config string and extract the options used to build it.
+     * Parse a config string into an array.
      *
      * @param string $config Configuration string.
-     * @return array Options array or false on failure.
+     * @return array Array of configuration options or false on failure.
      */
     public static function parseConfig($config)
     {
@@ -86,13 +62,19 @@ class MD5Crypt implements Hash
             $options = array (
                 'salt' => $matches[1],
             );
+
+            try {
+                self::validateOptions($options);
+            } catch (InvalidArgumentException $e) {
+                $options = false;
+            }
         }
 
         return $options;
     }
 
     /**
-     * Generate a hash using a pre-defined config string.
+     * Generate a password hash using a config string.
      *
      * @param string $password Password string.
      * @param string $config Configuration string.
@@ -110,10 +92,8 @@ class MD5Crypt implements Hash
     }
 
     /**
-     * Generate a hash using either a pre-defined config string or an array.
+     * Generate a password hash using a config string or array.
      *
-     * @see Hash::genConfig()
-     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
@@ -141,10 +121,8 @@ class MD5Crypt implements Hash
     }
 
     /**
-     * Generate a valid salt string.
-     *
-     * @param string $input Optional random string of raw bytes.
-     * @return string Encoded salt string.
+     * @param string $input
+     * @return string
      */
     protected static function genSalt($input = null)
     {
@@ -156,12 +134,9 @@ class MD5Crypt implements Hash
     }
 
     /**
-     * Validate a set of module options.
-     *
-     * @param array $options Associative array of options.
-     * @return boolean Returns true if all options are valid.
-     * @throws InvalidArgumentException Throws an InvalidArgumentException
-     *     if an invalid option value is encountered.
+     * @param array $options
+     * @return boolean
+     * @throws InvalidArgumentException
      */
     protected static function validateOptions(array $options)
     {

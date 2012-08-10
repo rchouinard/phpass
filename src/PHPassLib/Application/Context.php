@@ -14,7 +14,7 @@ namespace PHPassLib\Application;
 use PHPassLib\Exception\RuntimeException;
 
 /**
- * Application context
+ * Application Context
  *
  * This class provides an interface for using the library within an large
  * application.
@@ -130,8 +130,9 @@ class Context
     }
 
     /**
-     * @param  $password
-     * @param unknown_type $hash
+     * @param string $password
+     * @param string $hash
+     * @return boolean
      */
     public function verify($password, $hash)
     {

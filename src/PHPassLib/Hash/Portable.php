@@ -30,7 +30,7 @@ class Portable implements Hash
     const IDENT_PHPBB = 'H';
 
     /**
-     * Generate a config string suitable for use with module hashes.
+     * Generate a config string from an array.
      *
      * @param array $config Array of configuration options.
      * @return string Configuration string.
@@ -47,22 +47,18 @@ class Portable implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        try {
-            self::validateOptions($config);
-            $charset = Utilities::CHARS_H64;
-            $string = sprintf('$%s$%s%s', $config['ident'], $charset[(int) $config['rounds']], $config['salt']);
-        } catch (InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        }
+        self::validateOptions($config);
+        $charset = Utilities::CHARS_H64;
+        $string = sprintf('$%s$%s%s', $config['ident'], $charset[(int) $config['rounds']], $config['salt']);
 
         return $string;
     }
 
     /**
-     * Parse a config string and extract the options used to build it.
+     * Parse a config string into an array.
      *
      * @param string $config Configuration string.
-     * @return array Options array or false on failure.
+     * @return array Array of configuration options or false on failure.
      */
     public static function parseConfig($config)
     {
@@ -75,7 +71,9 @@ class Portable implements Hash
                 'salt' => $matches[3],
             );
 
-            if ($options['rounds'] < 7 || $options['rounds'] > 30) {
+            try {
+                self::validateOptions($options);
+            } catch (InvalidArgumentException $e) {
                 $options = false;
             }
         }
@@ -84,7 +82,7 @@ class Portable implements Hash
     }
 
     /**
-     * Generate a hash using a pre-defined config string.
+     * Generate a password hash using a config string.
      *
      * @param string $password Password string.
      * @param string $config Configuration string.
@@ -114,10 +112,8 @@ class Portable implements Hash
     }
 
     /**
-     * Generate a hash using either a pre-defined config string or an array.
+     * Generate a password hash using a config string or array.
      *
-     * @see Hash::genConfig()
-     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
@@ -145,12 +141,9 @@ class Portable implements Hash
     }
 
     /**
-     * Validate a set of module options.
-     *
-     * @param array $options Associative array of options.
-     * @return boolean Returns true if all options are valid.
-     * @throws InvalidArgumentException Throws an InvalidArgumentException
-     *     if an invalid option value is encountered.
+     * @param array $options
+     * @return boolean
+     * @throws InvalidArgumentException
      */
     protected static function validateOptions(array $options)
     {

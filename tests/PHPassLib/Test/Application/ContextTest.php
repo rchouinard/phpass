@@ -25,7 +25,11 @@ use PHPassLib\Exception\RuntimeException;
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testContextCanVerifyMultipleConfigurations()
+    /**
+     * @test
+     * @covers PHPassLib\Application\Context::verify()
+     */
+    public function contextCanVerifyMultipleConfigurations()
     {
         $context = new Context;
         $context->addConfig('bcrypt');
@@ -43,7 +47,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PHPassLib\\Exception', $exception);
     }
 
-    public function testContextUsesFirstConfigForHashing()
+    /**
+     * @test
+     * @covers PHPassLib\Application\Context::hash()
+     */
+    public function contextUsesFirstConfigForHashing()
     {
         $context = new Context;
         $context->addConfig('bcrypt');
@@ -52,7 +60,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertStringStartsWith('$2a$', $context->hash('password'));
     }
 
-    public function testContextIdentifiesOutdatedHashes()
+    /**
+     * @test
+     * @covers PHPassLib\Application\Context::needsUpdate()
+     */
+    public function contextIdentifiesOutdatedHashes()
     {
         $context = new Context;
         $context->addConfig('pbkdf2', array ('digest' => 'sha1'));

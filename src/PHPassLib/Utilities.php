@@ -16,9 +16,6 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * Misc. Utilities
  *
- * This class provides a number of methods common to other classes. The most
- * common use if encoding and decoding various types of data.
- *
  * @package PHPassLib\Utilities
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
@@ -91,7 +88,7 @@ class Utilities
     /**
      * Encode a string with alternate base64 encoding.
      *
-     * @param string $data String to be encoded.
+     * @param string $data String to encode.
      * @return string Encoded string.
      */
     public static function altBase64Encode($data)
@@ -164,8 +161,8 @@ class Utilities
     /**
      * Encode a 24-bit integer into a 4-byte string.
      *
-     * @param integer $integer The integer to encode.
-     * @return string Returns the encoded string.
+     * @param integer $integer Integer to encode.
+     * @return string Encoded string.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     the supplied argument is not a 24-bit integer.
      */
@@ -189,8 +186,8 @@ class Utilities
     /**
      * Decodes a 4-byte string into a 24-bit integer.
      *
-     * @param string $string The string to decode.
-     * @return integer returns the decoded integer.
+     * @param string $string String to decode.
+     * @return integer Decoded integer.
      * @throws InvalidArgumentException Throws an InvalidArgumentException if
      *     the supplied argument is not a valid encoded integer.
      */

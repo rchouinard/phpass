@@ -14,46 +14,6 @@ namespace PHPassLib;
 /**
  * Hashing Module Interface
  *
- * This interface defines the methods the hashing modules are required to
- * expose publically. The defined API is designed to be simple and clear, using
- * static methods which are hopefully clearly named.
- *
- * <code>
- * &lt;?php
- * // This example uses BCrypt, but all the modules use the same API.
- * use PHPassLib\Hash\BCrypt;
- *
- * // genConfig() creates a configuration string which can then be passed
- * // to genHash to create a password hash. The output will be different
- * // each time due to the random salt value.
- * $config = BCrypt::genConfig();
- *
- * // $2a$12$/U9KJXjz9DJ71TvZ2pbLcO
- * echo $config;
- *
- * // genHash() takes both a password and a configuration string and uses
- * // them to generate a secure password hash.
- * $hash = BCrypt::genHash('password', $config);
- *
- * // $2a$12$/U9KJXjz9DJ71TvZ2pbLcOpMlEx0L95tMrD35/4suzvEr5lcB14NC
- * echo $hash;
- *
- * // hash() can be used as a shortcut for the above. This method will
- * // create a new configuration string, and is equivalent to running
- * // BCrypt::genHash('password', BCrypt::genConfig());
- * $hash = BCrypt::hash('password');
- *
- * // verify() is used to check if a password string matches a given hash.
- * if (BCrypt::verify('password', $hash)) {
- *     // Passwords match!
- * }
- * </code>
- *
- * The `genConfig()` and `hash()` methods can also be passed a configuration
- * array. The options set in the array modify the generated config string,
- * which in turn affects the calculated hash. Check the documentation for the
- * module you want to use for more details.
- *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
@@ -63,7 +23,7 @@ interface Hash
 {
 
     /**
-     * Generate a config string suitable for use with module hashes.
+     * Generate a config string from an array.
      *
      * @param array $config Array of configuration options.
      * @return string Configuration string.
@@ -73,15 +33,15 @@ interface Hash
     public static function genConfig(array $config = array ());
 
     /**
-     * Parse a config string and extract the options used to build it.
+     * Parse a config string into an array.
      *
      * @param string $config Configuration string.
-     * @return array Options array or false on failure.
+     * @return array Array of configuration options or false on failure.
      */
     public static function parseConfig($config);
 
     /**
-     * Generate a hash using a pre-defined config string.
+     * Generate a password hash using a config string.
      *
      * @param string $password Password string.
      * @param string $config Configuration string.
@@ -91,10 +51,8 @@ interface Hash
     public static function genHash($password, $config);
 
     /**
-     * Generate a hash using either a pre-defined config string or an array.
+     * Generate a password hash using a config string or array.
      *
-     * @see Hash::genConfig()
-     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of

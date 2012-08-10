@@ -2,14 +2,6 @@
 /**
  * PHP Password Library
  *
- * This file provides a stub for registering the library autoloader.
- *
- * <code>
- * &lt;?php
- * require 'PHPassLib.php';
- * $hash = PHPassLib\Hash\BCrypt::hash($password);
- * </code>
- *
  * @package PHPassLib
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard

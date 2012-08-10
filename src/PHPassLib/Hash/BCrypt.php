@@ -18,25 +18,6 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * BCrypt Module
  *
- * BCrypt is an adaptive cryptographic hash function designed to be used for
- * passwords. It is based on Blowfish.
- *
- * This hash function incorporates a salt to defeat rainbow tables, and uses a
- * configurable cost factor which can be used to great effect in slowing
- * brute-force attacks.
- *
- * It is recommended that bcrypt be used in new applications.
- *
- * <code>
- * &lt;?php
- * use PHPassLib\Hash\BCrypt;
- *
- * $hash = BCrypt::hash($password);
- * if (BCrypt::verify($password, $hash)) {
- *     // Password matches, user is authenticated
- * }
- * </code>
- *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
@@ -46,7 +27,7 @@ class BCrypt implements Hash
 {
 
     /**
-     * Generate a config string suitable for use with module hashes.
+     * Generate a config string from an array.
      *
      * @param array $config Array of configuration options.
      * @return string Configuration string.
@@ -70,10 +51,10 @@ class BCrypt implements Hash
     }
 
     /**
-     * Parse a config string and extract the options used to build it.
+     * Parse a config string into an array.
      *
      * @param string $config Configuration string.
-     * @return array Options array or false on failure.
+     * @return array Array of configuration options or false on failure.
      */
     public static function parseConfig($config)
     {
@@ -95,7 +76,7 @@ class BCrypt implements Hash
     }
 
     /**
-     * Generate a hash using a pre-defined config string.
+     * Generate a password hash using a config string.
      *
      * @param string $password Password string.
      * @param string $config Configuration string.
@@ -113,10 +94,8 @@ class BCrypt implements Hash
     }
 
     /**
-     * Generate a hash using either a pre-defined config string or an array.
+     * Generate a password hash using a config string or array.
      *
-     * @see Hash::genConfig()
-     * @see Hash::genHash()
      * @param string $password Password string.
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
@@ -144,10 +123,8 @@ class BCrypt implements Hash
     }
 
     /**
-     * Generate a valid salt string.
-     *
-     * @param string $input Optional random string of raw bytes.
-     * @return string Encoded salt string.
+     * @param string $input
+     * @return string
      */
     protected static function genSalt($input = null)
     {
@@ -183,12 +160,9 @@ class BCrypt implements Hash
     }
 
     /**
-     * Validate a set of module options.
-     *
-     * @param array $options Associative array of options.
-     * @return boolean Returns true if all options are valid.
-     * @throws InvalidArgumentException Throws an InvalidArgumentException
-     *     if an invalid option value is encountered.
+     * @param array $options
+     * @return boolean
+     * @throws InvalidArgumentException
      */
     protected static function validateOptions(array $options)
     {
