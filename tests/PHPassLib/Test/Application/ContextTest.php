@@ -27,7 +27,6 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers PHPassLib\Application\Context::verify()
      */
     public function contextCanVerifyMultipleConfigurations()
     {
@@ -49,7 +48,6 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers PHPassLib\Application\Context::hash()
      */
     public function contextUsesFirstConfigForHashing()
     {
@@ -62,7 +60,6 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @covers PHPassLib\Application\Context::needsUpdate()
      */
     public function contextIdentifiesOutdatedHashes()
     {
