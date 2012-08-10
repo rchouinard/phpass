@@ -43,13 +43,14 @@ class SHA512Crypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        $rounds = '';
-        if ($config['rounds'] != 5000) {
-            $rounds = sprintf('rounds=%d$', $config['rounds']);
-        }
+        if (self::validateOptions($config)) {
+            $rounds = '';
+            if ($config['rounds'] != 5000) {
+                $rounds = sprintf('rounds=%d$', $config['rounds']);
+            }
 
-        $string = sprintf('$6$%s%s', $rounds, $config['salt']);
+            $string = sprintf('$6$%s%s', $rounds, $config['salt']);
+        }
 
         return $string;
     }
@@ -110,6 +111,8 @@ class SHA512Crypt implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
      */
     public static function hash($password, $config = array ())
     {
@@ -144,13 +147,13 @@ class SHA512Crypt implements Hash
 
             case 'rounds':
                 if ($value < 1000 || $value > 999999999) {
-                    throw new InvalidArgumentException('Rounds must be a number in the range 1000 - 999999999.');
+                    throw new InvalidArgumentException('Invalid rounds parameter');
                 }
                 break;
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{0,16}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{0,16}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

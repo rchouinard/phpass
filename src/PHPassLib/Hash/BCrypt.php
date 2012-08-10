@@ -43,11 +43,12 @@ class BCrypt implements Hash
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
+        $string = '*1';
         if (self::validateOptions($config)) {
-            return sprintf('$%s$%02d$%s', $config['ident'], (int) $config['rounds'], $config['salt']);
-        } else {
-            return '*1';
+            $string = sprintf('$%s$%02d$%s', $config['ident'], (int) $config['rounds'], $config['salt']);
         }
+
+        return $string;
     }
 
     /**
@@ -67,7 +68,9 @@ class BCrypt implements Hash
                 'salt' => $matches[3],
             );
 
-            if ($options['rounds'] < 4 || $options['rounds'] > 31) {
+            try {
+                self::validateOptions($options);
+            } catch (InvalidArgumentException $e) {
                 $options = false;
             }
         }
@@ -100,6 +103,8 @@ class BCrypt implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
      */
     public static function hash($password, $config = array ())
     {
@@ -174,19 +179,19 @@ class BCrypt implements Hash
                     ? array ('2a') // <= 5.3.6
                     : array ('2a', '2y', '2x'); // >= 5.3.7
                 if (!in_array($value, $idents)) {
-                    throw new InvalidArgumentException('Identifier must be 2a if PHP <= 5.3.6 or one of 2a, 2y, or 2x if PHP >= 5.3.7.');
+                    throw new InvalidArgumentException('Invalid ident parameter');
                 }
                 break;
 
             case 'rounds':
                 if ($value < 4 || $value > 31) {
-                    throw new InvalidArgumentException('Rounds must be a number in the range 4 - 31.');
+                    throw new InvalidArgumentException('Invalid rounds parameter');
                 }
                 break;
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{22}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{22}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

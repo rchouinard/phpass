@@ -43,8 +43,9 @@ class SHA1Crypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        $string = sprintf('$sha1$%d$%s', $config['rounds'], $config['salt']);
+        if (self::validateOptions($config)) {
+            $string = sprintf('$sha1$%d$%s', $config['rounds'], $config['salt']);
+        }
 
         return $string;
     }
@@ -85,48 +86,27 @@ class SHA1Crypt implements Hash
      */
     public static function genHash($password, $config)
     {
-        // Set default hash value to an error string
         $hash = ($config == '*0') ? '*1' : '*0';
 
-        // Extract options from config string
-        $matches = array ();
-        if (preg_match('/^\$sha1\$(\d+)\$([\.\/0-9A-Za-z]*)\$?/', $config, $matches)) {
-            $config = array (
-                'rounds' => $matches[1],
-                'salt' => $matches[2],
-            );
+        $config = self::parseConfig($config);
+        if (is_array($config)) {
+            $rounds = $config['rounds'];
+            $checksum = hash_hmac('sha1', $config['salt'] . '$sha1$' . $rounds--, $password, true);
+            if ($rounds) {
+                do {
+                    $checksum = hash_hmac('sha1', $checksum, $password, true);
+                } while (--$rounds);
+            }
+
+            $tmp = '';
+            foreach (array (2, 1, 0, 5, 4, 3, 8, 7, 6, 11, 10, 9, 14, 13, 12, 17, 16, 15, 0, 19, 18) as $offset) {
+                $tmp .= $checksum[$offset];
+            }
+            $checksum = Utilities::encode64($tmp);
+
+            $hash = self::genConfig($config) . '$' . $checksum;
         }
 
-        // If the configuration array isn't populated, return the error string
-        if (!is_array($config)) {
-            return $hash;
-        }
-
-        // Validate config string
-        try {
-            self::validateOptions($config);
-        } catch (InvalidArgumentException $e) {
-            return $hash;
-        }
-
-        // Calculate the checksum
-        $rounds = (int) $config['rounds'];
-        $checksum = hash_hmac('sha1', $config['salt'] . '$sha1$' . $config['rounds'], $password, true);
-        --$rounds;
-        if ($rounds) {
-            do {
-                $checksum = hash_hmac('sha1', $checksum, $password, true);
-            } while (--$rounds);
-        }
-
-        // Shuffle the bits around a bit
-        $tmp = '';
-        foreach (array (2, 1, 0, 5, 4, 3, 8, 7, 6, 11, 10, 9, 14, 13, 12, 17, 16, 15, 0, 19, 18) as $offset) {
-            $tmp .= $checksum[$offset];
-        }
-        $checksum = Utilities::encode64($tmp);
-
-        $hash = self::genConfig($config) . '$' . $checksum;
         return $hash;
     }
 
@@ -137,6 +117,8 @@ class SHA1Crypt implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
      */
     public static function hash($password, $config = array ())
     {
@@ -171,13 +153,13 @@ class SHA1Crypt implements Hash
 
             case 'rounds':
                 if ($value < 1 || $value > 4294967295) {
-                    throw new InvalidArgumentException('Rounds must be a number in the range 1 - 4294967295.');
+                    throw new InvalidArgumentException('Invalid rounds parameter');
                 }
                 break;
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{0,64}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{0,64}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

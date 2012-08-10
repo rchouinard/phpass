@@ -37,13 +37,14 @@ class MD5Crypt implements Hash
     public static function genConfig(array $config = array ())
     {
         $defaults = array (
-            'salt' => self::genSalt(),
+            'salt' => Utilities::encode64(Utilities::genRandomBytes(6)),
         );
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        $string = sprintf('$1$%s', $config['salt']);
+        if (self::validateOptions($config)) {
+            $string = sprintf('$1$%s', $config['salt']);
+        }
 
         return $string;
     }
@@ -98,6 +99,8 @@ class MD5Crypt implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
      */
     public static function hash($password, $config = array ())
     {
@@ -121,19 +124,6 @@ class MD5Crypt implements Hash
     }
 
     /**
-     * @param string $input
-     * @return string
-     */
-    protected static function genSalt($input = null)
-    {
-        if (!$input) {
-            $input = Utilities::genRandomBytes(6);
-        }
-
-        return Utilities::encode64($input);
-    }
-
-    /**
      * @param array $options
      * @return boolean
      * @throws InvalidArgumentException
@@ -145,7 +135,7 @@ class MD5Crypt implements Hash
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{0,8}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{0,8}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

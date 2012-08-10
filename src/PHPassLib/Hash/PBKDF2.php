@@ -50,16 +50,17 @@ class PBKDF2 implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        // Generate a salt value if we need one
-        if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
-            $config['salt'] = self::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
-        }
+        if (self::validateOptions($config)) {
+            // Generate a salt value if we need one
+            if ($config['salt'] === null && (int) $config['saltsize'] > 0) {
+                $config['salt'] = self::genSalt(Utilities::genRandomBytes((int) $config['saltsize']));
+            }
 
-        // pbkdf2-sha1 doesn't include the digest in the hash identifier
-        // We also have to treat the rounds parameter as a float, otherwise
-        // values above 2147483647 will wrap on 32-bit systems.
-        $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s', $config['digest'], $config['rounds'], $config['salt']));
+            // pbkdf2-sha1 doesn't include the digest in the hash identifier
+            // We also have to treat the rounds parameter as a float, otherwise
+            // values above 2147483647 will wrap on 32-bit systems.
+            $string = str_replace('-sha1', '', sprintf('$pbkdf2-%s$%0.0f$%s', $config['digest'], $config['rounds'], $config['salt']));
+        }
 
         return $string;
     }
@@ -99,49 +100,27 @@ class PBKDF2 implements Hash
      * @param string $config Configuration string.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws RuntimeException Throws a RuntimeException if the required
+     *     HASH Message Digest Framework is not not loaded.
      */
     public static function genHash($password, $config)
     {
-        // pbkdf2-sha1 doesn't include the digest in the identifier. It's added
-        // for internal testing only.
-        $config = str_replace('$pbkdf2$', '$pbkdf2-sha1$', $config);
-
-        // Set default hash value to an error string
         $hash = ($config == '*0') ? '*1' : '*0';
 
-        // Extract options from config string
-        $matches = array ();
-        if (preg_match('/^\$pbkdf2-(sha1|sha256|sha512)\$(\d+)\$([\.\/0-9A-Za-z]*)\$?/', $config, $matches)) {
-            $config = array (
-                'digest' => $matches[1],
-                'rounds' => $matches[2],
-                'salt' => $matches[3],
-            );
-        }
+        $config = self::parseConfig($config);
+        if (is_array($config)) {
+            $keysize = 64;
+            if ($config['digest'] == self::DIGEST_SHA256) {
+                $keysize = 32;
+            } elseif ($config['digest'] == self::DIGEST_SHA1) {
+                $keysize = 20;
+            }
 
-        // If the configuration array isn't populated, return the error string
-        if (!is_array($config)) {
-            return $hash;
+            // hashPbkdf2() will throw a runtime exception if ext-hash
+            // is not loaded.
+            $checksum = self::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
+            $hash = self::genConfig($config) . '$' . Utilities::altBase64Encode($checksum);
         }
-
-        // Validate config string
-        try {
-            self::validateOptions($config);
-        } catch (InvalidArgumentException $e) {
-            return $hash;
-        }
-
-        // Determine the required key size
-        $keysize = 64;
-        if ($config['digest'] == self::DIGEST_SHA256) {
-            $keysize = 32;
-        } elseif ($config['digest'] == self::DIGEST_SHA1) {
-            $keysize = 20;
-        }
-
-        // Calculate the checksum and encode the hash string
-        $checksum = self::hashPbkdf2($password, Utilities::altBase64Decode($config['salt']), $config['rounds'], $keysize, $config['digest']);
-        $hash = self::genConfig($config) . '$' . Utilities::altBase64Encode($checksum);
 
         return $hash;
     }
@@ -153,6 +132,10 @@ class PBKDF2 implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
+     * @throws RuntimeException Throws a RuntimeException if the required
+     *     HASH Message Digest Framework is not not loaded.
      */
     public static function hash($password, $config = array ())
     {
@@ -197,6 +180,8 @@ class PBKDF2 implements Hash
      * @param integer $keyLength Desired length of key.
      * @param string $digest Digest to use.
      * @return string Returns the raw byte string of the derived key.
+     * @throws RuntimeException Throws a RuntimeException if the required
+     *     HASH Message Digest Framework is not not loaded.
      */
     protected static function hashPbkdf2($password, $salt, $rounds = 12000, $keyLength = 64, $digest = 'sha512')
     {
@@ -233,25 +218,25 @@ class PBKDF2 implements Hash
 
             case 'digest':
                 if (!in_array($value, array (self::DIGEST_SHA1, self::DIGEST_SHA256, self::DIGEST_SHA512))) {
-                    throw new InvalidArgumentException('Digest must be one of sha1, sha256, or sha512.');
+                    throw new InvalidArgumentException('Invalid digest parameter');
                 }
                 break;
 
             case 'rounds':
                 if (substr($value, 0, 1) == 0 || $value < 1 || $value > 4294967296) {
-                    throw new InvalidArgumentException('Rounds must be a number in the range 1 - 4294967296.');
+                    throw new InvalidArgumentException('Invalid rounds parameter');
                 }
                 break;
 
             case 'saltsize':
                 if ($value > 1024) {
-                    throw new InvalidArgumentException('Salt size must be a number in the range 0 - 1024.');
+                    throw new InvalidArgumentException('Invalid salt size parameter');
                 }
                 break;
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{0,1366}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{0,1366}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

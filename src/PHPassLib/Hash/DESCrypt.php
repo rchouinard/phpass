@@ -42,8 +42,9 @@ class DESCrypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        $string = $config['salt'];
+        if (self::validateOptions($config)) {
+            $string = $config['salt'];
+        }
 
         return $string;
     }
@@ -98,6 +99,9 @@ class DESCrypt implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
+     *
      */
     public static function hash($password, $config = array ())
     {
@@ -132,7 +136,7 @@ class DESCrypt implements Hash
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{2}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{2}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

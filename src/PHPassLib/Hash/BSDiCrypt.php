@@ -43,14 +43,14 @@ class BSDiCrypt implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        // Rounds needs to be odd in order to avoid exposing weak DES keys
-        if (($config['rounds'] % 2) == 0) {
-            --$config['rounds'];
+        if (self::validateOptions($config)) {
+            // Rounds needs to be odd in order to avoid exposing weak DES keys
+            if (($config['rounds'] % 2) == 0) {
+                --$config['rounds'];
+            }
+
+            $string = sprintf('_%s%s', Utilities::encodeInt24($config['rounds']), $config['salt']);
         }
-
-        $string = sprintf('_%s%s', Utilities::encodeInt24($config['rounds']), $config['salt']);
-
         return $string;
     }
 
@@ -70,7 +70,9 @@ class BSDiCrypt implements Hash
                 'salt' => $matches[2],
             );
 
-            if ($options['rounds'] < 1 || $options['rounds'] > 0xffffff) {
+            try {
+                self::validateOptions($options);
+            } catch (InvalidArgumentException $e) {
                 $options = false;
             }
         }
@@ -103,6 +105,8 @@ class BSDiCrypt implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
      */
     public static function hash($password, $config = array ())
     {
@@ -137,13 +141,13 @@ class BSDiCrypt implements Hash
 
             case 'rounds':
                 if ($value < 1 || $value > 0xffffff) {
-                    throw new InvalidArgumentException('Rounds must be in the range 1 - 16777215.');
+                    throw new InvalidArgumentException('Invalid rounds parameter');
                 }
                 break;
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{4}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{4}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 

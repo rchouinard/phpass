@@ -47,9 +47,10 @@ class Portable implements Hash
         $config = array_merge($defaults, array_change_key_case($config, CASE_LOWER));
 
         $string = '*1';
-        self::validateOptions($config);
-        $charset = Utilities::CHARS_H64;
-        $string = sprintf('$%s$%s%s', $config['ident'], $charset[(int) $config['rounds']], $config['salt']);
+        if (self::validateOptions($config)) {
+            $charset = Utilities::CHARS_H64;
+            $string = sprintf('$%s$%s%s', $config['ident'], $charset[(int) $config['rounds']], $config['salt']);
+        }
 
         return $string;
     }
@@ -91,24 +92,19 @@ class Portable implements Hash
      */
     public static function genHash($password, $config)
     {
-        $output = '*0';
-        $config = substr($config, 0, 12);
+        $hash = ($config == '*0') ? '*1' : '*0';
 
-        if (preg_match('/^\$(?:P|H)\$[5-9A-S]{1}[\.\/0-9A-Za-z]{8}$/', $config)) {
-            $charset = Utilities::CHARS_H64;
-            $rounds = (1 << strpos($charset, $config[3]));
-            $checksum = md5(substr($config, 4, 8) . $password, true);
+        $config = self::parseConfig($config);
+        if (is_array($config)) {
+            $rounds = (1 << $config['rounds']);
+            $checksum = md5($config['salt'] . $password, true);
             do {
                 $checksum = md5($checksum . $password, true);
             } while (--$rounds);
-            $output = $config . Utilities::encode64($checksum);
+            $hash = self::genConfig($config) . Utilities::encode64($checksum);
         }
 
-        if (!preg_match('/^\$(?:P|H)\$[5-9A-S]{1}[\.\/0-9A-Za-z]{30}$/', $output)) {
-            $output = ($config == '*0') ? '*1' : '*0';
-        }
-
-        return $output;
+        return $hash;
     }
 
     /**
@@ -118,6 +114,8 @@ class Portable implements Hash
      * @param string|array $config Optional config string or array of options.
      * @return string Returns the hash string on success. On failure, one of
      *     *0 or *1 is returned.
+     * @throws InvalidArgumentException Throws an InvalidArgumentException if
+     *     any passed-in configuration options are invalid.
      */
     public static function hash($password, $config = array ())
     {
@@ -153,19 +151,19 @@ class Portable implements Hash
             case 'ident':
                 $idents = array (self::IDENT_PHPASS, self::IDENT_PHPBB);
                 if (!in_array($value, $idents)) {
-                    throw new InvalidArgumentException('Identifier must be one of "P" or "H".');
+                    throw new InvalidArgumentException('Invalid ident parameter');
                 }
                 break;
 
             case 'rounds':
                 if ($value < 7 || $value > 30) {
-                    throw new InvalidArgumentException('Rounds must be a number in the range 7 - 30.');
+                    throw new InvalidArgumentException('Invalid rounds parameter');
                 }
                 break;
 
             case 'salt':
                 if (!preg_match('/^[\.\/0-9A-Za-z]{8}$/', $value)) {
-                    throw new InvalidArgumentException('Salt must be a string matching the regex pattern /[./0-9A-Za-z]{8}/.');
+                    throw new InvalidArgumentException('Invalid salt parameter');
                 }
                 break;
 
