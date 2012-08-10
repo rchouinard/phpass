@@ -24,7 +24,6 @@ The library supports the following hash schemes:
  - SHA-1 Crypt
  - SHA-256 Crypt
  - SHA-512 Crypt
- - Plus more on the way!
 
 Quick Start
 -----------
@@ -39,84 +38,82 @@ sure to check the documentation.
 <?php
 use PHPassLib\Hash\BCrypt;
 
-// Calculate a hash from "password"
-$hash = BCrypt::hash('password');
+// Calculate a hash
+$hash = BCrypt::hash($password);
 
 // Check a password against a hash
-if (BCrypt::verify('password', $hash)) {
+if (BCrypt::verify($password, $hash)) {
     // Password is valid
 }
 ```
 
-Hashing API
------------
+### Contexts ###
 
-All hashing modules implement a static API exposing the methods `genConfig()`,
-`genHash()`, `hash()`, and `verify()`.
+Application contexts allow you to configure one or more modules for your
+application in a central location, say in your bootstrap process.
 
-`genConfig()` accepts an associative array of module options and returns a
-configuration string which can then be used with `genHash()` or compatible
-`crypt()` implementations. Each module accepts different options, so be sure
-to check the documentation of the module you wish to use.
+The example below creates a context using the BCrypt adapter with a custom
+configuration. The context can then be passed to other objects to provide
+consistent bcrypt hashes configured in one place.
 
 ```php
 <?php
-use PHPassLib\Hash\BCrypt;
+use PHPassLib\Application\Context;
 
-// Example: $2a$12$PZjBmya2CRrOw/D3cXIbgO
-$configString = BCrypt::genConfig();
-
-// Example: $2y$08$nDTnXZCvtNfOaSA.mKXbJu
-$configString = BCrypt::genConfig(array (
+$passlibContext = new Context;
+$passlibContext->addConfig('BCrypt', array (
     'ident' => '2y',
-    'rounds' => 8,
+    'rounds' => 16,
 ));
+
+// Hash a password
+$hash = $passlibContext->hash($password);
+
+// Verify a password
+if ($passlibContext->verify($password, $hash)) {
+    // ...
+}
 ```
 
-`genHash()` takes a password string and a configuration string from
-`genConfig()` and returns a hash string containing the calculated password
-checksum.
+A single context can support multiple configurations, with a couple
+limitations:
+
+ 1. The first configuration added to the context is the default, and will
+    be used for all `hash()` operations.
+ 2. Only one configuration per hash module is supported.
+
+So what good is this functionality? Each added configuration allows the context
+to verify hashes for that configuration. Adding a configuration for PBKDF2 and
+BCrypt allows the context's `verify()` method to verify either PBKDF2 or BCrypt
+hashes. Additionally, you can use the `needsUpdate()` method to migrate between
+hashes. The example below shows this usage.
 
 ```php
 <?php
-use PHPassLib\Hash\BCrypt;
+use PHPassLib\Application\Context;
 
-// Example: $2a$12$PZjBmya2CRrOw/D3cXIbgO626rW0s2xvjAYd2ixJqSC523DltPZYS
-$hashString = BCrypt::genHash('password', '$2a$12$PZjBmya2CRrOw/D3cXIbgO');
+$passlibContext = new Context;
+$passlibContext
+    ->addConfig('PBKDF2', array ('digest' => 'sha1')) // PBKDF2 becomes the default
+    ->addConfig('BCrypt');
+
+// Will verify both PBKDF2 and bcrypt hashes
+if ($passlibContext->verify($password, $hash)) {
+    // If the user's hash is a bcrypt hash, this returns true
+    if ($passlibContext->needsUpdate($hash)) {
+        // Will create a PBKDF2-SHA1 hash, since that's the default
+        $newHash = $passlibContext->hash($password);
+        // Store the new hash with the user record
+        // ...
+    }
+    // ...
+}
 ```
 
-`hash()` is a shortcut method which accepts a password string and either an
-associative array of options or a configuration string and returns a hash
-string containing the calculated password checksum.
+The `needsUpdate()` method will identify any configured hash which does not
+match the default configuration. This means that updating the parameters within
+the same module is easy as well.
 
-```php
-<?php
-use PHPassLib\Hash\BCrypt;
-
-// Example: $2a$12$PZjBmya2CRrOw/D3cXIbgO626rW0s2xvjAYd2ixJqSC523DltPZYS
-$hashString = BCrypt::hash('password');
-
-// Example: $2y$08$nDTnXZCvtNfOaSA.mKXbJuhEdoMn2zAmiFydtBqf5wuG7iZYwuWSK
-$hashString = BCrypt::hash('password', '$2y$08$nDTnXZCvtNfOaSA.mKXbJu');
-
-// Example: $2y$12$vveVMOHi8f2iWjuSNNQcgupCnorU6MPdTlrFeDUJxv6S8UjzWa8B.
-$hashString = BCrypt::hash('password', array (
-    'ident' => '2y',
-));
-```
-
-`verify()` takes a password string and a hash string. A new hash string is
-calculated from the password string using the stored configuration in the
-supplied hash string. If the resulting hash string matches the supplied hash
-string, true is returned. False is returned otherwise.
-
-```php
-<?php
-use PHPassLib\Hash\BCrypt;
-
-// Example: true
-$match = BCrypt::verify('password', '$2a$12$PZjBmya2CRrOw/D3cXIbgO626rW0s2xvjAYd2ixJqSC523DltPZYS');
-
-// Example: false
-$match = BCrypt::verify('wordpass', '$2a$12$PZjBmya2CRrOw/D3cXIbgO626rW0s2xvjAYd2ixJqSC523DltPZYS');
-```
+If your user's hash was created with BCrypt using 12 rounds, and the default
+configuration is BCrypt with 16 rounds, `needsUpdate()` will still return
+true.
