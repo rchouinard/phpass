@@ -18,6 +18,21 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * SHA-1 Crypt Module
  *
+ * This module provides the SHA-1 Crypt algorithm which was introduced by
+ * NetBSD in 2004.
+ *
+ * Supported parameters:
+ *
+ * <ul>
+ *   <li><b>rounds:</b> Optional number of rounds to use. Must be an integer
+ *   between 1 and 4294967295 inclusive. Defaults to 40000.</li>
+ *
+ *   <li><b>salt:</b> Optional salt string. If provided, it must be a string
+ *   0 - 64 characters in length, containing only characters in the regex range
+ *   [./0-9A-Za-z]. It is highly recommended that this parameter be left blank,
+ *   in which case the library will generate a suitable salt for you.</li>
+ * </ul>
+ *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard

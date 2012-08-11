@@ -17,7 +17,38 @@ use PHPassLib\Exception\InvalidArgumentException;
 use PHPassLib\Exception\RuntimeException;
 
 /**
- * PBKDF2-<digest> Module
+ * PBKDF2-SHA1/256/512 Module
+ *
+ * This module provides three hash schemes compatible with Python PassLib's
+ * pbkdf2_<digest> schemes. PBKDF2-SHA512 is recommended for new applications.
+ *
+ * See http://packages.python.org/passlib/lib/passlib.hash.pbkdf2_digest.html
+ * for more details about this hash scheme.
+ *
+ * The PBKDF2 specification uses the HMAC variant of the SHA-1 hash function,
+ * which is not vulnerable to any of the known SHA-1 weaknesses. Any of the
+ * three digests are perfectly safe to use.
+ *
+ * Supported parameters:
+ *
+ * <ul>
+ *   <li><b>digest:</b> Must be one of sha1, sha256, or sha512. Defaults to
+ *   sha512.</li>
+ *
+ *   <li><b>rounds:</b> Optional number of rounds to use. Must be an integer
+ *   between 1 and 4294967296 inclusive. Defaults to 12000.</li>
+ *
+ *   <li><b>saltSize:</b> Optional number of bytes to use when generating new
+ *   salts. Must be an integer between 0 and 1024 inclusive. Defaults to 16.</li>
+ *
+ *   <li><b>salt:</b> Optional salt string. If provided, it must be a string
+ *   between 0 and 1024 characters in length. It is highly recommended that
+ *   this parameter be left blank, in which case the library will generate a
+ *   suitable salt for you.</li>
+ * </ul>
+ *
+ * This module requires the <i>HASH Message Digest Framework</i> extension to
+ * be loaded in order to work.
  *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>

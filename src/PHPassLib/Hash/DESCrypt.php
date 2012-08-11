@@ -18,6 +18,21 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * DES Crypt Module
  *
+ * The DES Crypt algorithm is the original DES-based Unix crypt algorithm. It
+ * is an old algorithm which should be avoided for new applications.
+ *
+ * Supported parameters:
+ *
+ * <ul>
+ *   <li><b>salt:</b> Optional salt string. If provided, it must be a 2
+ *   character string containing only characters in the regex range
+ *   [./0-9A-Za-z]. It is highly recommended that this parameter be left blank,
+ *   in which case the library will generate a suitable salt for you.</li>
+ * </ul>
+ *
+ * This module uses PHP's native crypt() function, which has had native support
+ * for DES Crypt since 5.3.0.
+ *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard

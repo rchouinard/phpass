@@ -18,6 +18,26 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * BSDi / Extended DES Crypt Module
  *
+ * BSDi Crypt is based on DES Crypt, and was developed by BSDi for their BSD/OS
+ * distribution. The algorithm is also commonly known as <i>Extended DES</i>.
+ *
+ * Supported parameters:
+ *
+ * <ul>
+ *   <li><b>rounds:</b> Optional number of rounds to use. Must be an integer
+ *   between 1 and 16777215 inclusive. Even rounds values will be decreased
+ *   by one to create an odd number in order to prevent exposing weak keys.
+ *   Defaults to 5001.</li>
+ *
+ *   <li><b>salt:</b> Optional salt string. If provided, it must be a 4
+ *   character string containing only characters in the regex range
+ *   [./0-9A-Za-z]. It is highly recommended that this parameter be left blank,
+ *   in which case the library will generate a suitable salt for you.</li>
+ * </ul>
+ *
+ * This module uses PHP's native crypt() function, which has had native support
+ * for BSDi Crypt since 5.3.0.
+ *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard

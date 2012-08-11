@@ -18,6 +18,33 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * BCrypt Module
  *
+ * BCrypt is based on a version of the Blowfish stream cipher, and features
+ * a variable number of rounds and a large salt. BCrypt is recommended for
+ * new applications.
+ *
+ * Supported parameters:
+ *
+ * <ul>
+ *   <li><b>rounds:</b> Optional number of rounds to use. Must be an integer
+ *   between 4 and 31 inclusive. This value is logarithmic, meaning the actual
+ *   number of rounds will be 2^<rounds>. Defaults to 12.</li>
+ *
+ *   <li><b>ident:</b> Identifier which specifies the version of the algorithm
+ *   to use. The default of 2a is correct for most uses, but the following
+ *   values are supported: 2a, 2y, 2x. For more information on what these mean,
+ *   see http://php.net/security/crypt_blowfish.php.</li>
+ *
+ *   <li><b>salt:</b> Optional salt string. If provided, it must be a 22
+ *   character string containing only characters in the regex range
+ *   [./0-9A-Za-z]. It is highly recommended that this parameter be left blank,
+ *   in which case the library will generate a suitable salt for you.</li>
+ * </ul>
+ *
+ * This module uses PHP's native crypt() function, which has had native support
+ * for BCrypt since 5.3.0. PHP 5.3.7 introduced support for the 2x and 2y
+ * identifiers, and applications running on older versions will not be able
+ * to use the ident parameter with these values.
+ *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard

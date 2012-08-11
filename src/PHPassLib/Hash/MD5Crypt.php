@@ -18,6 +18,23 @@ use PHPassLib\Exception\InvalidArgumentException;
 /**
  * MD5 Crypt Module
  *
+ * MD5 Crypt was designed to replace DES Crypt for FreeBSD. The algorithm is
+ * now considered weak by it's author, Poul-Henning Kamp. It should not be used
+ * in new applications. More information about the algorithm's deprecation can
+ * be found at http://phk.freebsd.dk/sagas/md5crypt_eol.html.
+ *
+ * Supported parameters:
+ *
+ * <ul>
+ *   <li><b>salt:</b> Optional salt string. If provided, it must be an 8
+ *   character string containing only characters in the regex range
+ *   [./0-9A-Za-z]. It is highly recommended that this parameter be left blank,
+ *   in which case the library will generate a suitable salt for you.</li>
+ * </ul>
+ *
+ * This module uses PHP's native crypt() function, which has had native support
+ * for MD5 Crypt since 5.3.0.
+ *
  * @package PHPassLib\Hashes
  * @author Ryan Chouinard <rchouinard@gmail.com>
  * @copyright Copyright (c) 2012, Ryan Chouinard
