@@ -41,7 +41,7 @@ class Loader
             return;
         }
 
-        $libraryRoot = realpath(__DIR__ . '/../');
+        $libraryRoot = dirname(__DIR__);
         $file = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
         $file = realpath($libraryRoot . DIRECTORY_SEPARATOR . $file);
         if (substr($file, 0, strlen($libraryRoot)) == $libraryRoot) {

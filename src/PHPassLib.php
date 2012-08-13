@@ -11,5 +11,5 @@
 
 use PHPassLib\Loader;
 
-require_once 'PHPassLib/Loader.php';
+require_once __DIR__ . '/PHPassLib/Loader.php';
 Loader::registerAutoloader();
