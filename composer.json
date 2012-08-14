@@ -18,7 +18,7 @@
     },
     "require": {
         "php": ">=5.3.8",
-        "ext-hash": "Some modules require the HASH Message Digest Framework extension."
+        "ext-hash": ">=1.5"
     },
     "suggest": {
         "ext-openssl": "The OpenSSL extension is used as the default source of cryptographically strong random data.",
