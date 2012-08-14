@@ -1,6 +1,5 @@
 {
     "name": "rych/phpass",
-    "version": "3.0.0-dev",
     "type": "library",
     "description": "PHP Password Library: Easy, secure password management for PHP",
     "keywords": ["cryptography", "security", "password"],
@@ -18,12 +17,12 @@
         "wiki": "https://github.com/rchouinard/phpass/wiki"
     },
     "require": {
-        "php": ">=5.3.7"
+        "php": ">=5.3.8",
+        "ext-hash": "Some modules require the HASH Message Digest Framework extension."
     },
     "suggest": {
         "ext-openssl": "The OpenSSL extension is used as the default source of cryptographically strong random data.",
-        "ext-mcrypt": "The Mcrypt extension is used as a source of cryptographically strong random data in the absence of ext-openssl.",
-        "ext-hash": "Some modules may require the HASH Message Digest Framework extension to be loaded in order to work."
+        "ext-mcrypt": "The Mcrypt extension is used as a source of cryptographically strong random data in the absence of ext-openssl."
     },
     "autoload": {
         "psr-0": {
