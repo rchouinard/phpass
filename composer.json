@@ -18,7 +18,7 @@
     },
     "require": {
         "php": ">=5.3.8",
-        "ext-hash": ">=1.5"
+        "ext-hash": "*"
     },
     "suggest": {
         "ext-openssl": "The OpenSSL extension is used as the default source of cryptographically strong random data.",
