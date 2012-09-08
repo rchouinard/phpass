@@ -43,7 +43,7 @@ class Loader
 
         $libraryRoot = dirname(__DIR__);
         $file = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
-        $file = realpath($libraryRoot . DIRECTORY_SEPARATOR . $file);
+        $file = $libraryRoot . DIRECTORY_SEPARATOR . $file;
         if (substr($file, 0, strlen($libraryRoot)) == $libraryRoot) {
             if (is_readable($file)) {
                 include $file;
