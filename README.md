@@ -61,9 +61,9 @@ Use the PBKDF2 adapter:
 
 ```php
 <?php
-// Customize hash adapter - PBKDF2 adapter, 2^16 (65,536) iterations
+// Customize hash adapter - PBKDF2 adapter, 15,000 iterations
 $adapter = new \Phpass\Hash\Adapter\Pbkdf2(array (
-    'iterationCountLog2' => 16
+    'iterationCountLog2' => 15000
 ));
 $phpassHash = new \Phpass\Hash($adapter);
 ```
