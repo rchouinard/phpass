@@ -63,7 +63,7 @@ Use the PBKDF2 adapter:
 <?php
 // Customize hash adapter - PBKDF2 adapter, 15,000 iterations
 $adapter = new \Phpass\Hash\Adapter\Pbkdf2(array (
-    'iterationCountLog2' => 15000
+    'iterationCount' => 15000
 ));
 $phpassHash = new \Phpass\Hash($adapter);
 ```
