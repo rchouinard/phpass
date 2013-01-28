@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Interface PHPassLib\Hash | PHP Password Library</title>
+
+	<script type="text/javascript" src="resources/combined.js?3464564731"></script>
+	<script type="text/javascript" src="elementlist.js?551701834"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-PHPassLib.html">PHPassLib<span></span></a>
+						<ul>
+				<li><a href="namespace-PHPassLib.Application.html">Application</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Exception.html">Exception</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Hash.html">Hash</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Test.html">Test<span></span></a>
+						<ul>
+				<li><a href="namespace-PHPassLib.Test.Application.html">Application</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Test.Hash.html">Hash</a>
+						</li>
+							</ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-PHPassLib.Loader.html">Loader</a></li>
+				<li><a href="class-PHPassLib.Utilities.html">Utilities</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-PHPassLib.Exception.html">Exception</a></li>
+				<li class="active"><a href="class-PHPassLib.Hash.html">Hash</a></li>
+			</ul>
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-PHPassLib.html" title="Summary of PHPassLib"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Interface Hash</h1>
+
+
+	<div class="description">
+	
+<p>Hashing Module Interface</p>
+
+	</div>
+
+
+
+
+
+	<div>
+		<h4>Direct known implementers</h4>
+			<a href="class-PHPassLib.Hash.BCrypt.html">PHPassLib\Hash\BCrypt</a>, 
+			<a href="class-PHPassLib.Hash.BSDiCrypt.html">PHPassLib\Hash\BSDiCrypt</a>, 
+			<a href="class-PHPassLib.Hash.DESCrypt.html">PHPassLib\Hash\DESCrypt</a>, 
+			<a href="class-PHPassLib.Hash.MD5Crypt.html">PHPassLib\Hash\MD5Crypt</a>, 
+			<a href="class-PHPassLib.Hash.PBKDF2.html">PHPassLib\Hash\PBKDF2</a>, 
+			<a href="class-PHPassLib.Hash.Portable.html">PHPassLib\Hash\Portable</a>, 
+			<a href="class-PHPassLib.Hash.SHA1Crypt.html">PHPassLib\Hash\SHA1Crypt</a>, 
+			<a href="class-PHPassLib.Hash.SHA256Crypt.html">PHPassLib\Hash\SHA256Crypt</a>, 
+			<a href="class-PHPassLib.Hash.SHA512Crypt.html">PHPassLib\Hash\SHA512Crypt</a>
+	</div>
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-PHPassLib.html">PHPassLib</a><br />
+		<b>Package:</b> PHPassLib\Hashes<br />
+
+				<b>Copyright:</b>
+				Copyright (c) 2012, Ryan Chouinard<br />
+				<b>License:</b>
+				<a href="MIT">License - http://www.opensource.org/licenses/mit-license.php</a><br />
+				<b>Author:</b>
+				Ryan Chouinard &lt;<a
+href="mailto:rchouinard&#64;gmail.com">rchouinard&#64;<!---->gmail.com</a>&gt;<br />
+		<b>Located at</b> <a href="source-class-PHPassLib.Hash.html#14-72" title="Go to source code">src/PHPassLib/Hash.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="genConfig" id="_genConfig">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_genConfig">#</a>
+		<code><a href="source-class-PHPassLib.Hash.html#25-33" title="Go to source code">genConfig</a>( <span>array <var>$config</var> = <span class="php-keyword1">array</span> ()</span> )</code>
+
+		<div class="description short">
+			
+<p>Generate a config string from an array.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a config string from an array.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$config</var></dt>
+					<dd><code>array</code><br>$config Array of configuration options.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>Configuration string.<br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-InvalidArgumentException.html">InvalidArgumentException</a></code></code><br>Throws an InvalidArgumentException if any passed-in configuration options are
+invalid.<br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="parseConfig" id="_parseConfig">
+
+		<td class="attributes"><code>
+			 public static
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_parseConfig">#</a>
+		<code><a href="source-class-PHPassLib.Hash.html#35-41" title="Go to source code">parseConfig</a>( <span>string <var>$config</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Parse a config string into an array.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Parse a config string into an array.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$config</var></dt>
+					<dd><code>string</code><br>$config Configuration string.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>Array of configuration options or false on failure.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="genHash" id="_genHash">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_genHash">#</a>
+		<code><a href="source-class-PHPassLib.Hash.html#43-51" title="Go to source code">genHash</a>( <span>string <var>$password</var></span>, <span>string <var>$config</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Generate a password hash using a config string.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a password hash using a config string.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$password</var></dt>
+					<dd><code>string</code><br>$password Password string.</dd>
+					<dt><var>$config</var></dt>
+					<dd><code>string</code><br>$config Configuration string.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>Returns the hash string on success. On failure, one of *0 or *1 is returned.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hash" id="_hash">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hash">#</a>
+		<code><a href="source-class-PHPassLib.Hash.html#53-61" title="Go to source code">hash</a>( <span>string <var>$password</var></span>, <span>string|array <var>$config</var> = <span class="php-keyword1">array</span> ()</span> )</code>
+
+		<div class="description short">
+			
+<p>Generate a password hash using a config string or array.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Generate a password hash using a config string or array.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$password</var></dt>
+					<dd><code>string</code><br>$password Password string.</dd>
+					<dt><var>$config</var></dt>
+					<dd><code>string|array</code><br>$config Optional config string or array of options.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>Returns the hash string on success. On failure, one of *0 or *1 is returned.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="verify" id="_verify">
+
+		<td class="attributes"><code>
+			 public static
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_verify">#</a>
+		<code><a href="source-class-PHPassLib.Hash.html#63-70" title="Go to source code">verify</a>( <span>string <var>$password</var></span>, <span>string <var>$hash</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Verify a password against a hash string.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Verify a password against a hash string.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$password</var></dt>
+					<dd><code>string</code><br>$password Password string.</dd>
+					<dt><var>$hash</var></dt>
+					<dd><code>string</code><br>$hash Hash string.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>Returns true if the password matches, false otherwise.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		PHP Password Library API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

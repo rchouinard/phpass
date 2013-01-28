@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PHP Password Library</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="media/styles/site.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body data-spy="scroll" data-target=".navbar">
+
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href="#"><img src="media/images/shield-php-small.png" align="left" alt="Small PHP Password Library Logo" width="18" height="18"> PHPassLib</a>
+        <ul class="nav">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#install">Installation</a></li>
+            <li><a href="#examples">Examples</a></li>
+            <li><a href="#docs">Documentation</a></li>
+        </ul>
+      </div>
+      <a href="https://github.com/rchouinard/phpass/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    </div>
+  </div>
+
+  <header>
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="span3">
+            <img src="media/images/shield-php.png" align="left" alt="PHP Password Library Logo" width="220" height="223">
+          </div>
+          <div class="span9">
+            <div class="hero-content">
+              <h1>PHP Password Library</h1>
+              <p>Easy &amp; secure password hashing for PHP 5.3+</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="social-widgets">
+    <div class="container">
+      <span class="gh-stars">
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=rchouinard&repo=phpass&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
+      </span>
+      <span class="gh-forks">
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=rchouinard&repo=phpass&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
+      </span>
+      <span class="gh-followers">
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=rchouinard&type=follow&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="140px" height="20px"></iframe>
+      </span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <section id="overview">
+      <h2 class="page-header">Overview</h2>
+      <p>PHPassLib is a simple, easy to use password hashing library for PHP 5.3+.
+          Several password hashing schemes are supported by the library, including
+          <b>bcrypt</b> and <b>PBKDF2</b>. The project is inspired by
+          <a href="http://packages.python.org/passlib/">Python's Passlib</a>.</p>
+    </section>
+
+    <section id="features">
+      <h2 class="page-header">Features</h2>
+
+      <div class="row">
+        <div class="span4">
+          <h4>Multiple Hash Schemes</h4>
+          <ul>
+            <li>BCrypt</li>
+            <li>BSDi / Extended DES Crypt</li>
+            <li>DES Crypt</li>
+            <li>MD5 Crypt</li>
+            <li>PBKDF2-SHA1/256/512</li>
+            <li>Openwall's Portable Hash</li>
+            <li>SHA-1 Crypt</li>
+            <li>SHA-256 Crypt</li>
+            <li>SHA-512 Crypt</li>
+          </ul>
+        </div>
+        <div class="span4">
+          <h4>PSR-0 Autoloader Support</h4>
+          <p>Bring your own PSR-0 compliant autoloader, or use ours. A single-purpose autoloader is included for use in cases where a better autoloader is unavailable. Registering the autoloader is as simple as including a single file.</p>
+<pre class="prettyprint linenums lang-php">
+require_once 'PHPassLib.php';
+</pre>
+        </div>
+        <div class="span4">
+          <h4>Easy Password Migrations</h4>
+          <p>Support for password migrations through the <code>PHPassLib\Application\Context</code> class. Application contexts make it easy to verify multiple password formats and detect hashes which need to be updated in the database. Passwords currently stored as portable hashes in your database, but you want to move to bcrypt transparently? No problem!</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="install">
+      <h2 class="page-header">Installation</h2>
+      <p>PHPassLib supports multiple installation methods.</p>
+
+      <h4>Installing via Composer</h4>
+      <p>Install composer into your project, or system-wide following directions on the <a href="http://getcomposer.org/download/">Composer download page</a>.</p>
+<pre class="prettyprint linenums lang-sh">
+curl -s https://getcomposer.org/installer | php
+</pre>
+      <p>Create a <code>composer.json</code> configuration file in your project root.</p>
+<pre class="prettyprint linenums lang-json">
+{
+    "require": {
+        "rych/phpass": "3.0.*@beta"
+    }
+}
+</pre>
+      <p>Finally, run the Composer installer.</p>
+<pre class="prettyprint linenums lang-sh">
+php composer.phar install
+</pre>
+      <p>Composer will download the library and install it under the <code>vendor</code> directory. You can then include the autoloader into your project and begin using the PHPassLib classes.</p>
+<pre class="prettyprint linenums lang-php">
+require 'vendor/autoload.php';
+</pre>
+
+      <h4>Installing via PEAR</h4>
+<pre class="prettyprint linenums lang-sh">
+pear channel-discover rchouinard.github.com/pear
+pear install rych/PHPassLib-beta
+</pre>
+      <p>Assuming your PEAR library is in your include path, you can now include the <code>PHPassLib.php</code> file to autoload the library classes.</p>
+<pre class="prettyprint linenums lang-php">
+require 'PHPassLib.php';
+</pre>
+
+    </section>
+
+    <section id="examples">
+      <h2 class="page-header">Examples</h2>
+
+      <h4>Hashing Passwords</h4>
+      <p>Each hashing module is preset with sane defaults which are very easy to override if required. The available options vary from module to module, so be sure to check the documentation.</p>
+<pre class="prettyprint linenums lang-php">
+// Calculate a bcrypt hash from a password
+$hash = PHPassLib\Hash\BCrypt::hash($password);
+
+// Calculate a bcrypt hash with a specific number of rounds
+$hash = PHPassLib\Hash\BCrypt::hash($password, array ('rounds' =&gt; 16));
+
+// Check supplied password against a stored hash
+if (PHPassLib\Hash\BCrypt::verify($password, $hash)) {
+    // Password is valid!
+}
+</pre>
+
+      <h4>Application Contexts</h4>
+      <p>Some applications may need to pass around hashing configuration details. For this, PHPassLib provides application contexts. Contexts make it easy to configure hashing requirements in a central location.</p>
+<pre class="prettyprint linenums lang-php">
+// Configure a context to use bcrypt with a specific number of rounds
+$context = new PHPassLib\Application\Context;
+$context-&gt;addConfig('bcrypt', array ('rounds' =&gt; 16));
+
+// Hash a password
+$hash = $context-&gt;hash($password);
+
+// Check supplied password against a stored hash
+if ($context-&gt;verify($password, $hash)) {
+    // Password is valid!
+}
+</pre>
+      <p>Migrating password schemes is also made easy thanks to application contexts. The first configuration added to a context becomes the default. All new hashes are created using the default, while passwords may be verified against any number of registered configurations. The context class also provides a <code>needsUpdate()</code> method, which is used to determine if the matched password hash needs to be updated using the default hash module or not.</p>
+<pre class="prettyprint linenums lang-php">
+// Passwords are currently stored as MD5-Crypt, and we need to migrate to BCrypt
+
+// Configure a context to use bcrypt by default
+$context = new PHPassLib\Application\Context;
+$context-&gt;addConfig('bcrypt');
+
+// Add the md5-crypt module so the context can verify with it
+$context-&gt;addConfig('md5crypt');
+
+// If a user attemtps to log in with either a bcrypt or md5-crypt password,
+// the context will verify it.
+if ($context-&gt;verify($password, $hash)) {
+    // Check if the user's hash needs to be updated to bcrypt
+    if ($context-&gt;needsUpdate($hash)) {
+        // It does, so create a new bcrypt hash
+        $newHash = $context-&gt;hash($password);
+        // Store the new hash with the user record
+        // ...
+    }
+    // ...
+}
+</pre>
+      <p>The <code>needsUpdate()</code> method will identify any configured hash which does not match the default configuration. This means that updating the parameters within the same module is easy as well.</p>
+
+    </section>
+
+    <section id="docs">
+      <h2 class="page-header">Documentation</h2>
+      <p>API documentation is available <a href="api/">here</a>. End-user documentation is on its way.</p>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="container">
+    </div>
+  </footer>
+
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.js"></script>
+  <script src="media/scripts/site.js"></script>
+
+</body>
+</html>

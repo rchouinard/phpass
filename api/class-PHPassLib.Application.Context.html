@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class PHPassLib\Application\Context | PHP Password Library</title>
+
+	<script type="text/javascript" src="resources/combined.js?3464564731"></script>
+	<script type="text/javascript" src="elementlist.js?551701834"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+				<li class="active"><a href="namespace-PHPassLib.html">PHPassLib<span></span></a>
+						<ul>
+				<li class="active"><a href="namespace-PHPassLib.Application.html">Application</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Exception.html">Exception</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Hash.html">Hash</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Test.html">Test<span></span></a>
+						<ul>
+				<li><a href="namespace-PHPassLib.Test.Application.html">Application</a>
+						</li>
+				<li><a href="namespace-PHPassLib.Test.Hash.html">Hash</a>
+						</li>
+							</ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-PHPassLib.Application.Context.html">Context</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-PHPassLib.Application.html" title="Summary of PHPassLib\Application"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Context</h1>
+
+
+	<div class="description">
+	
+<p>Application Context</p>
+
+<p>This class provides an interface for using the library within an large
+application.</p>
+
+<pre>
+<span class="xlang">&lt;?php</span>
+<span
+class="php-var">$passlibContext</span> = <span
+class="php-keyword1">new</span> PHPassLib\Application\Context;
+<span
+class="php-var">$passlibContext</span>-&gt;addConfig(<span
+class="php-quote">'bcrypt'</span>); <span
+class="php-comment">// Use bcrypt with default options</span>
+
+<span
+class="php-var">$hash</span> = <span
+class="php-var">$passlibContext</span>-&gt;<span
+class="php-keyword2">hash</span>(<span class="php-var">$password</span>);
+<span
+class="php-keyword1">if</span> (<span
+class="php-var">$passlibContext</span>-&gt;verify(<span
+class="php-var">$password</span>, <span
+class="php-var">$hash</span>) {
+    <span
+class="php-comment">// ...</span>
+}
+</pre>
+
+<p>The context also allows us to check if a user's stored hash needs to be
+updated to a newer version.</p>
+
+<pre>
+<span class="xlang">&lt;?php</span>
+<span
+class="php-var">$passlibContext</span> = <span
+class="php-keyword1">new</span> PHPassLib\Application\Context;
+
+<span
+class="php-comment">// The first added config becomes the default</span>
+<span
+class="php-comment">// This is important for methods like hash() and needsUpdate()</span>
+<span
+class="php-var">$passlibContext</span>-&gt;addConfig(<span
+class="php-quote">'pbkdf2'</span>, <span
+class="php-keyword1">array</span> (<span
+class="php-quote">'digest'</span> =&gt; <span
+class="php-quote">'sha256'</span>));
+
+<span
+class="php-comment">// Additional configs are supported by verify()</span>
+<span
+class="php-var">$passlibContext</span>-&gt;addConfig(<span
+class="php-quote">'bcrypt'</span>);
+
+<span class="php-keyword1">if</span> (<span
+class="php-var">$passlibContext</span>-&gt;verify(<span
+class="php-var">$password</span>, <span
+class="php-var">$hash</span>)) {
+    <span
+class="php-comment">// needsUpdate() will return true if the provided hash fails to</span>
+    <span
+class="php-comment">// match the default config in any way. This means bcrypt hashes as</span>
+    <span
+class="php-comment">// well as PBKDF2 hashes which use a digest other than SHA-256.</span>
+    <span
+class="php-keyword1">if</span> (<span
+class="php-var">$passlibContext</span>-&gt;needsUpdate(<span
+class="php-var">$hash</span>)) {
+        <span
+class="php-comment">// $newHash will be a PBKDF2 hash</span>
+        <span
+class="php-var">$newHash</span> = <span
+class="php-var">$passlibContext</span>-&gt;<span
+class="php-keyword2">hash</span>(<span
+class="php-var">$password</span>);
+        <span
+class="php-comment">// Store $newHash into the user object</span>
+    }
+    <span
+class="php-comment">// ...</span>
+}
+</pre>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-PHPassLib.html">PHPassLib</a>\<a href="namespace-PHPassLib.Application.html">Application</a><br />
+		<b>Package:</b> PHPassLib\Hashes<br />
+
+				<b>Copyright:</b>
+				Copyright (c) 2012, Ryan Chouinard<br />
+				<b>License:</b>
+				<a href="MIT">License - http://www.opensource.org/licenses/mit-license.php</a><br />
+				<b>Author:</b>
+				Ryan Chouinard &lt;<a
+href="mailto:rchouinard&#64;gmail.com">rchouinard&#64;<!---->gmail.com</a>&gt;<br />
+				<b>Version:</b>
+				3.0.0-dev<br />
+		<b>Located at</b> <a href="source-class-PHPassLib.Application.Context.html#16-223" title="Go to source code">src/PHPassLib/Application/Context.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#79-95" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="registerClass" id="_registerClass">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-PHPassLib.Application.Context.html">PHPassLib\Application\Context</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_registerClass">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#97-106" title="Go to source code">registerClass</a>( <span>string <var>$alias</var></span>, <span>string <var>$classname</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$alias</var></dt>
+					<dd><code>string</code><br>$alias</dd>
+					<dt><var>$classname</var></dt>
+					<dd><code>string</code><br>$classname</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-PHPassLib.Application.Context.html">PHPassLib\Application\Context</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addConfig" id="_addConfig">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-PHPassLib.Application.Context.html">PHPassLib\Application\Context</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addConfig">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#108-120" title="Go to source code">addConfig</a>( <span>string <var>$algorithm</var></span>, <span>array <var>$config</var> = <span class="php-keyword1">array</span> ()</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$algorithm</var></dt>
+					<dd><code>string</code><br>$algorithm</dd>
+					<dt><var>$config</var></dt>
+					<dd><code>array</code><br>$config</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-PHPassLib.Application.Context.html">PHPassLib\Application\Context</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hash" id="_hash">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hash">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#122-130" title="Go to source code">hash</a>( <span>string <var>$password</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$password</var></dt>
+					<dd><code>string</code><br>$password</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="verify" id="_verify">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_verify">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#132-141" title="Go to source code">verify</a>( <span>string <var>$password</var></span>, <span>string <var>$hash</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$password</var></dt>
+					<dd><code>string</code><br>$password</dd>
+					<dt><var>$hash</var></dt>
+					<dd><code>string</code><br>$hash</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="needsUpdate" id="_needsUpdate">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_needsUpdate">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#143-164" title="Go to source code">needsUpdate</a>( <span>string <var>$hash</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$hash</var></dt>
+					<dd><code>string</code><br>$hash</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDefaultConfig" id="_getDefaultConfig">
+
+		<td class="attributes"><code>
+			 protected 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaultConfig">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#166-178" title="Go to source code">getDefaultConfig</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-PHPassLib.Exception.RuntimeException.html">PHPassLib\Exception\RuntimeException</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getConfigFromHash" id="_getConfigFromHash">
+
+		<td class="attributes"><code>
+			 protected 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getConfigFromHash">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#180-198" title="Go to source code">getConfigFromHash</a>( <span>string <var>$hash</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$hash</var></dt>
+					<dd><code>string</code><br>$hash</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-PHPassLib.Exception.RuntimeException.html">PHPassLib\Exception\RuntimeException</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getClassFromAlias" id="_getClassFromAlias">
+
+		<td class="attributes"><code>
+			 protected 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getClassFromAlias">#</a>
+		<code><a href="source-class-PHPassLib.Application.Context.html#200-221" title="Go to source code">getClassFromAlias</a>( <span>string <var>$alias</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$alias</var></dt>
+					<dd><code>string</code><br>$alias</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-PHPassLib.Exception.RuntimeException.html">PHPassLib\Exception\RuntimeException</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="classMap" id="$classMap">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-PHPassLib.Application.Context.html#69-72" title="Go to source code"><var>$classMap</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span> ()</code></td>
+		<td class="description"><div>
+			<a href="#$classMap" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="configs" id="$configs">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-PHPassLib.Application.Context.html#74-77" title="Go to source code"><var>$configs</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span> ()</code></td>
+		<td class="description"><div>
+			<a href="#$configs" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		PHP Password Library API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
