@@ -2,4 +2,14 @@ language: php
 php:
   - 5.3
   - 5.4
-script: phpunit
+  - 5.5
+matrix:
+  allow_failures:
+    - php: 5.5
+before_install:
+  - composer self-update --no-interaction --ansi
+  - composer config notify-on-install false
+install:
+  - composer install --dev --no-progress --no-interaction --ansi --prefer-source
+script:
+  - vendor/bin/phpunit --configuration phpunit.xml.dist
