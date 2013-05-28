@@ -1,11 +1,4 @@
-# Eclipse
-.settings/
-.buildpath
-.project
-
-# PHPUnit
-logs/
+nbproject/private/
+vendor/
+composer.lock
 phpunit.xml
-
-# Composer
-composer.phar
