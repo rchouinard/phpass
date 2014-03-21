@@ -54,7 +54,7 @@ Use the default bcrypt adapter:
 ```php
 <?php
 // Default configuration - bcrypt adapter, 2^12 (4,096) iterations
-$phpassHash = new \Phpass\Hash;
+$phpassHash = new \PHPassLib\Hash;
 ```
 
 Use the PBKDF2 adapter:
@@ -62,10 +62,10 @@ Use the PBKDF2 adapter:
 ```php
 <?php
 // Customize hash adapter - PBKDF2 adapter, 15,000 iterations
-$adapter = new \Phpass\Hash\Adapter\Pbkdf2(array (
+$adapter = new \PHPassLib\Hash\Adapter\Pbkdf2(array (
     'iterationCount' => 15000
 ));
-$phpassHash = new \Phpass\Hash($adapter);
+$phpassHash = new \PHPassLib\Hash($adapter);
 ```
 
 Create and verify a password hash:
@@ -92,7 +92,7 @@ Calculate a password's entropy using [NIST recommendations](http://en.wikipedia.
 ```php
 <?php
 // Default configuration (NIST recommendations)
-$phpassStrength = new \Phpass\Strength;
+$phpassStrength = new \PHPassLib\Strength;
 
 // Returns 30
 $passwordEntropy = $phpassStrength->calculate('MySecretPassword');
@@ -103,8 +103,8 @@ Calculate a password's entropy using [Wolfram Alpha's algorithm](http://www.wolf
 ```php
 <?php
 // Custom strength adapter (Wolfram algorithm)
-$adapter = new \Phpass\Strength\Adapter\Wolfram;
-$phpassStrength = new \Phpass\Strength($adapter);
+$adapter = new \PHPassLib\Strength\Adapter\Wolfram;
+$phpassStrength = new \PHPassLib\Strength($adapter);
 
 // Returns 59
 $passwordEntropy = $phpassStrength->calculate('MySecretPassword');
