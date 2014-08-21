@@ -46,16 +46,11 @@ class Loader
      */
     public static function load($class)
     {
-        if (substr($class, 0, 6) !== 'Phpass') {
-            return;
-        }
+        if (stripos($class, 'Phpass') === 0) {
+            $file = str_replace('\\', '/', $class);
 
-        $libraryRoot = realpath(__DIR__ . '/../');
-        $file = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
-        $file = realpath($libraryRoot . DIRECTORY_SEPARATOR . $file);
-        if (substr($file, 0, strlen($libraryRoot)) == $libraryRoot) {
-            if (is_readable($file)) {
-                include $file;
+            if (file_exists(dirname(__FILE__) . '/../' . $file . '.php')) {
+                require_once(dirname(__FILE__) . '/../' . $file . '.php');
             }
         }
     }
