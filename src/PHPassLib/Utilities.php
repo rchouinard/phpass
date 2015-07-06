@@ -207,6 +207,14 @@ class Utilities
         return $integer;
     }
 
+    /**
+     * Compares two strings in a manner which does not return in different amounts of time
+     * based on partial string equality
+     *
+     * @param string $expected Known hash value
+     * @param string $provided Hash to compare to expected value
+     * @return boolean Equality
+     */
     public static function compareHashes($expected, $provided)
     {
         if (function_exists('hash_equals')) {
