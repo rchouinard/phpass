@@ -148,7 +148,7 @@ class SHA512Crypt implements Hash
      */
     public static function verify($password, $hash)
     {
-        return ($hash === self::hash($password, $hash));
+        return Utilities::compareHashes($hash, self::hash($password, $hash));
     }
 
     /**
