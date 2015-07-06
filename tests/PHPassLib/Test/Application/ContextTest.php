@@ -72,4 +72,14 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($context->needsUpdate('$2a$12$TeRU2URC/eV2z3qVoViiR.kYSqjQ4pMgOqycTSANspO.6IN8TNOHq'));
     }
 
+    /**
+     * @test
+     */
+    public function contextIdentifiesOutdatedConfigInHash()
+    {
+        $context = new Context;
+        $context->addConfig('bcrypt', array('ident' => '2y', 'rounds' => 12));
+        $this->assertTrue($context->needsUpdate('$2a$12$TeRU2URC/eV2z3qVoViiR.kYSqjQ4pMgOqycTSANspO.6IN8TNOHq'));
+        $this->assertFalse($context->needsUpdate('$2y$12$TeRU2URC/eV2z3qVoViiR.kYSqjQ4pMgOqycTSANspO.6IN8TNOHq'));
+    }
 }
