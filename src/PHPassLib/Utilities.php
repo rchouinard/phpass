@@ -207,4 +207,28 @@ class Utilities
         return $integer;
     }
 
+    /**
+     * Compares two strings in a manner which does not return in different amounts of time
+     * based on partial string equality
+     *
+     * @param string $expected Known hash value
+     * @param string $provided Hash to compare to expected value
+     * @return boolean Equality
+     */
+    public static function compareHashes($expected, $provided)
+    {
+        if (function_exists('hash_equals')) {
+            return hash_equals($expected,$provided);
+        }
+        $return = 0;
+        if(strlen($expected) != strlen($provided)) {
+            $provided = $expected;
+            $return = 1;
+        }
+        $comparison = $expected ^ $provided;
+        for ($i = strlen($comparison) - 1; $i >= 0; $i--) {
+            $return |= ord($comparison[$i]);
+        }
+        return $return === 0;
+    }
 }
